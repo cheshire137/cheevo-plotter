@@ -16,6 +16,8 @@ import Router from './routes';
 import Html from './components/Html';
 import assets from './assets';
 import { port } from './config';
+import Config from './config.json';
+import fetch from './core/fetch';
 
 const server = global.server = express();
 
@@ -28,6 +30,29 @@ server.use(express.static(path.join(__dirname, 'public')));
 // Register API middleware
 // -----------------------------------------------------------------------------
 server.use('/api/content', require('./api/content'));
+
+server.all('*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin',
+             Config[process.env.NODE_ENV].clientUri);
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+server.get('/api/steam', async (req, res, next) => {
+  var url = Config[process.env.NODE_ENV].steam.apiUri + req.query.path;
+  for (var key in req.query) {
+    if (key !== 'path') {
+      var joiner = url.indexOf('?') > -1 ? '&' : '?';
+      url = url + joiner + key + '=' + encodeURIComponent(req.query[key]);
+    }
+  }
+  url = url + (url.indexOf('?') > -1 ? '&' : '?') + 'key=' +
+        process.env.STEAM_API_KEY;
+  const response = await fetch(url);
+  const data = await response.json();
+  res.send(data);
+});
 
 //
 // Register server-side rendering middleware
