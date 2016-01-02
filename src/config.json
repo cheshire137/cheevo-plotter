@@ -1,0 +1,18 @@
+{
+  "development": {
+    "steam": {
+      "apiUri": "http://api.steampowered.com"
+    },
+    "localStorageKey": "cheevo-plotter",
+    "serverUri": "http://localhost:5000",
+    "clientUri": "http://localhost:3000"
+  },
+  "production": {
+    "steam": {
+      "apiUri": "http://api.steampowered.com"
+    },
+    "localStorageKey": "cheevo-plotter",
+    "serverUri": "http://cheevo-plotter.herokuapp.com",
+    "clientUri": "http://cheevo-plotter.herokuapp.com"
+  }
+}
