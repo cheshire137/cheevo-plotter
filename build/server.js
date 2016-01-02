@@ -3547,6 +3547,8 @@ module.exports =
     value: true
   });
   
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
   
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -3585,6 +3587,14 @@ module.exports =
   
   var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
   
+  var _historyLibParsePath = __webpack_require__(26);
+  
+  var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
+  
+  var _coreLocation = __webpack_require__(27);
+  
+  var _coreLocation2 = _interopRequireDefault(_coreLocation);
+  
   var title = 'Steam User';
   
   var SteamUserPage = (function (_Component) {
@@ -3611,6 +3621,14 @@ module.exports =
         this.context.onSetTitle(title);
       }
     }, {
+      key: 'clearSteamUsername',
+      value: function clearSteamUsername(event) {
+        event.preventDefault();
+        _storesLocalStorage2['default']['delete']('steam-id');
+        _storesLocalStorage2['default']['delete']('steam-username');
+        _coreLocation2['default'].push(_extends({}, (0, _historyLibParsePath2['default'])('/')));
+      }
+    }, {
       key: 'render',
       value: function render() {
         return _react2['default'].createElement(
@@ -3622,13 +3640,14 @@ module.exports =
             _react2['default'].createElement(
               'h1',
               null,
-              title
-            ),
-            _react2['default'].createElement(
-              'p',
-              null,
-              'username: ',
-              this.props.username
+              title,
+              ' - ',
+              this.props.username,
+              _react2['default'].createElement(
+                'a',
+                { href: '#', onClick: this.clearSteamUsername },
+                '×'
+              )
             )
           )
         );
