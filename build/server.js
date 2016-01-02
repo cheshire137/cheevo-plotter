@@ -2600,6 +2600,14 @@ module.exports =
   
   var _underscore2 = _interopRequireDefault(_underscore);
   
+  var _storesLocalStorage = __webpack_require__(61);
+  
+  var _storesLocalStorage2 = _interopRequireDefault(_storesLocalStorage);
+  
+  var _actionsSteam = __webpack_require__(62);
+  
+  var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
+  
   var title = 'Find Steam User';
   
   var SteamLookupPage = (function (_Component) {
@@ -2646,6 +2654,19 @@ module.exports =
       key: 'onSteamUsernameChange',
       value: function onSteamUsernameChange(username) {
         this.setState({ username: username });
+        if (typeof username === 'undefined' || username.length < 1) {
+          _storesLocalStorage2['default']['delete']('steam-username');
+          _storesLocalStorage2['default']['delete']('steam-id');
+        } else if (_storesLocalStorage2['default'].get('steam-username') !== username) {
+          _storesLocalStorage2['default'].set('steam-username', username);
+          _storesLocalStorage2['default']['delete']('steam-id');
+          _actionsSteam2['default'].getSteamId(username).then(this.onSteamIdFetched.bind(this));
+        }
+      }
+    }, {
+      key: 'onSteamIdFetched',
+      value: function onSteamIdFetched(data) {
+        _storesLocalStorage2['default'].set('steam-id', data.response.steamid);
       }
     }, {
       key: 'componentWillMount',
@@ -3325,6 +3346,153 @@ module.exports =
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _configJson = __webpack_require__(55);
+  
+  var _configJson2 = _interopRequireDefault(_configJson);
+  
+  var LocalStorage = (function () {
+    function LocalStorage() {
+      _classCallCheck(this, LocalStorage);
+    }
+  
+    _createClass(LocalStorage, null, [{
+      key: 'getJSON',
+      value: function getJSON() {
+        if (typeof window === 'undefined') {
+          return {};
+        }
+        if (!window.localStorage) {
+          console.error('browser does not support local storage');
+          return {};
+        }
+        var appData = window.localStorage.getItem(_configJson2['default'][("development")].localStorageKey) || '{}';
+        return JSON.parse(appData);
+      }
+    }, {
+      key: 'get',
+      value: function get(key) {
+        var appData = this.getJSON();
+        return appData[key];
+      }
+    }, {
+      key: 'set',
+      value: function set(key, value) {
+        var appData = this.getJSON();
+        appData[key] = value;
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(_configJson2['default'][("development")].localStorageKey, JSON.stringify(appData));
+        }
+      }
+    }, {
+      key: 'delete',
+      value: function _delete(key) {
+        var appData = this.getJSON();
+        delete appData[key];
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(_configJson2['default'][("development")].localStorageKey, JSON.stringify(appData));
+        }
+      }
+    }]);
+  
+    return LocalStorage;
+  })();
+  
+  exports['default'] = LocalStorage;
+  module.exports = exports['default'];
+
+/***/ },
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreFetch = __webpack_require__(12);
+  
+  var _coreFetch2 = _interopRequireDefault(_coreFetch);
+  
+  var _configJson = __webpack_require__(55);
+  
+  var _configJson2 = _interopRequireDefault(_configJson);
+  
+  var Steam = (function () {
+    function Steam() {
+      _classCallCheck(this, Steam);
+    }
+  
+    _createClass(Steam, null, [{
+      key: 'getSteamId',
+      value: function getSteamId(username) {
+        return regeneratorRuntime.async(function getSteamId$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              return context$2$0.abrupt('return', this.makeRequest('/api/steam' + '?path=/ISteamUser/ResolveVanityURL/v0001/' + '&vanityurl=' + username));
+  
+            case 1:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }, {
+      key: 'makeRequest',
+      value: function makeRequest(path) {
+        var url, response, data;
+        return regeneratorRuntime.async(function makeRequest$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              url = _configJson2['default'][("development")].serverUri + path + (path.indexOf('?') > -1 ? '&' : '?') + 'format=json';
+              context$2$0.next = 3;
+              return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
+  
+            case 3:
+              response = context$2$0.sent;
+              context$2$0.next = 6;
+              return regeneratorRuntime.awrap(response.json());
+  
+            case 6:
+              data = context$2$0.sent;
+              return context$2$0.abrupt('return', data);
+  
+            case 8:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }]);
+  
+    return Steam;
+  })();
+  
+  exports['default'] = Steam;
+  module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import s from './SteamLookupPage.scss';
 import withStyles from '../../decorators/withStyles';
 import _ from 'underscore';
+import LocalStorage from '../../stores/localStorage';
+import Steam from '../../actions/steam';
 
 const title = 'Find Steam User';
 
@@ -39,6 +41,18 @@ class SteamLookupPage extends Component {
 
   onSteamUsernameChange(username) {
     this.setState({username: username});
+    if (typeof username === 'undefined' || username.length < 1) {
+      LocalStorage.delete('steam-username');
+      LocalStorage.delete('steam-id');
+    } else if (LocalStorage.get('steam-username') !== username) {
+      LocalStorage.set('steam-username', username);
+      LocalStorage.delete('steam-id');
+      Steam.getSteamId(username).then(this.onSteamIdFetched.bind(this));
+    }
+  }
+
+  onSteamIdFetched(data) {
+    LocalStorage.set('steam-id', data.response.steamid);
   }
 
   componentWillMount() {
