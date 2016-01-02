@@ -308,6 +308,10 @@ module.exports =
   
   var _componentsSteamLookupPage2 = _interopRequireDefault(_componentsSteamLookupPage);
   
+  var _componentsSteamUserPage = __webpack_require__(63);
+  
+  var _componentsSteamUserPage2 = _interopRequireDefault(_componentsSteamUserPage);
+  
   var _componentsNotFoundPage = __webpack_require__(47);
   
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
@@ -345,6 +349,19 @@ module.exports =
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
             return context$2$0.abrupt('return', _react2['default'].createElement(_componentsSteamLookupPage2['default'], null));
+  
+          case 1:
+          case 'end':
+            return context$2$0.stop();
+        }
+      }, null, _this);
+    });
+  
+    on('/steam/:username', function callee$1$0(req) {
+      return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
+        while (1) switch (context$2$0.prev = context$2$0.next) {
+          case 0:
+            return context$2$0.abrupt('return', _react2['default'].createElement(_componentsSteamUserPage2['default'], { username: req.params.username }));
   
           case 1:
           case 'end':
@@ -2570,6 +2587,8 @@ module.exports =
     value: true
   });
   
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
   
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -2608,6 +2627,14 @@ module.exports =
   
   var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
   
+  var _historyLibParsePath = __webpack_require__(26);
+  
+  var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
+  
+  var _coreLocation = __webpack_require__(27);
+  
+  var _coreLocation2 = _interopRequireDefault(_coreLocation);
+  
   var title = 'Find Steam User';
   
   var SteamLookupPage = (function (_Component) {
@@ -2625,6 +2652,7 @@ module.exports =
       _classCallCheck(this, _SteamLookupPage);
   
       _get(Object.getPrototypeOf(_SteamLookupPage.prototype), 'constructor', this).call(this, props, context);
+      this.state = {};
       this.onInputChange = _underscore2['default'].debounce(this.onInputChange.bind(this), 2000);
     }
   
@@ -2667,6 +2695,7 @@ module.exports =
       key: 'onSteamIdFetched',
       value: function onSteamIdFetched(data) {
         _storesLocalStorage2['default'].set('steam-id', data.response.steamid);
+        _coreLocation2['default'].push(_extends({}, (0, _historyLibParsePath2['default'])('/steam/' + this.state.username)));
       }
     }, {
       key: 'componentWillMount',
@@ -3452,7 +3481,21 @@ module.exports =
         return regeneratorRuntime.async(function getSteamId$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
-              return context$2$0.abrupt('return', this.makeRequest('/api/steam' + '?path=/ISteamUser/ResolveVanityURL/v0001/' + '&vanityurl=' + username));
+              return context$2$0.abrupt('return', this.makeRequest('/api/steam?format=json' + '&path=/ISteamUser/ResolveVanityURL/v0001/' + '&vanityurl=' + username));
+  
+            case 1:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }, {
+      key: 'getOwnedGames',
+      value: function getOwnedGames(steamId) {
+        return regeneratorRuntime.async(function getOwnedGames$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              return context$2$0.abrupt('return', this.makeRequest('/api/steam?format=json' + '&path=/IPlayerService/GetOwnedGames/v0001/' + '&steamid=' + steamId));
   
             case 1:
             case 'end':
@@ -3467,7 +3510,7 @@ module.exports =
         return regeneratorRuntime.async(function makeRequest$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
-              url = _configJson2['default'][("development")].serverUri + path + (path.indexOf('?') > -1 ? '&' : '?') + 'format=json';
+              url = _configJson2['default'][("development")].serverUri + path;
               context$2$0.next = 3;
               return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
   
@@ -3493,6 +3536,161 @@ module.exports =
   
   exports['default'] = Steam;
   module.exports = exports['default'];
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _reactDom = __webpack_require__(43);
+  
+  var _reactDom2 = _interopRequireDefault(_reactDom);
+  
+  var _SteamUserPageScss = __webpack_require__(64);
+  
+  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
+  
+  var _decoratorsWithStyles = __webpack_require__(24);
+  
+  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
+  
+  var _underscore = __webpack_require__(46);
+  
+  var _underscore2 = _interopRequireDefault(_underscore);
+  
+  var _storesLocalStorage = __webpack_require__(61);
+  
+  var _storesLocalStorage2 = _interopRequireDefault(_storesLocalStorage);
+  
+  var _actionsSteam = __webpack_require__(62);
+  
+  var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
+  
+  var title = 'Steam User';
+  
+  var SteamUserPage = (function (_Component) {
+    _inherits(SteamUserPage, _Component);
+  
+    _createClass(SteamUserPage, null, [{
+      key: 'contextTypes',
+      value: {
+        onSetTitle: _react.PropTypes.func.isRequired
+      },
+      enumerable: true
+    }]);
+  
+    function SteamUserPage(props, context) {
+      _classCallCheck(this, _SteamUserPage);
+  
+      _get(Object.getPrototypeOf(_SteamUserPage.prototype), 'constructor', this).call(this, props, context);
+      this.state = {};
+    }
+  
+    _createClass(SteamUserPage, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.context.onSetTitle(title);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'div',
+          { className: _SteamUserPageScss2['default'].root },
+          _react2['default'].createElement(
+            'div',
+            { className: _SteamUserPageScss2['default'].container },
+            _react2['default'].createElement(
+              'h1',
+              null,
+              title
+            ),
+            _react2['default'].createElement(
+              'p',
+              null,
+              'username: ',
+              this.props.username
+            )
+          )
+        );
+      }
+    }]);
+  
+    var _SteamUserPage = SteamUserPage;
+    SteamUserPage = (0, _decoratorsWithStyles2['default'])(_SteamUserPageScss2['default'])(SteamUserPage) || SteamUserPage;
+    return SteamUserPage;
+  })(_react.Component);
+  
+  exports['default'] = SteamUserPage;
+  module.exports = exports['default'];
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+  
+      var content = __webpack_require__(65);
+      var insertCss = __webpack_require__(20);
+  
+      if (typeof content === 'string') {
+        content = [[module.id, content, '']];
+      }
+  
+      module.exports = content.locals || {};
+      module.exports._getCss = function() { return content.toString(); };
+      module.exports._insertCss = insertCss.bind(null, content);
+    
+      var removeCss = function() {};
+  
+      // Hot Module Replacement
+      // https://webpack.github.io/docs/hot-module-replacement
+      if (false) {
+        module.hot.accept("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./SteamUserPage.scss", function() {
+          var newContent = require("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./SteamUserPage.scss");
+          if (typeof newContent === 'string') {
+            newContent = [[module.id, content, '']];
+          }
+          removeCss = insertCss(newContent, { replace: true });
+        });
+        module.hot.dispose(function() { removeCss(); });
+      }
+    
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+  exports = module.exports = __webpack_require__(19)();
+  // imports
+  
+  
+  // module
+  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;AChChF;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B","file":"SteamUserPage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n"],"sourceRoot":"webpack://"}]);
+  
+  // exports
+  exports.locals = {
+  	"root": "SteamUserPage_root_24_",
+  	"container": "SteamUserPage_container_3qe"
+  };
 
 /***/ }
 /******/ ]);

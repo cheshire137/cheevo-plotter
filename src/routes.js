@@ -13,6 +13,7 @@ import fetch from './core/fetch';
 import App from './components/App';
 import ContentPage from './components/ContentPage';
 import SteamLookupPage from './components/SteamLookupPage';
+import SteamUserPage from './components/SteamUserPage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
 
@@ -23,6 +24,10 @@ const router = new Router(on => {
   });
 
   on('/', async () => <SteamLookupPage />);
+
+  on('/steam/:username', async (req) => {
+    return <SteamUserPage username={req.params.username} />;
+  });
 
   on('*', async (state) => {
     const response = await fetch(`/api/content?path=${state.path}`);

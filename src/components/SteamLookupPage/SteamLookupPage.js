@@ -5,6 +5,8 @@ import withStyles from '../../decorators/withStyles';
 import _ from 'underscore';
 import LocalStorage from '../../stores/localStorage';
 import Steam from '../../actions/steam';
+import parsePath from 'history/lib/parsePath';
+import Location from '../../core/Location';
 
 const title = 'Find Steam User';
 
@@ -16,6 +18,7 @@ class SteamLookupPage extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.state = {};
     this.onInputChange = _.debounce(this.onInputChange.bind(this), 2000);
   }
 
@@ -53,6 +56,9 @@ class SteamLookupPage extends Component {
 
   onSteamIdFetched(data) {
     LocalStorage.set('steam-id', data.response.steamid);
+    Location.push({
+      ...(parsePath('/steam/' + this.state.username))
+    });
   }
 
   componentWillMount() {
