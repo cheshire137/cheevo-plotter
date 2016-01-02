@@ -8,6 +8,7 @@
     "babel-core": "5.8.34",
     "bluebird": "3.1.1",
     "classnames": "2.2.1",
+    "d3": "^3.5.12",
     "eventemitter3": "1.1.1",
     "express": "4.13.3",
     "fastclick": "1.0.6",
@@ -22,7 +23,8 @@
     "react-dom": "0.14.3",
     "react-routing": "0.0.6",
     "source-map-support": "0.4.0",
-    "whatwg-fetch": "0.10.1"
+    "whatwg-fetch": "0.10.1",
+    "xml2js": "^0.4.15"
   },
   "devDependencies": {
     "assets-webpack-plugin": "^3.2.0",
