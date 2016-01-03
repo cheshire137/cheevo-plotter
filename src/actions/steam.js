@@ -1,5 +1,6 @@
 import fetch from '../core/fetch';
 import Config from '../config.json';
+import xml2js from 'xml2js';
 
 class Steam {
   static async getSteamId(username) {
@@ -12,6 +13,11 @@ class Steam {
     return this.get('/api/steam?format=json' +
                     '&path=/IPlayerService/GetOwnedGames/v0001/' +
                     '&steamid=' + steamId);
+  }
+
+  static async getAchievements(steamId, appId) {
+    return this.get('/api/steam?path=/profiles/' + steamId +
+                    '/stats/' + appId + '/achievements/&xml=1');
   }
 
   static async get(path) {

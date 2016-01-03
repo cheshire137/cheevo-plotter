@@ -121,11 +121,12 @@ module.exports =
   });
   
   server.get('/api/steam', function callee$0$0(req, res, next) {
-    var url, key, joiner, response, data;
+    var url, isXml, key, joiner, response, data;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          url = _configJson2['default'][("development")].steam.apiUri + req.query.path;
+          url = req.query.path;
+          isXml = false;
   
           for (key in req.query) {
             if (key !== 'path') {
@@ -133,22 +134,52 @@ module.exports =
   
               url = url + joiner + key + '=' + encodeURIComponent(req.query[key]);
             }
+            if (key === 'xml') {
+              isXml = true;
+            }
           }
-          url = url + (url.indexOf('?') > -1 ? '&' : '?') + 'key=' + process.env.STEAM_API_KEY;
-          context$1$0.next = 5;
+          if (isXml) {
+            url = 'http://steamcommunity.com' + url;
+          } else {
+            url = 'http://api.steampowered.com' + url + (url.indexOf('?') > -1 ? '&' : '?') + 'key=' + process.env.STEAM_API_KEY;
+          }
+          context$1$0.next = 6;
           return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
   
-        case 5:
+        case 6:
           response = context$1$0.sent;
-          context$1$0.next = 8;
-          return regeneratorRuntime.awrap(response.json());
   
-        case 8:
-          data = context$1$0.sent;
+          if (!isXml) {
+            context$1$0.next = 13;
+            break;
+          }
   
-          res.send(data);
+          context$1$0.next = 10;
+          return regeneratorRuntime.awrap(response.text());
   
         case 10:
+          context$1$0.t0 = context$1$0.sent;
+          context$1$0.next = 16;
+          break;
+  
+        case 13:
+          context$1$0.next = 15;
+          return regeneratorRuntime.awrap(response.json());
+  
+        case 15:
+          context$1$0.t0 = context$1$0.sent;
+  
+        case 16:
+          data = context$1$0.t0;
+  
+          if (isXml) {
+            console.log('setting xml content type');
+            console.log('data type', typeof data);
+            res.set('Content-Type', 'text/xml');
+          }
+          res.send(data);
+  
+        case 19:
         case 'end':
           return context$1$0.stop();
       }
@@ -3178,17 +3209,11 @@ module.exports =
 
   module.exports = {
   	"development": {
-  		"steam": {
-  			"apiUri": "http://api.steampowered.com"
-  		},
   		"localStorageKey": "cheevo-plotter",
   		"serverUri": "http://localhost:5000",
   		"clientUri": "http://localhost:3000"
   	},
   	"production": {
-  		"steam": {
-  			"apiUri": "http://api.steampowered.com"
-  		},
   		"localStorageKey": "cheevo-plotter",
   		"serverUri": "http://cheevo-plotter.herokuapp.com",
   		"clientUri": "http://cheevo-plotter.herokuapp.com"
@@ -3448,6 +3473,10 @@ module.exports =
   
   var _configJson2 = _interopRequireDefault(_configJson);
   
+  var _xml2js = __webpack_require__(69);
+  
+  var _xml2js2 = _interopRequireDefault(_xml2js);
+  
   var Steam = (function () {
     function Steam() {
       _classCallCheck(this, Steam);
@@ -3474,6 +3503,20 @@ module.exports =
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
               return context$2$0.abrupt('return', this.get('/api/steam?format=json' + '&path=/IPlayerService/GetOwnedGames/v0001/' + '&steamid=' + steamId));
+  
+            case 1:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }, {
+      key: 'getAchievements',
+      value: function getAchievements(steamId, appId) {
+        return regeneratorRuntime.async(function getAchievements$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              return context$2$0.abrupt('return', this.get('/api/steam?path=/profiles/' + steamId + '/stats/' + appId + '/achievements/&xml=1'));
   
             case 1:
             case 'end':
@@ -3706,7 +3749,8 @@ module.exports =
                 this.state.games.length === 1 ? 'game' : 'games',
                 '.'
               ),
-              _react2['default'].createElement(_PlayedGamesList2['default'], { games: this.state.games })
+              _react2['default'].createElement(_PlayedGamesList2['default'], { steamId: this.state.steamId,
+                games: this.state.games })
             ) : _react2['default'].createElement(
               'p',
               null,
@@ -92590,9 +92634,9 @@ module.exports =
   
   var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
   
-  var _storesSteamAppsJson = __webpack_require__(66);
+  var _SteamGame = __webpack_require__(68);
   
-  var _storesSteamAppsJson2 = _interopRequireDefault(_storesSteamAppsJson);
+  var _SteamGame2 = _interopRequireDefault(_SteamGame);
   
   var PlayedGamesList = (function (_Component) {
     _inherits(PlayedGamesList, _Component);
@@ -92604,17 +92648,6 @@ module.exports =
     }
   
     _createClass(PlayedGamesList, [{
-      key: 'getGameName',
-      value: function getGameName(appid) {
-        var apps = _storesSteamAppsJson2['default'].applist.apps;
-        for (var i = 0; i < apps.length; i++) {
-          var app = apps[i];
-          if (app.appid === appid) {
-            return app.name;
-          }
-        }
-      }
-    }, {
       key: 'render',
       value: function render() {
         var _this = this;
@@ -92622,12 +92655,8 @@ module.exports =
         return _react2['default'].createElement(
           'ul',
           null,
-          this.props.games.map(function (appid) {
-            return _react2['default'].createElement(
-              'li',
-              null,
-              _this.getGameName(appid)
-            );
+          this.props.games.map(function (appId) {
+            return _react2['default'].createElement(_SteamGame2['default'], { appId: appId, steamId: _this.props.steamId });
           })
         );
       }
@@ -92638,6 +92667,99 @@ module.exports =
   
   exports['default'] = PlayedGamesList;
   module.exports = exports['default'];
+
+/***/ },
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamUserPageScss = __webpack_require__(64);
+  
+  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
+  
+  var _actionsSteam = __webpack_require__(62);
+  
+  var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
+  
+  var _storesSteamAppsJson = __webpack_require__(66);
+  
+  var _storesSteamAppsJson2 = _interopRequireDefault(_storesSteamAppsJson);
+  
+  var SteamGame = (function (_Component) {
+    _inherits(SteamGame, _Component);
+  
+    function SteamGame(props, context) {
+      _classCallCheck(this, SteamGame);
+  
+      _get(Object.getPrototypeOf(SteamGame.prototype), 'constructor', this).call(this, props, context);
+      this.state = {};
+    }
+  
+    _createClass(SteamGame, [{
+      key: 'getGameName',
+      value: function getGameName() {
+        var apps = _storesSteamAppsJson2['default'].applist.apps;
+        for (var i = 0; i < apps.length; i++) {
+          var app = apps[i];
+          if (app.appid === this.props.appId) {
+            return app.name;
+          }
+        }
+        return this.props.appId;
+      }
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        _actionsSteam2['default'].getAchievements(this.props.steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this));
+      }
+    }, {
+      key: 'onAchievementsLoaded',
+      value: function onAchievementsLoaded(data) {
+        console.log(this.props.appId, data);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'li',
+          null,
+          this.getGameName(this.props.appId),
+          ' - ',
+          this.props.appid
+        );
+      }
+    }]);
+  
+    return SteamGame;
+  })(_react.Component);
+  
+  exports['default'] = SteamGame;
+  module.exports = exports['default'];
+
+/***/ },
+/* 69 */
+/***/ function(module, exports) {
+
+  module.exports = require("xml2js");
 
 /***/ }
 /******/ ]);

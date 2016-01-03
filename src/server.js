@@ -40,17 +40,31 @@ server.all('*', (req, res, next) => {
 });
 
 server.get('/api/steam', async (req, res, next) => {
-  var url = Config[process.env.NODE_ENV].steam.apiUri + req.query.path;
+  var url = req.query.path;
+  var isXml = false;
   for (var key in req.query) {
     if (key !== 'path') {
       var joiner = url.indexOf('?') > -1 ? '&' : '?';
       url = url + joiner + key + '=' + encodeURIComponent(req.query[key]);
     }
+    if (key === 'xml') {
+      isXml = true;
+    }
   }
-  url = url + (url.indexOf('?') > -1 ? '&' : '?') + 'key=' +
-        process.env.STEAM_API_KEY;
+  if (isXml) {
+    url = 'http://steamcommunity.com' + url;
+  } else {
+    url = 'http://api.steampowered.com' + url +
+          (url.indexOf('?') > -1 ? '&' : '?') + 'key=' +
+          process.env.STEAM_API_KEY;
+  }
   const response = await fetch(url);
-  const data = await response.json();
+  const data = isXml ? await response.text() : await response.json();
+  if (isXml) {
+    console.log('setting xml content type');
+    console.log('data type', typeof data);
+    res.set('Content-Type', 'text/xml');
+  }
   res.send(data);
 });
 

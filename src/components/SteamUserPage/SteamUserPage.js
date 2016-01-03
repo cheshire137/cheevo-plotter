@@ -102,7 +102,8 @@ class SteamUserPage extends Component {
                 has played <strong>{this.state.games.length} </strong>
                 {this.state.games.length === 1 ? 'game' : 'games'}.
               </p>
-              <PlayedGamesList games={this.state.games} />
+              <PlayedGamesList steamId={this.state.steamId}
+                               games={this.state.games} />
             </div>
           ) : (
             <p>Loading games list...</p>
