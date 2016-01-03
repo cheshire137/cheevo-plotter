@@ -9,7 +9,7 @@ import parsePath from 'history/lib/parsePath';
 import Location from '../../core/Location';
 import Link from '../Link';
 
-const title = 'Steam User';
+const title = 'Steam Achievements';
 
 @withStyles(s)
 class SteamUserPage extends Component {
@@ -87,18 +87,19 @@ class SteamUserPage extends Component {
       <div className={s.root}>
         <div className={s.container}>
           <h1>
-            {title} - {this.props.username}
             <Link to="/" className={s.clearSteamUsername}
                   onClick={this.clearSteamUsername}>
-              &times;
+              &laquo;
             </Link>
+            {title}
           </h1>
           {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>
           ) : typeof this.state.games === 'object' ? (
             <p>
-              You have played {this.state.games.length}
-              {this.state.games.length === 1 ? ' game' : ' games'}.
+              <strong>{this.props.username} </strong>
+              has played <strong>{this.state.games.length} </strong>
+              {this.state.games.length === 1 ? 'game' : 'games'}.
             </p>
           ) : (
             <p>Loading games list...</p>

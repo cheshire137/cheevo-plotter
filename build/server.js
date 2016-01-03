@@ -3577,7 +3577,7 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var title = 'Steam User';
+  var title = 'Steam Achievements';
   
   var SteamUserPage = (function (_Component) {
     _inherits(SteamUserPage, _Component);
@@ -3672,15 +3672,13 @@ module.exports =
             _react2['default'].createElement(
               'h1',
               null,
-              title,
-              ' - ',
-              this.props.username,
               _react2['default'].createElement(
                 _Link2['default'],
                 { to: '/', className: _SteamUserPageScss2['default'].clearSteamUsername,
                   onClick: this.clearSteamUsername },
-                '×'
-              )
+                '«'
+              ),
+              title
             ),
             typeof this.state.steamId === 'undefined' ? _react2['default'].createElement(
               'p',
@@ -3689,9 +3687,20 @@ module.exports =
             ) : typeof this.state.games === 'object' ? _react2['default'].createElement(
               'p',
               null,
-              'You have played ',
-              this.state.games.length,
-              this.state.games.length === 1 ? ' game' : ' games',
+              _react2['default'].createElement(
+                'strong',
+                null,
+                this.props.username,
+                ' '
+              ),
+              'has played ',
+              _react2['default'].createElement(
+                'strong',
+                null,
+                this.state.games.length,
+                ' '
+              ),
+              this.state.games.length === 1 ? 'game' : 'games',
               '.'
             ) : _react2['default'].createElement(
               'p',
@@ -3752,7 +3761,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-left: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;AChChF;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,oBAAoB;EACpB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;CACb","file":"SteamUserPage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-left: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;AChChF;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;CACb","file":"SteamUserPage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
