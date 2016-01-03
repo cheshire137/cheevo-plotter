@@ -3459,7 +3459,21 @@ module.exports =
         return regeneratorRuntime.async(function getSteamId$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
-              return context$2$0.abrupt('return', this.makeRequest('/api/steam?format=json' + '&path=/ISteamUser/ResolveVanityURL/v0001/' + '&vanityurl=' + username));
+              return context$2$0.abrupt('return', this.get('/api/steam?format=json' + '&path=/ISteamUser/ResolveVanityURL/v0001/' + '&vanityurl=' + username));
+  
+            case 1:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }, {
+      key: 'getAppsList',
+      value: function getAppsList() {
+        return regeneratorRuntime.async(function getAppsList$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              return context$2$0.abrupt('return', this.get('/api/steam?path=/ISteamApps/GetAppList/v2'));
   
             case 1:
             case 'end':
@@ -3473,7 +3487,7 @@ module.exports =
         return regeneratorRuntime.async(function getOwnedGames$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
-              return context$2$0.abrupt('return', this.makeRequest('/api/steam?format=json' + '&path=/IPlayerService/GetOwnedGames/v0001/' + '&steamid=' + steamId));
+              return context$2$0.abrupt('return', this.get('/api/steam?format=json' + '&path=/IPlayerService/GetOwnedGames/v0001/' + '&steamid=' + steamId));
   
             case 1:
             case 'end':
@@ -3482,10 +3496,10 @@ module.exports =
         }, null, this);
       }
     }, {
-      key: 'makeRequest',
-      value: function makeRequest(path) {
+      key: 'get',
+      value: function get(path) {
         var url, response, data;
-        return regeneratorRuntime.async(function makeRequest$(context$2$0) {
+        return regeneratorRuntime.async(function get$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
               url = _configJson2['default'][("development")].serverUri + path;
