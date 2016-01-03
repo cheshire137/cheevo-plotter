@@ -61,8 +61,6 @@ server.get('/api/steam', async (req, res, next) => {
   const response = await fetch(url);
   const data = isXml ? await response.text() : await response.json();
   if (isXml) {
-    console.log('setting xml content type');
-    console.log('data type', typeof data);
     res.set('Content-Type', 'text/xml');
   }
   res.send(data);

@@ -20,10 +20,28 @@ class Steam {
                                '/stats/' + appId + '/achievements/&xml=1',
                                'xml');
     var result;
-    parseString(xml, (err, r) => {
-      result = r;
-    });
+    parseString(xml, (err, rawResult) => {
+      if (err === null) {
+        result = {
+          achievements: rawResult.playerstats.achievements[0].achievement,
+          iconUri: rawResult.playerstats.game[0].gameIcon[0]
+        };
+      } else {
+        console.error('failed to get XML achievements for user ' + steamId +
+                      ', app ' + appId + ': ' + err)
+        result = this.getJsonAchievements(steamId, appId);
+      }
+    }.bind(this));
     return result;
+  }
+
+  static async getJsonAchievements(steamId, appId) {
+    const rawResult = await this.get(
+      '/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/' +
+      '&appid=' + appId + '&steamid=' + steamId + '&format=json'
+    );
+    // TODO: somehow get iconUri from JSON API
+    return {achievements: rawResult.playerstats.achievements};
   }
 
   static async get(path, type) {

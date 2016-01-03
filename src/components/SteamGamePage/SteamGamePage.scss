@@ -9,3 +9,17 @@
   padding: 0 0 40px;
   max-width: $max-content-width;
 }
+
+.clearSteamGame {
+  padding-right: 0.3em;
+  display: inline-block;
+  vertical-align: top;
+  color: #999;
+}
+
+.gameIcon {
+  margin-right: 8px;
+  border-radius: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}

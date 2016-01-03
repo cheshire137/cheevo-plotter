@@ -7,6 +7,7 @@ import Steam from '../../actions/steam';
 import parsePath from 'history/lib/parsePath';
 import Location from '../../core/Location';
 import Link from '../Link';
+import SteamApps from '../../stores/steamApps';
 
 const title = 'Steam Game';
 
@@ -25,6 +26,21 @@ class SteamGamePage extends Component {
     this.context.onSetTitle(title);
   }
 
+  componentDidMount() {
+    const steamId = LocalStorage.get('steam-id');
+    this.setState({gameName: SteamApps.getName(this.props.appId),
+                   steamId: steamId});
+    Steam.getAchievements(steamId, this.props.appId).
+          then(this.onAchievementsLoaded.bind(this));
+  }
+
+  onAchievementsLoaded(data) {
+    console.log('data', data);
+    const achievements = data.achievements;
+    console.log('achievements', achievements);
+    this.setState({imageUri: data.iconUri});
+  }
+
   render() {
     return (
       <div className={s.root}>
@@ -34,7 +50,11 @@ class SteamGamePage extends Component {
                   className={s.clearSteamGame}>
               &laquo;
             </Link>
-            {title} - {this.props.username} - {this.props.appId}
+            {typeof this.state.imageUri === 'string' ? (
+              <img src={this.state.imageUri} alt={this.state.gameName}
+                   className={s.gameIcon} />
+            ) : ''}
+            {title}: {this.state.gameName}
           </h1>
         </div>
       </div>

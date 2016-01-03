@@ -25,22 +25,22 @@ class SteamApps {
       }
       return aName < bName ? -1 : aName > bName ? 1 : 0;
     });
-    this._sortedIds = apps.map((app) => app.appid);
+    this._sortedIds = apps.map((app) => String(app.appid));
     this._sortedNames = apps.map((app) => app.name);
     return this._sortedIds;
   }
 
   static getName(appId) {
     const ids = this.sortedIds();
-    const index = this.sortedIds().indexOf(appId);
+    const index = this.sortedIds().indexOf(String(appId));
     return this._sortedNames[index];
   }
 
   static sortIds(appIds) {
     const sortedIds = this.sortedIds();
     appIds.sort((a, b) => {
-      const indexA = sortedIds.indexOf(a);
-      const indexB = sortedIds.indexOf(b);
+      const indexA = sortedIds.indexOf(String(a));
+      const indexB = sortedIds.indexOf(String(b));
       return indexA < indexB ? -1 : indexA > indexB ? 1 : 0;
     });
     return appIds;

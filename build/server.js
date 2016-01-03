@@ -173,8 +173,6 @@ module.exports =
           data = context$1$0.t0;
   
           if (isXml) {
-            console.log('setting xml content type');
-            console.log('data type', typeof data);
             res.set('Content-Type', 'text/xml');
           }
           res.send(data);
@@ -3531,6 +3529,8 @@ module.exports =
       value: function getAchievements(steamId, appId) {
         var xml, result;
         return regeneratorRuntime.async(function getAchievements$(context$2$0) {
+          var _this = this;
+  
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
               context$2$0.next = 2;
@@ -3539,12 +3539,40 @@ module.exports =
             case 2:
               xml = context$2$0.sent;
   
-              (0, _xml2js.parseString)(xml, function (err, r) {
-                result = r;
-              });
+              (0, _xml2js.parseString)(xml, (function (err, rawResult) {
+                if (err === null) {
+                  result = {
+                    achievements: rawResult.playerstats.achievements[0].achievement,
+                    iconUri: rawResult.playerstats.game[0].gameIcon[0]
+                  };
+                } else {
+                  console.error('failed to get XML achievements for user ' + steamId + ', app ' + appId + ': ' + err);
+                  result = _this.getJsonAchievements(steamId, appId);
+                }
+              }).bind(this));
               return context$2$0.abrupt('return', result);
   
             case 5:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }, {
+      key: 'getJsonAchievements',
+      value: function getJsonAchievements(steamId, appId) {
+        var rawResult;
+        return regeneratorRuntime.async(function getJsonAchievements$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              context$2$0.next = 2;
+              return regeneratorRuntime.awrap(this.get('/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/' + '&appid=' + appId + '&steamid=' + steamId + '&format=json'));
+  
+            case 2:
+              rawResult = context$2$0.sent;
+              return context$2$0.abrupt('return', { achievements: rawResult.playerstats.achievements });
+  
+            case 4:
             case 'end':
               return context$2$0.stop();
           }
@@ -3601,6 +3629,8 @@ module.exports =
   
   exports['default'] = Steam;
   module.exports = exports['default'];
+
+  // TODO: somehow get iconUri from JSON API
 
 /***/ },
 /* 63 */
@@ -3859,11 +3889,10 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n.SteamUserPage_gameIcon_1hd {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/SteamGame.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;AClChF;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;;ACFD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;CACb","file":"SteamUserPage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n",".gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n","@import '../variables.scss';\n@import './SteamGame.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;AChChF;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;CACb","file":"SteamUserPage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
-  	"gameIcon": "SteamUserPage_gameIcon_1hd",
   	"root": "SteamUserPage_root_24_",
   	"container": "SteamUserPage_container_3qe",
   	"clearSteamUsername": "SteamUserPage_clearSteamUsername_2G2"
@@ -92794,6 +92823,10 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
+  var _storesSteamApps = __webpack_require__(73);
+  
+  var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
+  
   var title = 'Steam Game';
   
   var SteamGamePage = (function (_Component) {
@@ -92820,6 +92853,22 @@ module.exports =
         this.context.onSetTitle(title);
       }
     }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        var steamId = _storesLocalStorage2['default'].get('steam-id');
+        this.setState({ gameName: _storesSteamApps2['default'].getName(this.props.appId),
+          steamId: steamId });
+        _actionsSteam2['default'].getAchievements(steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this));
+      }
+    }, {
+      key: 'onAchievementsLoaded',
+      value: function onAchievementsLoaded(data) {
+        console.log('data', data);
+        var achievements = data.achievements;
+        console.log('achievements', achievements);
+        this.setState({ imageUri: data.iconUri });
+      }
+    }, {
       key: 'render',
       value: function render() {
         return _react2['default'].createElement(
@@ -92837,11 +92886,11 @@ module.exports =
                   className: _SteamGamePageScss2['default'].clearSteamGame },
                 '«'
               ),
+              typeof this.state.imageUri === 'string' ? _react2['default'].createElement('img', { src: this.state.imageUri, alt: this.state.gameName,
+                className: _SteamGamePageScss2['default'].gameIcon }) : '',
               title,
-              ' - ',
-              this.props.username,
-              ' - ',
-              this.props.appId
+              ': ',
+              this.state.gameName
             )
           )
         );
@@ -92897,12 +92946,14 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;AChChF;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B","file":"SteamGamePage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;AChChF;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;CACb;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB","file":"SteamGamePage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
   	"root": "SteamGamePage_root_3OO",
-  	"container": "SteamGamePage_container_2h6"
+  	"container": "SteamGamePage_container_2h6",
+  	"clearSteamGame": "SteamGamePage_clearSteamGame_2Cz",
+  	"gameIcon": "SteamGamePage_gameIcon_2GW"
   };
 
 /***/ },
@@ -92957,7 +93008,7 @@ module.exports =
           return aName < bName ? -1 : aName > bName ? 1 : 0;
         });
         this._sortedIds = apps.map(function (app) {
-          return app.appid;
+          return String(app.appid);
         });
         this._sortedNames = apps.map(function (app) {
           return app.name;
@@ -92968,7 +93019,7 @@ module.exports =
       key: 'getName',
       value: function getName(appId) {
         var ids = this.sortedIds();
-        var index = this.sortedIds().indexOf(appId);
+        var index = this.sortedIds().indexOf(String(appId));
         return this._sortedNames[index];
       }
     }, {
@@ -92976,8 +93027,8 @@ module.exports =
       value: function sortIds(appIds) {
         var sortedIds = this.sortedIds();
         appIds.sort(function (a, b) {
-          var indexA = sortedIds.indexOf(a);
-          var indexB = sortedIds.indexOf(b);
+          var indexA = sortedIds.indexOf(String(a));
+          var indexB = sortedIds.indexOf(String(b));
           return indexA < indexB ? -1 : indexA > indexB ? 1 : 0;
         });
         return appIds;
