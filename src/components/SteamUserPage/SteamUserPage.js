@@ -23,6 +23,8 @@ class SteamUserPage extends Component {
 
   componentWillMount() {
     this.context.onSetTitle(title);
+    Steam.getSteamId(this.props.username).
+          then(this.onSteamIdFetched.bind(this));
   }
 
   clearSteamUsername(event) {
@@ -34,16 +36,24 @@ class SteamUserPage extends Component {
     });
   }
 
+  onSteamIdFetched(data) {
+    LocalStorage.set('steam-id', data.response.steamid);
+    this.setState({steamIdLoaded: true});
+  }
+
   render() {
     return (
       <div className={s.root}>
         <div className={s.container}>
           <h1>
             {title} - {this.props.username}
-            <a href="#" onClick={this.clearSteamUsername}>
+            <a href="#" className={s.clearSteamUsername} onClick={this.clearSteamUsername}>
               &times;
             </a>
           </h1>
+          {this.state.steamIdLoaded ? '' : (
+            <p>Loading...</p>
+          )}
         </div>
       </div>
     );

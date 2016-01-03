@@ -25,9 +25,6 @@ class SteamLookupPage extends Component {
   onFormSubmit(event) {
     event.preventDefault();
     var username = ReactDOM.findDOMNode(this.refs.username).value;
-    if (typeof username === 'string') {
-      username = username.trim();
-    }
     this.onSteamUsernameChange(username);
   }
 
@@ -35,34 +32,35 @@ class SteamLookupPage extends Component {
     if (event.target.nodeName !== 'INPUT') {
       return;
     }
-    var username = event.target.value;
-    if (typeof username === 'string') {
-      username = username.trim();
-    }
-    this.onSteamUsernameChange(username);
+    this.onSteamUsernameChange(event.target.value);
   }
 
   onSteamUsernameChange(username) {
-    this.setState({username: username});
+    if (typeof username === 'string') {
+      username = username.trim();
+    }
     if (typeof username === 'undefined' || username.length < 1) {
       LocalStorage.delete('steam-username');
       LocalStorage.delete('steam-id');
-    } else if (LocalStorage.get('steam-username') !== username) {
-      LocalStorage.set('steam-username', username);
-      LocalStorage.delete('steam-id');
-      Steam.getSteamId(username).then(this.onSteamIdFetched.bind(this));
+      return;
     }
-  }
-
-  onSteamIdFetched(data) {
-    LocalStorage.set('steam-id', data.response.steamid);
-    Location.push({
-      ...(parsePath('/steam/' + this.state.username))
-    });
+    LocalStorage.set('steam-username', username);
+    LocalStorage.delete('steam-id');
+    this.goToUserPage(username);
   }
 
   componentWillMount() {
     this.context.onSetTitle(title);
+    var username = LocalStorage.get('steam-username');
+    if (typeof username === 'string') {
+      this.goToUserPage(username);
+    }
+  }
+
+  goToUserPage(username) {
+    Location.push({
+      ...(parsePath('/steam/' + encodeURIComponent(username)))
+    });
   }
 
   render() {
