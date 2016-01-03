@@ -35,10 +35,24 @@ class SteamGamePage extends Component {
   }
 
   onAchievementsLoaded(data) {
-    console.log('data', data);
-    const achievements = data.achievements;
-    console.log('achievements', achievements);
-    this.setState({imageUri: data.iconUri});
+    const achievements = data.achievements.map((achievement) => {
+      var isUnlocked = typeof achievement.unlockTimestamp === 'object';
+      return {
+        key: achievement.apiname[0],
+        description: achievement.description[0],
+        isUnlocked: isUnlocked,
+        name: achievement.name[0],
+        timestamp: isUnlocked ? achievement.unlockTimestamp[0] : null,
+        iconUri: isUnlocked ? achievement.iconClosed[0] : achievement.iconOpen[0]
+      };
+    });
+    this.setState({imageUri: data.iconUri, achievements: achievements});
+  }
+
+  prettyTime(timestamp) {
+    const date = new Date(timestamp * 1000);
+    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' +
+           date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes();
   }
 
   render() {
@@ -56,6 +70,26 @@ class SteamGamePage extends Component {
             ) : ''}
             {title}: {this.state.gameName}
           </h1>
+          {typeof this.state.achievements === 'object' ? (
+            <ul className={s.achievementsList}>
+              {this.state.achievements.map((achievement) => {
+                return (
+                  <li key={achievement.key}>
+                    <img src={achievement.iconUri} alt={achievement.name}
+                         className={s.achievementIcon} />
+                    {achievement.name} - {achievement.description}<br/>
+                    {achievement.isUnlocked ? (
+                      <time>{this.prettyTime(achievement.timestamp)}</time>
+                    ) : (
+                      <span>Not yet unlocked</span>
+                    )}
+                  </li>
+                );
+              }.bind(this))}
+            </ul>
+          ) : (
+            <span>Loading achievements...</span>
+          )}
         </div>
       </div>
     );
