@@ -3541,8 +3541,17 @@ module.exports =
   
               (0, _xml2js.parseString)(xml, (function (err, rawResult) {
                 if (err === null) {
+                  var achievements = rawResult.playerstats.achievements[0].achievement.map(function (a) {
+                    return {
+                      key: a.apiname[0],
+                      description: a.description[0],
+                      isUnlocked: isUnlocked,
+                      name: a.name[0],
+                      iconUri: isUnlocked ? a.iconClosed[0] : a.iconOpen[0]
+                    };
+                  });
                   result = {
-                    achievements: rawResult.playerstats.achievements[0].achievement,
+                    achievements: achievements,
                     iconUri: rawResult.playerstats.game[0].gameIcon[0]
                   };
                 } else {
@@ -3561,7 +3570,7 @@ module.exports =
     }, {
       key: 'getJsonAchievements',
       value: function getJsonAchievements(steamId, appId) {
-        var rawResult;
+        var rawResult, achievements;
         return regeneratorRuntime.async(function getJsonAchievements$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
@@ -3570,9 +3579,18 @@ module.exports =
   
             case 2:
               rawResult = context$2$0.sent;
-              return context$2$0.abrupt('return', { achievements: rawResult.playerstats.achievements });
+              achievements = rawResult.playerstats.achievements.map(function (a) {
+                return {
+                  key: a.apiname,
+                  isUnlocked: a.achieved === 1,
+                  name: a.apiname, // TODO
+                  description: a.apiname, // TODO
+                  iconUri: null // TODO
+                };
+              });
+              return context$2$0.abrupt('return', { achievements: achievements });
   
-            case 4:
+            case 5:
             case 'end':
               return context$2$0.stop();
           }
@@ -3630,7 +3648,7 @@ module.exports =
   exports['default'] = Steam;
   module.exports = exports['default'];
 
-  // TODO: somehow get iconUri from JSON API
+  // TODO: somehow get game iconUri from JSON API
 
 /***/ },
 /* 63 */
@@ -92863,18 +92881,9 @@ module.exports =
     }, {
       key: 'onAchievementsLoaded',
       value: function onAchievementsLoaded(data) {
-        var achievements = data.achievements.map(function (achievement) {
-          var isUnlocked = typeof achievement.unlockTimestamp === 'object';
-          return {
-            key: achievement.apiname[0],
-            description: achievement.description[0],
-            isUnlocked: isUnlocked,
-            name: achievement.name[0],
-            timestamp: isUnlocked ? achievement.unlockTimestamp[0] : null,
-            iconUri: isUnlocked ? achievement.iconClosed[0] : achievement.iconOpen[0]
-          };
-        });
-        this.setState({ imageUri: data.iconUri, achievements: achievements });
+        console.log('data', data);
+        this.setState({ iconUri: data.iconUri,
+          achievements: data.achievements });
       }
     }, {
       key: 'prettyTime',
@@ -92885,8 +92894,6 @@ module.exports =
     }, {
       key: 'render',
       value: function render() {
-        var _this = this;
-  
         return _react2['default'].createElement(
           'div',
           { className: _SteamGamePageScss2['default'].root },
@@ -92902,7 +92909,7 @@ module.exports =
                   className: _SteamGamePageScss2['default'].clearSteamGame },
                 '«'
               ),
-              typeof this.state.imageUri === 'string' ? _react2['default'].createElement('img', { src: this.state.imageUri, alt: this.state.gameName,
+              typeof this.state.iconUri === 'string' ? _react2['default'].createElement('img', { src: this.state.iconUri, alt: this.state.gameName,
                 className: _SteamGamePageScss2['default'].gameIcon }) : '',
               title,
               ': ',
@@ -92915,20 +92922,16 @@ module.exports =
                 return _react2['default'].createElement(
                   'li',
                   { key: achievement.key },
-                  _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
-                    className: _SteamGamePageScss2['default'].achievementIcon }),
+                  typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
+                    className: _SteamGamePageScss2['default'].achievementIcon }) : '',
                   achievement.name,
                   ' - ',
                   achievement.description,
-                  _react2['default'].createElement('br', null),
-                  achievement.isUnlocked ? _react2['default'].createElement(
-                    'time',
-                    null,
-                    _this.prettyTime(achievement.timestamp)
-                  ) : _react2['default'].createElement(
+                  ' -',
+                  achievement.isUnlocked ? '' : _react2['default'].createElement(
                     'span',
                     null,
-                    'Not yet unlocked'
+                    ' Not yet unlocked'
                   )
                 );
               }).bind(this))

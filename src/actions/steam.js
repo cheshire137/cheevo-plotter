@@ -22,8 +22,18 @@ class Steam {
     var result;
     parseString(xml, (err, rawResult) => {
       if (err === null) {
+        const achievements =
+            rawResult.playerstats.achievements[0].achievement.map((a) => {
+              return {
+                key: a.apiname[0],
+                description: a.description[0],
+                isUnlocked: isUnlocked,
+                name: a.name[0],
+                iconUri: isUnlocked ? a.iconClosed[0] : a.iconOpen[0]
+              };
+            });
         result = {
-          achievements: rawResult.playerstats.achievements[0].achievement,
+          achievements: achievements,
           iconUri: rawResult.playerstats.game[0].gameIcon[0]
         };
       } else {
@@ -40,8 +50,17 @@ class Steam {
       '/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/' +
       '&appid=' + appId + '&steamid=' + steamId + '&format=json'
     );
-    // TODO: somehow get iconUri from JSON API
-    return {achievements: rawResult.playerstats.achievements};
+    // TODO: somehow get game iconUri from JSON API
+    const achievements = rawResult.playerstats.achievements.map((a => {
+      return {
+        key: a.apiname,
+        isUnlocked: a.achieved === 1,
+        name: a.apiname, // TODO
+        description: a.apiname, // TODO
+        iconUri: null // TODO
+      };
+    }));
+    return {achievements: achievements};
   }
 
   static async get(path, type) {

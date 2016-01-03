@@ -35,18 +35,9 @@ class SteamGamePage extends Component {
   }
 
   onAchievementsLoaded(data) {
-    const achievements = data.achievements.map((achievement) => {
-      var isUnlocked = typeof achievement.unlockTimestamp === 'object';
-      return {
-        key: achievement.apiname[0],
-        description: achievement.description[0],
-        isUnlocked: isUnlocked,
-        name: achievement.name[0],
-        timestamp: isUnlocked ? achievement.unlockTimestamp[0] : null,
-        iconUri: isUnlocked ? achievement.iconClosed[0] : achievement.iconOpen[0]
-      };
-    });
-    this.setState({imageUri: data.iconUri, achievements: achievements});
+    console.log('data', data);
+    this.setState({iconUri: data.iconUri,
+                   achievements: data.achievements});
   }
 
   prettyTime(timestamp) {
@@ -64,8 +55,8 @@ class SteamGamePage extends Component {
                   className={s.clearSteamGame}>
               &laquo;
             </Link>
-            {typeof this.state.imageUri === 'string' ? (
-              <img src={this.state.imageUri} alt={this.state.gameName}
+            {typeof this.state.iconUri === 'string' ? (
+              <img src={this.state.iconUri} alt={this.state.gameName}
                    className={s.gameIcon} />
             ) : ''}
             {title}: {this.state.gameName}
@@ -75,13 +66,13 @@ class SteamGamePage extends Component {
               {this.state.achievements.map((achievement) => {
                 return (
                   <li key={achievement.key}>
-                    <img src={achievement.iconUri} alt={achievement.name}
-                         className={s.achievementIcon} />
-                    {achievement.name} - {achievement.description}<br/>
-                    {achievement.isUnlocked ? (
-                      <time>{this.prettyTime(achievement.timestamp)}</time>
-                    ) : (
-                      <span>Not yet unlocked</span>
+                    {typeof achievement.iconUri === 'string' ? (
+                      <img src={achievement.iconUri} alt={achievement.name}
+                           className={s.achievementIcon} />
+                    ) : ''}
+                    {achievement.name} - {achievement.description} -
+                    {achievement.isUnlocked ? '' : (
+                      <span> Not yet unlocked</span>
                     )}
                   </li>
                 );
