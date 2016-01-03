@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import s from './SteamUserPage.scss';
 import withStyles from '../../decorators/withStyles';
 import _ from 'underscore';
@@ -8,6 +7,7 @@ import Steam from '../../actions/steam';
 import parsePath from 'history/lib/parsePath';
 import Location from '../../core/Location';
 import Link from '../Link';
+import PlayedGamesList from './PlayedGamesList';
 
 const title = 'Steam Achievements';
 
@@ -96,11 +96,14 @@ class SteamUserPage extends Component {
           {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>
           ) : typeof this.state.games === 'object' ? (
-            <p>
-              <strong>{this.props.username} </strong>
-              has played <strong>{this.state.games.length} </strong>
-              {this.state.games.length === 1 ? 'game' : 'games'}.
-            </p>
+            <div className={s.loadedGames}>
+              <p>
+                <strong>{this.props.username} </strong>
+                has played <strong>{this.state.games.length} </strong>
+                {this.state.games.length === 1 ? 'game' : 'games'}.
+              </p>
+              <PlayedGamesList games={this.state.games} />
+            </div>
           ) : (
             <p>Loading games list...</p>
           )}
