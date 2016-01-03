@@ -2664,7 +2664,6 @@ module.exports =
           _storesLocalStorage2['default']['delete']('steam-username');
           return;
         }
-        _storesLocalStorage2['default'].set('steam-username', username);
         this.goToUserPage(username);
       }
     }, {
@@ -3602,18 +3601,55 @@ module.exports =
       key: 'componentWillMount',
       value: function componentWillMount() {
         this.context.onSetTitle(title);
+        _storesLocalStorage2['default'].set('steam-username', this.props.username);
       }
     }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
-        if (this.props.username === _storesLocalStorage2['default'].get('steam-username')) {
-          var steamId = _storesLocalStorage2['default'].get('steam-id');
-          if (typeof steamId !== 'undefined') {
-            this.setState({ steamId: steamId });
-            return;
+        var steamId = _storesLocalStorage2['default'].get('steam-id');
+        if (typeof steamId === 'undefined') {
+          this.fetchSteamId();
+          return;
+        }
+        this.fetchGames(steamId);
+        this.setState({ steamId: steamId });
+      }
+    }, {
+      key: 'fetchSteamId',
+      value: function fetchSteamId() {
+        _actionsSteam2['default'].getSteamId(this.props.username).then(this.onSteamIdFetched.bind(this));
+      }
+    }, {
+      key: 'onSteamIdFetched',
+      value: function onSteamIdFetched(data) {
+        var steamId = data.response.steamid;
+        _storesLocalStorage2['default'].set('steam-id', steamId);
+        this.fetchGames(steamId);
+        this.setState({ steamId: steamId });
+      }
+    }, {
+      key: 'fetchGames',
+      value: function fetchGames(steamId) {
+        var games = _storesLocalStorage2['default'].get('steam-games');
+        if (typeof games === 'object') {
+          this.setState({ games: games });
+          return;
+        }
+        _actionsSteam2['default'].getOwnedGames(steamId).then(this.onGamesFetched.bind(this));
+      }
+    }, {
+      key: 'onGamesFetched',
+      value: function onGamesFetched(data) {
+        var games = data.response.games;
+        var playedGames = [];
+        for (var i = 0; i < games.length; i++) {
+          var game = games[i];
+          if (game.playtime_forever > 0) {
+            playedGames.push(game.appid);
           }
         }
-        _actionsSteam2['default'].getSteamId(this.props.username).then(this.onSteamIdFetched.bind(this));
+        _storesLocalStorage2['default'].set('steam-games', playedGames);
+        this.setState({ games: playedGames });
       }
     }, {
       key: 'clearSteamUsername',
@@ -3621,14 +3657,8 @@ module.exports =
         event.preventDefault();
         _storesLocalStorage2['default']['delete']('steam-id');
         _storesLocalStorage2['default']['delete']('steam-username');
+        _storesLocalStorage2['default']['delete']('steam-games');
         _coreLocation2['default'].push(_extends({}, (0, _historyLibParsePath2['default'])('/')));
-      }
-    }, {
-      key: 'onSteamIdFetched',
-      value: function onSteamIdFetched(data) {
-        var steamId = data.response.steamid;
-        _storesLocalStorage2['default'].set('steam-id', steamId);
-        this.setState({ steamId: steamId });
       }
     }, {
       key: 'render',
@@ -3647,7 +3677,8 @@ module.exports =
               this.props.username,
               _react2['default'].createElement(
                 _Link2['default'],
-                { to: '/', className: _SteamUserPageScss2['default'].clearSteamUsername, onClick: this.clearSteamUsername },
+                { to: '/', className: _SteamUserPageScss2['default'].clearSteamUsername,
+                  onClick: this.clearSteamUsername },
                 '×'
               )
             ),
@@ -3655,7 +3686,18 @@ module.exports =
               'p',
               null,
               'Loading...'
-            ) : ''
+            ) : typeof this.state.games === 'object' ? _react2['default'].createElement(
+              'p',
+              null,
+              'You have played ',
+              this.state.games.length,
+              this.state.games.length === 1 ? ' game' : ' games',
+              '.'
+            ) : _react2['default'].createElement(
+              'p',
+              null,
+              'Loading games list...'
+            )
           )
         );
       }

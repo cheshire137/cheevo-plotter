@@ -44,7 +44,6 @@ class SteamLookupPage extends Component {
       LocalStorage.delete('steam-username');
       return;
     }
-    LocalStorage.set('steam-username', username);
     this.goToUserPage(username);
   }
 
