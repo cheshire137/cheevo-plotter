@@ -2346,7 +2346,9 @@ module.exports =
             ),
             _react2['default'].createElement(
               'a',
-              { className: _FooterScss2['default'].link, href: '#', target: '_blank' },
+              { className: _FooterScss2['default'].link,
+                href: 'https://github.com/cheshire137/cheevo-plotter',
+                target: '_blank' },
               'View Source'
             )
           )
@@ -2657,13 +2659,12 @@ module.exports =
         if (typeof username === 'string') {
           username = username.trim();
         }
+        _storesLocalStorage2['default']['delete']('steam-id');
         if (typeof username === 'undefined' || username.length < 1) {
           _storesLocalStorage2['default']['delete']('steam-username');
-          _storesLocalStorage2['default']['delete']('steam-id');
           return;
         }
         _storesLocalStorage2['default'].set('steam-username', username);
-        _storesLocalStorage2['default']['delete']('steam-id');
         this.goToUserPage(username);
       }
     }, {
@@ -3597,6 +3598,14 @@ module.exports =
       key: 'componentWillMount',
       value: function componentWillMount() {
         this.context.onSetTitle(title);
+      }
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        if (this.props.username === _storesLocalStorage2['default'].get('steam-username')) {
+          this.setState({ steamId: _storesLocalStorage2['default'].get('steam-id') });
+          return;
+        }
         _actionsSteam2['default'].getSteamId(this.props.username).then(this.onSteamIdFetched.bind(this));
       }
     }, {
@@ -3610,8 +3619,9 @@ module.exports =
     }, {
       key: 'onSteamIdFetched',
       value: function onSteamIdFetched(data) {
-        _storesLocalStorage2['default'].set('steam-id', data.response.steamid);
-        this.setState({ steamIdLoaded: true });
+        var steamId = data.response.steamid;
+        _storesLocalStorage2['default'].set('steam-id', steamId);
+        this.setState({ steamId: steamId });
       }
     }, {
       key: 'render',
@@ -3634,11 +3644,11 @@ module.exports =
                 '×'
               )
             ),
-            this.state.steamIdLoaded ? '' : _react2['default'].createElement(
+            typeof this.state.steamId === 'undefined' ? _react2['default'].createElement(
               'p',
               null,
               'Loading...'
-            )
+            ) : ''
           )
         );
       }

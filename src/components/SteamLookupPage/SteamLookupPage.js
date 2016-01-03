@@ -39,13 +39,12 @@ class SteamLookupPage extends Component {
     if (typeof username === 'string') {
       username = username.trim();
     }
+    LocalStorage.delete('steam-id');
     if (typeof username === 'undefined' || username.length < 1) {
       LocalStorage.delete('steam-username');
-      LocalStorage.delete('steam-id');
       return;
     }
     LocalStorage.set('steam-username', username);
-    LocalStorage.delete('steam-id');
     this.goToUserPage(username);
   }
 

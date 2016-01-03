@@ -23,6 +23,13 @@ class SteamUserPage extends Component {
 
   componentWillMount() {
     this.context.onSetTitle(title);
+  }
+
+  componentDidMount() {
+    if (this.props.username === LocalStorage.get('steam-username')) {
+      this.setState({steamId: LocalStorage.get('steam-id')});
+      return;
+    }
     Steam.getSteamId(this.props.username).
           then(this.onSteamIdFetched.bind(this));
   }
@@ -37,8 +44,9 @@ class SteamUserPage extends Component {
   }
 
   onSteamIdFetched(data) {
-    LocalStorage.set('steam-id', data.response.steamid);
-    this.setState({steamIdLoaded: true});
+    var steamId = data.response.steamid;
+    LocalStorage.set('steam-id', steamId);
+    this.setState({steamId: steamId});
   }
 
   render() {
@@ -51,9 +59,9 @@ class SteamUserPage extends Component {
               &times;
             </a>
           </h1>
-          {this.state.steamIdLoaded ? '' : (
+          {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>
-          )}
+          ) : ''}
         </div>
       </div>
     );

@@ -20,7 +20,9 @@ class Footer extends Component {
         <div className={s.container}>
           <span className={s.text}>&copy; 2016 Sarah Vessels</span>
           <span className={s.spacer}>·</span>
-          <a className={s.link} href="#" target="_blank">View Source</a>
+          <a className={s.link}
+             href="https://github.com/cheshire137/cheevo-plotter"
+             target="_blank">View Source</a>
         </div>
       </div>
     );
