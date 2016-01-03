@@ -2337,7 +2337,7 @@ module.exports =
             _react2['default'].createElement(
               'span',
               { className: _FooterScss2['default'].text },
-              '© Your Company'
+              '© 2016 Sarah Vessels'
             ),
             _react2['default'].createElement(
               'span',
@@ -2346,28 +2346,8 @@ module.exports =
             ),
             _react2['default'].createElement(
               'a',
-              { className: _FooterScss2['default'].link, href: '/', onClick: _Link2['default'].handleClick },
-              'Home'
-            ),
-            _react2['default'].createElement(
-              'span',
-              { className: _FooterScss2['default'].spacer },
-              '·'
-            ),
-            _react2['default'].createElement(
-              'a',
-              { className: _FooterScss2['default'].link, href: '/privacy', onClick: _Link2['default'].handleClick },
-              'Privacy'
-            ),
-            _react2['default'].createElement(
-              'span',
-              { className: _FooterScss2['default'].spacer },
-              '·'
-            ),
-            _react2['default'].createElement(
-              'a',
-              { className: _FooterScss2['default'].link, href: '/not-found', onClick: _Link2['default'].handleClick },
-              'Not Found'
+              { className: _FooterScss2['default'].link, href: '#', target: '_blank' },
+              'View Source'
             )
           )
         );
