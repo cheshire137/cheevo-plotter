@@ -343,6 +343,10 @@ module.exports =
   
   var _componentsSteamUserPage2 = _interopRequireDefault(_componentsSteamUserPage);
   
+  var _componentsSteamGamePage = __webpack_require__(70);
+  
+  var _componentsSteamGamePage2 = _interopRequireDefault(_componentsSteamGamePage);
+  
   var _componentsNotFoundPage = __webpack_require__(47);
   
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
@@ -393,6 +397,20 @@ module.exports =
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
             return context$2$0.abrupt('return', _react2['default'].createElement(_componentsSteamUserPage2['default'], { username: req.params.username }));
+  
+          case 1:
+          case 'end':
+            return context$2$0.stop();
+        }
+      }, null, _this);
+    });
+  
+    on('/steam/:username/game/:appId', function callee$1$0(req) {
+      return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
+        while (1) switch (context$2$0.prev = context$2$0.next) {
+          case 0:
+            return context$2$0.abrupt('return', _react2['default'].createElement(_componentsSteamGamePage2['default'], { username: req.params.username,
+              appId: req.params.appId }));
   
           case 1:
           case 'end':
@@ -3646,6 +3664,10 @@ module.exports =
   
   var _PlayedGamesList2 = _interopRequireDefault(_PlayedGamesList);
   
+  var _storesSteamApps = __webpack_require__(73);
+  
+  var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
+  
   var title = 'Steam Achievements';
   
   var SteamUserPage = (function (_Component) {
@@ -3701,8 +3723,7 @@ module.exports =
       value: function fetchGames(steamId) {
         var games = _storesLocalStorage2['default'].get('steam-games');
         if (typeof games === 'object') {
-          this.setState({ games: [377160] });
-          // this.setState({games: games});
+          this.setState({ games: games });
           return;
         }
         _actionsSteam2['default'].getOwnedGames(steamId).then(this.onGamesFetched.bind(this));
@@ -3718,9 +3739,8 @@ module.exports =
             playedGames.push(game.appid);
           }
         }
-        _storesLocalStorage2['default'].set('steam-games', playedGames);
-        // this.setState({games: playedGames});
-        this.setState({ games: [377160] });
+        _storesLocalStorage2['default'].set('steam-games', _storesSteamApps2['default'].sortIds(playedGames));
+        this.setState({ games: playedGames });
       }
     }, {
       key: 'clearSteamUsername',
@@ -3778,7 +3798,8 @@ module.exports =
                 '.'
               ),
               _react2['default'].createElement(_PlayedGamesList2['default'], { steamId: this.state.steamId,
-                games: this.state.games })
+                games: this.state.games,
+                username: this.props.username })
             ) : _react2['default'].createElement(
               'p',
               null,
@@ -92663,9 +92684,13 @@ module.exports =
   
   var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
   
-  var _SteamGame = __webpack_require__(68);
+  var _Link = __webpack_require__(25);
   
-  var _SteamGame2 = _interopRequireDefault(_SteamGame);
+  var _Link2 = _interopRequireDefault(_Link);
+  
+  var _storesSteamAppsJson = __webpack_require__(66);
+  
+  var _storesSteamAppsJson2 = _interopRequireDefault(_storesSteamAppsJson);
   
   var PlayedGamesList = (function (_Component) {
     _inherits(PlayedGamesList, _Component);
@@ -92677,6 +92702,18 @@ module.exports =
     }
   
     _createClass(PlayedGamesList, [{
+      key: 'getGameName',
+      value: function getGameName(appId) {
+        var apps = _storesSteamAppsJson2['default'].applist.apps;
+        for (var i = 0; i < apps.length; i++) {
+          var app = apps[i];
+          if (app.appid === appId) {
+            return app.name;
+          }
+        }
+        return 'Steam App ' + appId;
+      }
+    }, {
       key: 'render',
       value: function render() {
         var _this = this;
@@ -92684,10 +92721,18 @@ module.exports =
         return _react2['default'].createElement(
           'ul',
           null,
-          this.props.games.map(function (appId) {
-            return _react2['default'].createElement(_SteamGame2['default'], { key: appId, appId: appId,
-              steamId: _this.props.steamId });
-          })
+          this.props.games.map((function (appId) {
+            return _react2['default'].createElement(
+              'li',
+              { key: appId },
+              _react2['default'].createElement(
+                _Link2['default'],
+                { className: _SteamUserPageScss2['default'].gameLink,
+                  to: '/steam/' + _this.props.username + '/game/' + appId },
+                _this.getGameName(appId)
+              )
+            );
+          }).bind(this))
         );
       }
     }]);
@@ -92699,7 +92744,14 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 68 */
+/* 68 */,
+/* 69 */
+/***/ function(module, exports) {
+
+  module.exports = require("xml2js");
+
+/***/ },
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -92722,82 +92774,223 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _SteamUserPageScss = __webpack_require__(64);
+  var _SteamGamePageScss = __webpack_require__(71);
   
-  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
+  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
+  
+  var _decoratorsWithStyles = __webpack_require__(24);
+  
+  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
+  
+  var _underscore = __webpack_require__(46);
+  
+  var _underscore2 = _interopRequireDefault(_underscore);
+  
+  var _storesLocalStorage = __webpack_require__(61);
+  
+  var _storesLocalStorage2 = _interopRequireDefault(_storesLocalStorage);
   
   var _actionsSteam = __webpack_require__(62);
   
   var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
   
-  var _storesSteamAppsJson = __webpack_require__(66);
+  var _historyLibParsePath = __webpack_require__(26);
   
-  var _storesSteamAppsJson2 = _interopRequireDefault(_storesSteamAppsJson);
+  var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
   
-  var SteamGame = (function (_Component) {
-    _inherits(SteamGame, _Component);
+  var _coreLocation = __webpack_require__(27);
   
-    function SteamGame(props, context) {
-      _classCallCheck(this, SteamGame);
+  var _coreLocation2 = _interopRequireDefault(_coreLocation);
   
-      _get(Object.getPrototypeOf(SteamGame.prototype), 'constructor', this).call(this, props, context);
+  var _Link = __webpack_require__(25);
+  
+  var _Link2 = _interopRequireDefault(_Link);
+  
+  var title = 'Steam Game';
+  
+  var SteamGamePage = (function (_Component) {
+    _inherits(SteamGamePage, _Component);
+  
+    _createClass(SteamGamePage, null, [{
+      key: 'contextTypes',
+      value: {
+        onSetTitle: _react.PropTypes.func.isRequired
+      },
+      enumerable: true
+    }]);
+  
+    function SteamGamePage(props, context) {
+      _classCallCheck(this, _SteamGamePage);
+  
+      _get(Object.getPrototypeOf(_SteamGamePage.prototype), 'constructor', this).call(this, props, context);
       this.state = {};
     }
   
-    _createClass(SteamGame, [{
-      key: 'getGameName',
-      value: function getGameName() {
-        var apps = _storesSteamAppsJson2['default'].applist.apps;
-        for (var i = 0; i < apps.length; i++) {
-          var app = apps[i];
-          if (app.appid === this.props.appId) {
-            return app.name;
-          }
-        }
-        return 'Steam App ' + this.props.appId;
-      }
-    }, {
-      key: 'componentDidMount',
-      value: function componentDidMount() {
-        _actionsSteam2['default'].getAchievements(this.props.steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this));
-      }
-    }, {
-      key: 'onAchievementsLoaded',
-      value: function onAchievementsLoaded(data) {
-        var achievements = data.playerstats.achievements[0].achievement;
-        console.log('achievements', achievements);
-        var gameInfo = data.playerstats.game[0];
-        this.setState({ imageUri: gameInfo.gameIcon[0],
-          gameName: gameInfo.gameName[0] });
+    _createClass(SteamGamePage, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.context.onSetTitle(title);
       }
     }, {
       key: 'render',
       value: function render() {
         return _react2['default'].createElement(
-          'li',
-          null,
-          typeof this.state.imageUri === 'string' ? _react2['default'].createElement('img', { src: this.state.imageUri, alt: this.state.gameName,
-            className: _SteamUserPageScss2['default'].gameIcon }) : '',
+          'div',
+          { className: _SteamGamePageScss2['default'].root },
           _react2['default'].createElement(
-            'span',
-            { className: _SteamUserPageScss2['default'].gameName, title: this.props.appId },
-            typeof this.state.gameName === 'string' ? this.state.gameName : this.getGameName(this.props.appId)
+            'div',
+            { className: _SteamGamePageScss2['default'].container },
+            _react2['default'].createElement(
+              'h1',
+              null,
+              _react2['default'].createElement(
+                _Link2['default'],
+                { to: '/steam/' + this.props.username,
+                  className: _SteamGamePageScss2['default'].clearSteamGame },
+                '«'
+              ),
+              title,
+              ' - ',
+              this.props.username,
+              ' - ',
+              this.props.appId
+            )
           )
         );
       }
     }]);
   
-    return SteamGame;
+    var _SteamGamePage = SteamGamePage;
+    SteamGamePage = (0, _decoratorsWithStyles2['default'])(_SteamGamePageScss2['default'])(SteamGamePage) || SteamGamePage;
+    return SteamGamePage;
   })(_react.Component);
   
-  exports['default'] = SteamGame;
+  exports['default'] = SteamGamePage;
   module.exports = exports['default'];
 
 /***/ },
-/* 69 */
-/***/ function(module, exports) {
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
 
-  module.exports = require("xml2js");
+  
+      var content = __webpack_require__(72);
+      var insertCss = __webpack_require__(20);
+  
+      if (typeof content === 'string') {
+        content = [[module.id, content, '']];
+      }
+  
+      module.exports = content.locals || {};
+      module.exports._getCss = function() { return content.toString(); };
+      module.exports._insertCss = insertCss.bind(null, content);
+    
+      var removeCss = function() {};
+  
+      // Hot Module Replacement
+      // https://webpack.github.io/docs/hot-module-replacement
+      if (false) {
+        module.hot.accept("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./SteamGamePage.scss", function() {
+          var newContent = require("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./SteamGamePage.scss");
+          if (typeof newContent === 'string') {
+            newContent = [[module.id, content, '']];
+          }
+          removeCss = insertCss(newContent, { replace: true });
+        });
+        module.hot.dispose(function() { removeCss(); });
+      }
+    
+
+/***/ },
+/* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+  exports = module.exports = __webpack_require__(19)();
+  // imports
+  
+  
+  // module
+  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;AChChF;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B","file":"SteamGamePage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n"],"sourceRoot":"webpack://"}]);
+  
+  // exports
+  exports.locals = {
+  	"root": "SteamGamePage_root_3OO",
+  	"container": "SteamGamePage_container_2h6"
+  };
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _steamAppsJson = __webpack_require__(66);
+  
+  var _steamAppsJson2 = _interopRequireDefault(_steamAppsJson);
+  
+  var SteamApps = (function () {
+    function SteamApps() {
+      _classCallCheck(this, SteamApps);
+    }
+  
+    _createClass(SteamApps, null, [{
+      key: 'sortedIds',
+      value: function sortedIds() {
+        if (typeof this._sortedIds === 'object') {
+          console.log('using existing list of app ids');
+          return this._sortedIds;
+        }
+        console.log('constructing list of sorted app ids');
+        var apps = _steamAppsJson2['default'].applist.apps;
+        apps.sort(function (a, b) {
+          var aName = a.name.toLowerCase();
+          if (aName.indexOf('the ') === 0) {
+            aName = aName.substring(4);
+          }
+          if (aName.indexOf('a ') === 0) {
+            aName = aName.substring(2);
+          }
+          var bName = b.name.toLowerCase();
+          if (bName.indexOf('the ') === 0) {
+            bName = bName.substring(4);
+          }
+          if (bName.indexOf('a ') === 0) {
+            bName = bName.substring(2);
+          }
+          return aName < bName ? -1 : aName > bName ? 1 : 0;
+        });
+        this._sortedIds = apps.map(function (app) {
+          return app.appid;
+        });
+        return this._sortedIds;
+      }
+    }, {
+      key: 'sortIds',
+      value: function sortIds(appIds) {
+        var sortedIds = this.sortedIds();
+        appIds.sort(function (a, b) {
+          var indexA = sortedIds.indexOf(a);
+          var indexB = sortedIds.indexOf(b);
+          return indexA < indexB ? -1 : indexA > indexB ? 1 : 0;
+        });
+        return appIds;
+      }
+    }]);
+  
+    return SteamApps;
+  })();
+  
+  exports['default'] = SteamApps;
+  module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

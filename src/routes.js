@@ -14,6 +14,7 @@ import App from './components/App';
 import ContentPage from './components/ContentPage';
 import SteamLookupPage from './components/SteamLookupPage';
 import SteamUserPage from './components/SteamUserPage';
+import SteamGamePage from './components/SteamGamePage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
 
@@ -27,6 +28,11 @@ const router = new Router(on => {
 
   on('/steam/:username', async (req) => {
     return <SteamUserPage username={req.params.username} />;
+  });
+
+  on('/steam/:username/game/:appId', async (req) => {
+    return <SteamGamePage username={req.params.username}
+                          appId={req.params.appId} />;
   });
 
   on('*', async (state) => {

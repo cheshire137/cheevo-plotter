@@ -8,6 +8,7 @@ import parsePath from 'history/lib/parsePath';
 import Location from '../../core/Location';
 import Link from '../Link';
 import PlayedGamesList from './PlayedGamesList';
+import SteamApps from '../../stores/steamApps';
 
 const title = 'Steam Achievements';
 
@@ -52,8 +53,7 @@ class SteamUserPage extends Component {
   fetchGames(steamId) {
     var games = LocalStorage.get('steam-games');
     if (typeof games === 'object') {
-      this.setState({games: [377160]});
-      // this.setState({games: games});
+      this.setState({games: games});
       return;
     }
     Steam.getOwnedGames(steamId).
@@ -69,9 +69,8 @@ class SteamUserPage extends Component {
         playedGames.push(game.appid);
       }
     }
-    LocalStorage.set('steam-games', playedGames);
-    // this.setState({games: playedGames});
-    this.setState({games: [377160]});
+    LocalStorage.set('steam-games', SteamApps.sortIds(playedGames));
+    this.setState({games: playedGames});
   }
 
   clearSteamUsername(event) {
@@ -105,7 +104,8 @@ class SteamUserPage extends Component {
                 {this.state.games.length === 1 ? 'game' : 'games'}.
               </p>
               <PlayedGamesList steamId={this.state.steamId}
-                               games={this.state.games} />
+                               games={this.state.games}
+                               username={this.props.username} />
             </div>
           ) : (
             <p>Loading games list...</p>
