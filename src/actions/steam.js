@@ -8,10 +8,6 @@ class Steam {
                     '&vanityurl=' + username);
   }
 
-  static async getAppsList() {
-    return this.get('/api/steam?path=/ISteamApps/GetAppList/v2');
-  }
-
   static async getOwnedGames(steamId) {
     return this.get('/api/steam?format=json' +
                     '&path=/IPlayerService/GetOwnedGames/v0001/' +

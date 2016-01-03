@@ -3468,20 +3468,6 @@ module.exports =
         }, null, this);
       }
     }, {
-      key: 'getAppsList',
-      value: function getAppsList() {
-        return regeneratorRuntime.async(function getAppsList$(context$2$0) {
-          while (1) switch (context$2$0.prev = context$2$0.next) {
-            case 0:
-              return context$2$0.abrupt('return', this.get('/api/steam?path=/ISteamApps/GetAppList/v2'));
-  
-            case 1:
-            case 'end':
-              return context$2$0.stop();
-          }
-        }, null, this);
-      }
-    }, {
       key: 'getOwnedGames',
       value: function getOwnedGames(steamId) {
         return regeneratorRuntime.async(function getOwnedGames$(context$2$0) {

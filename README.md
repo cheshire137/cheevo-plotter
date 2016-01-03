@@ -15,6 +15,10 @@ Customize src/env.sh.
 
 Visit [localhost:3000](http://localhost:3000/).
 
+You can update the list of Steam apps/games with:
+
+    npm run update-steam-apps
+
 ## How to Deploy to Heroku
 
 1. [Add an app on heroku.com.](https://dashboard.heroku.com/new)
