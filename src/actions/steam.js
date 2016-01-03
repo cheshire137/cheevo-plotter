@@ -49,6 +49,11 @@ class Steam {
       '/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/' +
       '&appid=' + appId + '&steamid=' + steamId + '&format=json'
     );
+    if (typeof rawResult.playerstats.error === 'string') {
+      console.error('error getting JSON achievements for user ' + steamId +
+                    ', app ' + appId + ': ' + rawResult.playerstats.error);
+      return {achievements: []};
+    }
     // TODO: somehow get game iconUri from JSON API
     const schema = await this.getGameSchema(appId);
     const schemaAchievements = schema.game.availableGameStats.achievements;

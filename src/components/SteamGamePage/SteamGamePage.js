@@ -64,16 +64,18 @@ class SteamGamePage extends Component {
           {typeof this.state.achievements === 'object' ? (
             <ul className={s.achievementsList}>
               {this.state.achievements.map((achievement) => {
+                var title = achievement.isUnlocked ? 'Unlocked' : 'Not yet unlocked';
                 return (
-                  <li key={achievement.key}>
-                    {typeof achievement.iconUri === 'string' ? (
-                      <img src={achievement.iconUri} alt={achievement.name}
-                           className={s.achievementIcon} />
-                    ) : ''}
-                    {achievement.name} -
-                    {achievement.isUnlocked ? '' : (
-                      <span> Not yet unlocked</span>
-                    )}
+                  <li key={achievement.key} className={s.achievement}>
+                    <span title={title}>
+                      {typeof achievement.iconUri === 'string' ? (
+                        <img src={achievement.iconUri} alt={achievement.name}
+                             className={s.achievementIcon} />
+                      ) : ''}
+                      <span className={s.achievementName}>
+                        {achievement.name}
+                      </span>
+                    </span>
                   </li>
                 );
               }.bind(this))}
