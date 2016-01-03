@@ -3574,6 +3574,10 @@ module.exports =
   
   var _coreLocation2 = _interopRequireDefault(_coreLocation);
   
+  var _Link = __webpack_require__(25);
+  
+  var _Link2 = _interopRequireDefault(_Link);
+  
   var title = 'Steam User';
   
   var SteamUserPage = (function (_Component) {
@@ -3603,8 +3607,11 @@ module.exports =
       key: 'componentDidMount',
       value: function componentDidMount() {
         if (this.props.username === _storesLocalStorage2['default'].get('steam-username')) {
-          this.setState({ steamId: _storesLocalStorage2['default'].get('steam-id') });
-          return;
+          var steamId = _storesLocalStorage2['default'].get('steam-id');
+          if (typeof steamId !== 'undefined') {
+            this.setState({ steamId: steamId });
+            return;
+          }
         }
         _actionsSteam2['default'].getSteamId(this.props.username).then(this.onSteamIdFetched.bind(this));
       }
@@ -3639,8 +3646,8 @@ module.exports =
               ' - ',
               this.props.username,
               _react2['default'].createElement(
-                'a',
-                { href: '#', className: _SteamUserPageScss2['default'].clearSteamUsername, onClick: this.clearSteamUsername },
+                _Link2['default'],
+                { to: '/', className: _SteamUserPageScss2['default'].clearSteamUsername, onClick: this.clearSteamUsername },
                 '×'
               )
             ),

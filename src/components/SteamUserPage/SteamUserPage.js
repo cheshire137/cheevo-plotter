@@ -7,6 +7,7 @@ import LocalStorage from '../../stores/localStorage';
 import Steam from '../../actions/steam';
 import parsePath from 'history/lib/parsePath';
 import Location from '../../core/Location';
+import Link from '../Link';
 
 const title = 'Steam User';
 
@@ -27,8 +28,11 @@ class SteamUserPage extends Component {
 
   componentDidMount() {
     if (this.props.username === LocalStorage.get('steam-username')) {
-      this.setState({steamId: LocalStorage.get('steam-id')});
-      return;
+      var steamId = LocalStorage.get('steam-id');
+      if (typeof steamId !== 'undefined') {
+        this.setState({steamId: steamId});
+        return;
+      }
     }
     Steam.getSteamId(this.props.username).
           then(this.onSteamIdFetched.bind(this));
@@ -55,9 +59,9 @@ class SteamUserPage extends Component {
         <div className={s.container}>
           <h1>
             {title} - {this.props.username}
-            <a href="#" className={s.clearSteamUsername} onClick={this.clearSteamUsername}>
+            <Link to="/" className={s.clearSteamUsername} onClick={this.clearSteamUsername}>
               &times;
-            </a>
+            </Link>
           </h1>
           {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>
