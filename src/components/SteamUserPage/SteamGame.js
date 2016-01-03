@@ -17,7 +17,7 @@ class SteamGame extends Component {
         return app.name;
       }
     }
-    return this.props.appId;
+    return 'Steam App ' + this.props.appId;
   }
 
   componentDidMount() {
@@ -26,13 +26,24 @@ class SteamGame extends Component {
   }
 
   onAchievementsLoaded(data) {
-    console.log(this.props.appId, data);
+    const achievements = data.playerstats.achievements[0].achievement;
+    console.log('achievements', achievements);
+    const gameInfo = data.playerstats.game[0];
+    this.setState({imageUri: gameInfo.gameIcon[0],
+                   gameName: gameInfo.gameName[0]});
   }
 
   render() {
     return (
       <li>
-        {this.getGameName(this.props.appId)} - {this.props.appid}
+        {typeof this.state.imageUri === 'string' ? (
+          <img src={this.state.imageUri} alt={this.state.gameName}
+               className={s.gameIcon} />
+        ) : ''}
+        <span className={s.gameName} title={this.props.appId}>
+          {typeof this.state.gameName === 'string' ?
+              this.state.gameName : this.getGameName(this.props.appId)}
+        </span>
       </li>
     );
   }

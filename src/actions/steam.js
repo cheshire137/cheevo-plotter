@@ -1,6 +1,6 @@
 import fetch from '../core/fetch';
 import Config from '../config.json';
-import xml2js from 'xml2js';
+import {parseString} from 'xml2js';
 
 class Steam {
   static async getSteamId(username) {
@@ -16,15 +16,21 @@ class Steam {
   }
 
   static async getAchievements(steamId, appId) {
-    return this.get('/api/steam?path=/profiles/' + steamId +
-                    '/stats/' + appId + '/achievements/&xml=1');
+    const xml = await this.get('/api/steam?path=/profiles/' + steamId +
+                               '/stats/' + appId + '/achievements/&xml=1',
+                               'xml');
+    var result;
+    parseString(xml, (err, r) => {
+      result = r;
+    });
+    return result;
   }
 
-  static async get(path) {
+  static async get(path, type) {
+    type = type || 'json';
     const url = Config[process.env.NODE_ENV].serverUri + path;
     const response = await fetch(url);
-    const data = await response.json();
-    return data;
+    return type === 'json' ? await response.json() : await response.text();
   }
 }
 

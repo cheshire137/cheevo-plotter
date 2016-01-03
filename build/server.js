@@ -3475,8 +3475,6 @@ module.exports =
   
   var _xml2js = __webpack_require__(69);
   
-  var _xml2js2 = _interopRequireDefault(_xml2js);
-  
   var Steam = (function () {
     function Steam() {
       _classCallCheck(this, Steam);
@@ -3513,12 +3511,22 @@ module.exports =
     }, {
       key: 'getAchievements',
       value: function getAchievements(steamId, appId) {
+        var xml, result;
         return regeneratorRuntime.async(function getAchievements$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
-              return context$2$0.abrupt('return', this.get('/api/steam?path=/profiles/' + steamId + '/stats/' + appId + '/achievements/&xml=1'));
+              context$2$0.next = 2;
+              return regeneratorRuntime.awrap(this.get('/api/steam?path=/profiles/' + steamId + '/stats/' + appId + '/achievements/&xml=1', 'xml'));
   
-            case 1:
+            case 2:
+              xml = context$2$0.sent;
+  
+              (0, _xml2js.parseString)(xml, function (err, r) {
+                result = r;
+              });
+              return context$2$0.abrupt('return', result);
+  
+            case 5:
             case 'end':
               return context$2$0.stop();
           }
@@ -3526,25 +3534,43 @@ module.exports =
       }
     }, {
       key: 'get',
-      value: function get(path) {
-        var url, response, data;
+      value: function get(path, type) {
+        var url, response;
         return regeneratorRuntime.async(function get$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
+              type = type || 'json';
               url = _configJson2['default'][("development")].serverUri + path;
-              context$2$0.next = 3;
+              context$2$0.next = 4;
               return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
   
-            case 3:
+            case 4:
               response = context$2$0.sent;
-              context$2$0.next = 6;
+  
+              if (!(type === 'json')) {
+                context$2$0.next = 11;
+                break;
+              }
+  
+              context$2$0.next = 8;
               return regeneratorRuntime.awrap(response.json());
   
-            case 6:
-              data = context$2$0.sent;
-              return context$2$0.abrupt('return', data);
-  
             case 8:
+              context$2$0.t0 = context$2$0.sent;
+              context$2$0.next = 14;
+              break;
+  
+            case 11:
+              context$2$0.next = 13;
+              return regeneratorRuntime.awrap(response.text());
+  
+            case 13:
+              context$2$0.t0 = context$2$0.sent;
+  
+            case 14:
+              return context$2$0.abrupt('return', context$2$0.t0);
+  
+            case 15:
             case 'end':
               return context$2$0.stop();
           }
@@ -3675,7 +3701,8 @@ module.exports =
       value: function fetchGames(steamId) {
         var games = _storesLocalStorage2['default'].get('steam-games');
         if (typeof games === 'object') {
-          this.setState({ games: games });
+          this.setState({ games: [377160] });
+          // this.setState({games: games});
           return;
         }
         _actionsSteam2['default'].getOwnedGames(steamId).then(this.onGamesFetched.bind(this));
@@ -3692,7 +3719,8 @@ module.exports =
           }
         }
         _storesLocalStorage2['default'].set('steam-games', playedGames);
-        this.setState({ games: playedGames });
+        // this.setState({games: playedGames});
+        this.setState({ games: [377160] });
       }
     }, {
       key: 'clearSteamUsername',
@@ -3810,10 +3838,11 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;AChChF;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;CACb","file":"SteamUserPage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n.SteamUserPage_gameIcon_1hd {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/SteamGame.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAAA;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;AClChF;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;;ACFD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;CACb","file":"SteamUserPage.scss","sourcesContent":["/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n",".gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n","@import '../variables.scss';\n@import './SteamGame.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
+  	"gameIcon": "SteamUserPage_gameIcon_1hd",
   	"root": "SteamUserPage_root_24_",
   	"container": "SteamUserPage_container_3qe",
   	"clearSteamUsername": "SteamUserPage_clearSteamUsername_2G2"
@@ -92656,7 +92685,8 @@ module.exports =
           'ul',
           null,
           this.props.games.map(function (appId) {
-            return _react2['default'].createElement(_SteamGame2['default'], { appId: appId, steamId: _this.props.steamId });
+            return _react2['default'].createElement(_SteamGame2['default'], { key: appId, appId: appId,
+              steamId: _this.props.steamId });
           })
         );
       }
@@ -92724,7 +92754,7 @@ module.exports =
             return app.name;
           }
         }
-        return this.props.appId;
+        return 'Steam App ' + this.props.appId;
       }
     }, {
       key: 'componentDidMount',
@@ -92734,7 +92764,11 @@ module.exports =
     }, {
       key: 'onAchievementsLoaded',
       value: function onAchievementsLoaded(data) {
-        console.log(this.props.appId, data);
+        var achievements = data.playerstats.achievements[0].achievement;
+        console.log('achievements', achievements);
+        var gameInfo = data.playerstats.game[0];
+        this.setState({ imageUri: gameInfo.gameIcon[0],
+          gameName: gameInfo.gameName[0] });
       }
     }, {
       key: 'render',
@@ -92742,9 +92776,13 @@ module.exports =
         return _react2['default'].createElement(
           'li',
           null,
-          this.getGameName(this.props.appId),
-          ' - ',
-          this.props.appid
+          typeof this.state.imageUri === 'string' ? _react2['default'].createElement('img', { src: this.state.imageUri, alt: this.state.gameName,
+            className: _SteamUserPageScss2['default'].gameIcon }) : '',
+          _react2['default'].createElement(
+            'span',
+            { className: _SteamUserPageScss2['default'].gameName, title: this.props.appId },
+            typeof this.state.gameName === 'string' ? this.state.gameName : this.getGameName(this.props.appId)
+          )
         );
       }
     }]);

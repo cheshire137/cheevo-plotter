@@ -52,7 +52,8 @@ class SteamUserPage extends Component {
   fetchGames(steamId) {
     var games = LocalStorage.get('steam-games');
     if (typeof games === 'object') {
-      this.setState({games: games});
+      this.setState({games: [377160]});
+      // this.setState({games: games});
       return;
     }
     Steam.getOwnedGames(steamId).
@@ -69,7 +70,8 @@ class SteamUserPage extends Component {
       }
     }
     LocalStorage.set('steam-games', playedGames);
-    this.setState({games: playedGames});
+    // this.setState({games: playedGames});
+    this.setState({games: [377160]});
   }
 
   clearSteamUsername(event) {

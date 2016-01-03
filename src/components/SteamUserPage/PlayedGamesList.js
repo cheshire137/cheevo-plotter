@@ -7,7 +7,8 @@ class PlayedGamesList extends Component {
     return (
       <ul>
         {this.props.games.map((appId) => {
-          return <SteamGame appId={appId} steamId={this.props.steamId} />;
+          return <SteamGame key={appId} appId={appId}
+                            steamId={this.props.steamId} />;
         })}
       </ul>
     );
