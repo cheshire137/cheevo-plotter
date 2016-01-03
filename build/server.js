@@ -92688,9 +92688,9 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var _storesSteamAppsJson = __webpack_require__(66);
+  var _storesSteamApps = __webpack_require__(73);
   
-  var _storesSteamAppsJson2 = _interopRequireDefault(_storesSteamAppsJson);
+  var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
   
   var PlayedGamesList = (function (_Component) {
     _inherits(PlayedGamesList, _Component);
@@ -92702,18 +92702,6 @@ module.exports =
     }
   
     _createClass(PlayedGamesList, [{
-      key: 'getGameName',
-      value: function getGameName(appId) {
-        var apps = _storesSteamAppsJson2['default'].applist.apps;
-        for (var i = 0; i < apps.length; i++) {
-          var app = apps[i];
-          if (app.appid === appId) {
-            return app.name;
-          }
-        }
-        return 'Steam App ' + appId;
-      }
-    }, {
       key: 'render',
       value: function render() {
         var _this = this;
@@ -92729,7 +92717,7 @@ module.exports =
                 _Link2['default'],
                 { className: _SteamUserPageScss2['default'].gameLink,
                   to: '/steam/' + _this.props.username + '/game/' + appId },
-                _this.getGameName(appId)
+                _storesSteamApps2['default'].getName(appId)
               )
             );
           }).bind(this))
@@ -92971,7 +92959,17 @@ module.exports =
         this._sortedIds = apps.map(function (app) {
           return app.appid;
         });
+        this._sortedNames = apps.map(function (app) {
+          return app.name;
+        });
         return this._sortedIds;
+      }
+    }, {
+      key: 'getName',
+      value: function getName(appId) {
+        var ids = this.sortedIds();
+        var index = this.sortedIds().indexOf(appId);
+        return this._sortedNames[index];
       }
     }, {
       key: 'sortIds',

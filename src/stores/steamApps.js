@@ -26,7 +26,14 @@ class SteamApps {
       return aName < bName ? -1 : aName > bName ? 1 : 0;
     });
     this._sortedIds = apps.map((app) => app.appid);
+    this._sortedNames = apps.map((app) => app.name);
     return this._sortedIds;
+  }
+
+  static getName(appId) {
+    const ids = this.sortedIds();
+    const index = this.sortedIds().indexOf(appId);
+    return this._sortedNames[index];
   }
 
   static sortIds(appIds) {
