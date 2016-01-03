@@ -26,7 +26,6 @@ class Steam {
             rawResult.playerstats.achievements[0].achievement.map((a) => {
               return {
                 key: a.apiname[0],
-                description: a.description[0],
                 isUnlocked: isUnlocked,
                 name: a.name[0],
                 iconUri: isUnlocked ? a.iconClosed[0] : a.iconOpen[0]
@@ -51,16 +50,30 @@ class Steam {
       '&appid=' + appId + '&steamid=' + steamId + '&format=json'
     );
     // TODO: somehow get game iconUri from JSON API
+    const schema = await this.getGameSchema(appId);
+    const schemaAchievements = schema.game.availableGameStats.achievements;
+    var achievementInfo = {};
+    for (var i = 0; i < schemaAchievements.length; i++) {
+      var achievement = schemaAchievements[i];
+      achievementInfo[achievement.name] = achievement;
+    }
     const achievements = rawResult.playerstats.achievements.map((a => {
+      var info = achievementInfo[a.apiname];
+      var isUnlocked = a.achieved === 1;
       return {
         key: a.apiname,
-        isUnlocked: a.achieved === 1,
-        name: a.apiname, // TODO
-        description: a.apiname, // TODO
-        iconUri: null // TODO
+        isUnlocked: isUnlocked,
+        name: info.displayName,
+        iconUri: isUnlocked ? info.icon : info.icongray
       };
     }));
     return {achievements: achievements};
+  }
+
+  static async getGameSchema(appId) {
+    return this.get('/api/steam?format=json' +
+                    '&path=/ISteamUserStats/GetSchemaForGame/v2/' +
+                    '&appid=' + appId);
   }
 
   static async get(path, type) {

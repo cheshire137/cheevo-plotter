@@ -70,7 +70,7 @@ class SteamGamePage extends Component {
                       <img src={achievement.iconUri} alt={achievement.name}
                            className={s.achievementIcon} />
                     ) : ''}
-                    {achievement.name} - {achievement.description} -
+                    {achievement.name} -
                     {achievement.isUnlocked ? '' : (
                       <span> Not yet unlocked</span>
                     )}

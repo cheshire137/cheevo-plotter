@@ -3544,7 +3544,6 @@ module.exports =
                   var achievements = rawResult.playerstats.achievements[0].achievement.map(function (a) {
                     return {
                       key: a.apiname[0],
-                      description: a.description[0],
                       isUnlocked: isUnlocked,
                       name: a.name[0],
                       iconUri: isUnlocked ? a.iconClosed[0] : a.iconOpen[0]
@@ -3570,7 +3569,7 @@ module.exports =
     }, {
       key: 'getJsonAchievements',
       value: function getJsonAchievements(steamId, appId) {
-        var rawResult, achievements;
+        var rawResult, schema, schemaAchievements, achievementInfo, i, achievement, achievements;
         return regeneratorRuntime.async(function getJsonAchievements$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
@@ -3579,18 +3578,46 @@ module.exports =
   
             case 2:
               rawResult = context$2$0.sent;
+              context$2$0.next = 5;
+              return regeneratorRuntime.awrap(this.getGameSchema(appId));
+  
+            case 5:
+              schema = context$2$0.sent;
+              schemaAchievements = schema.game.availableGameStats.achievements;
+              achievementInfo = {};
+  
+              for (i = 0; i < schemaAchievements.length; i++) {
+                achievement = schemaAchievements[i];
+  
+                achievementInfo[achievement.name] = achievement;
+              }
               achievements = rawResult.playerstats.achievements.map(function (a) {
+                var info = achievementInfo[a.apiname];
+                var isUnlocked = a.achieved === 1;
                 return {
                   key: a.apiname,
-                  isUnlocked: a.achieved === 1,
-                  name: a.apiname, // TODO
-                  description: a.apiname, // TODO
-                  iconUri: null // TODO
+                  isUnlocked: isUnlocked,
+                  name: info.displayName,
+                  iconUri: isUnlocked ? info.icon : info.icongray
                 };
               });
               return context$2$0.abrupt('return', { achievements: achievements });
   
-            case 5:
+            case 11:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }, {
+      key: 'getGameSchema',
+      value: function getGameSchema(appId) {
+        return regeneratorRuntime.async(function getGameSchema$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              return context$2$0.abrupt('return', this.get('/api/steam?format=json' + '&path=/ISteamUserStats/GetSchemaForGame/v2/' + '&appid=' + appId));
+  
+            case 1:
             case 'end':
               return context$2$0.stop();
           }
@@ -92925,8 +92952,6 @@ module.exports =
                   typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
                     className: _SteamGamePageScss2['default'].achievementIcon }) : '',
                   achievement.name,
-                  ' - ',
-                  achievement.description,
                   ' -',
                   achievement.isUnlocked ? '' : _react2['default'].createElement(
                     'span',
