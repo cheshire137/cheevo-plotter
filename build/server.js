@@ -3542,6 +3542,7 @@ module.exports =
               (0, _xml2js.parseString)(xml, (function (err, rawResult) {
                 if (err === null) {
                   var achievements = rawResult.playerstats.achievements[0].achievement.map(function (a) {
+                    var isUnlocked = typeof a.unlockTimestamp !== 'undefined';
                     return {
                       key: a.apiname[0],
                       isUnlocked: isUnlocked,

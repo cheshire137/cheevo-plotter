@@ -24,6 +24,7 @@ class Steam {
       if (err === null) {
         const achievements =
             rawResult.playerstats.achievements[0].achievement.map((a) => {
+              var isUnlocked = typeof a.unlockTimestamp !== 'undefined';
               return {
                 key: a.apiname[0],
                 isUnlocked: isUnlocked,
