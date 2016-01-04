@@ -23,3 +23,14 @@
     }
   }
 }
+
+svg {
+  display: block;
+  margin: 0 auto;
+  position: relative;
+}
+
+.label {
+  font: 0.9rem $font-family-base;
+  fill: white;
+}

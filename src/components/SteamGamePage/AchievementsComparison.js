@@ -81,8 +81,12 @@ class AchievementsComparison extends Component {
   render() {
     return (
       <div className={s.achievementsComparison}>
-        <UnlockedBarChart achievements={this.state.achievements}
-                          players={this.state.players} />
+        {this.state.achievements.length > 0 ? (
+          <UnlockedBarChart achievements={this.state.achievements}
+                            players={this.state.players} />
+        ) : (
+          <p>No achievements</p>
+        )}
         <ul className={s.achievementsList}>
           {this.state.achievements.map((achievement) => {
             return <AchievementComparison players={this.state.players}

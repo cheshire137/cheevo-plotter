@@ -10,9 +10,10 @@ class UnlockedBarChart extends Component {
 
   componentDidMount() {
     const playerCount = Object.keys(this.props.players).length;
-    const margin = {top: 20, right: 20, bottom: 30, left: 40};
-    const width = (200 * playerCount) - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;
+    const margin = {top: 0, right: 0, bottom: 30, left: 40};
+    const widthPerBar = 190;
+    const width = (widthPerBar * playerCount) - margin.left - margin.right;
+    const height = 230 - margin.top - margin.bottom;
     const x = d3.scale.ordinal().rangeRoundBands([0, width], .1);
     const y = d3.scale.linear().range([height, 0]);
     const xAxis = d3.svg.axis().scale(x).orient('bottom');
@@ -28,7 +29,8 @@ class UnlockedBarChart extends Component {
     y.domain([0, d3.max(data, (d) => d.value)]);
     svg.append('g').attr('class', [s.x, s.axis].join(' ')).
         attr('transform', 'translate(0,' + height + ')').call(xAxis);
-    svg.append('g').attr('class', [s.y, s.axis].join(' ')).call(yAxis).
+    svg.append('g').attr('class', [s.y, s.axis].join(' ')).
+        attr('transform', 'translate(-8,0)').call(yAxis).
         append('text').attr('transform', 'rotate(-90)').
         attr('y', 6).attr('dy', '.71em').
         style('text-anchor', 'end').text('# Unlocked');
@@ -37,6 +39,11 @@ class UnlockedBarChart extends Component {
         attr('width', x.rangeBand()).
         attr('y', (d) => y(d.value)).
         attr('height', (d) => height - y(d.value));
+    svg.selectAll('.bar').data(data).enter().append('text').
+        text((d) => d.value).
+        attr('x', (d, i) => x(d.label) + 8).
+        attr('y', (d) => y(d.value) + 21).
+        attr('class', s.label);
   }
 
   getUnlockedCounts() {
@@ -70,8 +77,7 @@ class UnlockedBarChart extends Component {
 
   render() {
     return (
-      <div id="unlockedBarChart" className={s.unlockedBarChart}>
-      </div>
+      <div id="unlockedBarChart" className={s.unlockedBarChart}></div>
     );
   }
 }
