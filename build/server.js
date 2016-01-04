@@ -92971,8 +92971,9 @@ module.exports =
               'Loading player data...'
             ),
             haveAchievements ? onlyOneUser ? _react2['default'].createElement(_AchievementsList2['default'], {
-              achievements: this.state.achievements[this.state.steamId] }) : _react2['default'].createElement(_AchievementsComparison2['default'], {
-              achievementsBySteamId: this.state.achievements }) : _react2['default'].createElement(
+              achievements: this.state.achievements[this.state.steamId] }) : havePlayers ? _react2['default'].createElement(_AchievementsComparison2['default'], { players: this.state.players,
+              steamId: this.state.steamId,
+              achievementsBySteamId: this.state.achievements }) : '' : _react2['default'].createElement(
               'p',
               null,
               'Loading achievements...'
@@ -93751,41 +93752,89 @@ module.exports =
       _classCallCheck(this, AchievementsComparison);
   
       _get(Object.getPrototypeOf(AchievementsComparison.prototype), 'constructor', this).call(this, props, context);
-      var achievements = [];
-      for (var steamId in props.achievementsBySteamId) {
-        for (var i = 0; i < props.achievementsBySteamId[steamId].length; i++) {
-          var achievement = props.achievementsBySteamId[steamId][i];
-          var inList = false;
-          for (var j = 0; j < achievements.length; j++) {
-            if (achievements[j].key === achievement.key) {
-              inList = true;
-              achievements[j].players[steamId] = {
-                isUnlocked: achievement.isUnlocked,
-                iconUri: achievement.iconUri
-              };
-              break;
-            }
-          }
-          if (!inList) {
-            var players = {};
-            players[steamId] = {
-              isUnlocked: achievement.isUnlocked,
-              iconUri: achievement.iconUri
-            };
-            achievements.push({
-              key: achievement.key,
-              name: achievement.name,
-              players: players
-            });
-          }
-        }
-      }
-      this.state = { achievements: achievements };
+      this.state = { achievements: this.getInitialListOfAchievements(props),
+        players: this.getInitialHashOfPlayers(props) };
     }
   
     _createClass(AchievementsComparison, [{
+      key: 'getInitialHashOfPlayers',
+      value: function getInitialHashOfPlayers(props) {
+        var players = {};
+        for (var i = 0; i < props.players.length; i++) {
+          var player = props.players[i];
+          players[player.steamid] = player;
+        }
+        return players;
+      }
+    }, {
+      key: 'getInitialListOfAchievements',
+      value: function getInitialListOfAchievements(props) {
+        var achievements = this.getMasterListOfAchievements(props);
+        this.setIconUriOnAchievements(achievements);
+        return achievements;
+      }
+    }, {
+      key: 'getMasterListOfAchievements',
+      value: function getMasterListOfAchievements(props) {
+        var achievements = [];
+        for (var steamId in props.achievementsBySteamId) {
+          for (var i = 0; i < props.achievementsBySteamId[steamId].length; i++) {
+            var achievement = props.achievementsBySteamId[steamId][i];
+            var inList = false;
+            for (var j = 0; j < achievements.length; j++) {
+              if (achievements[j].key === achievement.key) {
+                inList = true;
+                achievements[j].players[steamId] = {
+                  isUnlocked: achievement.isUnlocked,
+                  iconUri: achievement.iconUri
+                };
+                break;
+              }
+            }
+            if (!inList) {
+              var players = {};
+              players[steamId] = {
+                isUnlocked: achievement.isUnlocked,
+                iconUri: achievement.iconUri
+              };
+              achievements.push({
+                key: achievement.key,
+                name: achievement.name,
+                players: players
+              });
+            }
+          }
+        }
+        return achievements;
+      }
+    }, {
+      key: 'setIconUriOnAchievements',
+      value: function setIconUriOnAchievements(achievements) {
+        for (var i = 0; i < achievements.length; i++) {
+          var achievement = achievements[i];
+          var isUnlocked = false,
+              unlockedUri,
+              lockedUri;
+          for (var steamId in achievement.players) {
+            if (achievement.players[steamId].isUnlocked) {
+              isUnlocked = true;
+              unlockedUri = achievement.players[steamId].iconUri;
+            } else {
+              lockedUri = achievement.players[steamId].iconUri;
+            }
+          }
+          if (isUnlocked) {
+            achievement.iconUri = unlockedUri;
+          } else {
+            achievement.iconUri = lockedUri;
+          }
+        }
+      }
+    }, {
       key: 'render',
       value: function render() {
+        var _this = this;
+  
         return _react2['default'].createElement(
           'div',
           { className: _SteamGamePageScss2['default'].achievementsComparison },
@@ -93797,22 +93846,25 @@ module.exports =
               _react2['default'].createElement(
                 'h2',
                 null,
+                typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
+                  className: _SteamGamePageScss2['default'].achievementIcon, width: '64',
+                  height: '64' }) : '',
                 achievement.name
               ),
               _react2['default'].createElement(
                 'ul',
-                null,
-                playerIds.map(function (playerId) {
+                { className: _SteamGamePageScss2['default'].playerAchievements },
+                playerIds.map((function (playerId) {
+                  var player = _this.state.players[playerId];
                   var status = achievement.players[playerId];
                   return _react2['default'].createElement(
                     'li',
-                    { key: playerId },
-                    typeof status.iconUri === 'string' ? _react2['default'].createElement('img', { src: status.iconUri, alt: achievement.name,
-                      className: _SteamGamePageScss2['default'].achievementIcon, width: '64',
-                      height: '64' }) : '',
-                    playerId
+                    { key: playerId, className: _SteamGamePageScss2['default'].playerAchievement },
+                    player.personaname,
+                    ' - ',
+                    status.isUnlocked ? 'unlocked' : 'not yet unlocked'
                   );
-                })
+                }).bind(_this))
               )
             );
           }).bind(this))
@@ -93875,10 +93927,9 @@ module.exports =
             'Comparing:'
           ),
           this.props.players.map(function (player) {
-            var title = 'Steam ID: ' + player.steamid;
             return _react2['default'].createElement(
               'li',
-              { 'data-tt': title, key: player.steamid, className: _SteamGamePageScss2['default'].player },
+              { key: player.steamid, className: _SteamGamePageScss2['default'].player },
               _react2['default'].createElement(
                 'a',
                 { href: player.profileurl, target: '_blank',

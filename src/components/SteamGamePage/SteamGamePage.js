@@ -86,10 +86,11 @@ class SteamGamePage extends Component {
           {haveAchievements ? onlyOneUser ? (
             <AchievementsList
                 achievements={this.state.achievements[this.state.steamId]} />
-          ) : (
-            <AchievementsComparison
+          ) : havePlayers ? (
+            <AchievementsComparison players={this.state.players}
+                steamId={this.state.steamId}
                 achievementsBySteamId={this.state.achievements} />
-          ) : (
+          ) : '' : (
             <p>Loading achievements...</p>
           )}
         </div>
