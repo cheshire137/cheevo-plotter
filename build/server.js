@@ -92562,15 +92562,33 @@ module.exports =
   var FriendsList = (function (_Component) {
     _inherits(FriendsList, _Component);
   
-    function FriendsList() {
+    function FriendsList(props, context) {
       _classCallCheck(this, FriendsList);
   
-      _get(Object.getPrototypeOf(FriendsList.prototype), 'constructor', this).apply(this, arguments);
+      _get(Object.getPrototypeOf(FriendsList.prototype), 'constructor', this).call(this, props, context);
+      this.state = { selectedFriends: [] };
     }
   
     _createClass(FriendsList, [{
+      key: 'onFriendToggled',
+      value: function onFriendToggled(steamId, isSelected) {
+        console.log(steamId, isSelected);
+        var selectedFriends = this.state.selectedFriends;
+        console.log('prev selected', selectedFriends);
+        var index = selectedFriends.indexOf(steamId);
+        if (isSelected && index < 0) {
+          selectedFriends.push(steamId);
+        } else if (!isSelected && index > -1) {
+          selectedFriends = selectedFriends.slice(0, index).concat(selectedFriends.slice(index + 1));
+        }
+        console.log('now selected', selectedFriends);
+        this.setState({ selectedFriends: selectedFriends });
+      }
+    }, {
       key: 'render',
       value: function render() {
+        var _this = this;
+  
         return _react2['default'].createElement(
           'section',
           { className: _SteamUserPageScss2['default'].friends },
@@ -92585,10 +92603,10 @@ module.exports =
           _react2['default'].createElement(
             'ul',
             { className: _SteamUserPageScss2['default'].friendsList },
-            this.props.friends.map(function (friend) {
-              return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid,
-                friend: friend });
-            })
+            this.props.friends.map((function (friend) {
+              return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid, friend: friend,
+                onToggle: _this.onFriendToggled.bind(_this) });
+            }).bind(this))
           )
         );
       }
@@ -92638,6 +92656,11 @@ module.exports =
     }
   
     _createClass(Friend, [{
+      key: 'onToggle',
+      value: function onToggle(event) {
+        this.props.onToggle(this.props.friend.steamid, event.target.checked);
+      }
+    }, {
       key: 'render',
       value: function render() {
         var domId = 'friend-' + this.props.friend.steamid;
@@ -92647,7 +92670,7 @@ module.exports =
           _react2['default'].createElement(
             'label',
             { htmlFor: domId },
-            _react2['default'].createElement('input', { type: 'checkbox', id: domId }),
+            _react2['default'].createElement('input', { type: 'checkbox', id: domId, onChange: this.onToggle.bind(this) }),
             _react2['default'].createElement('img', { src: this.props.friend.avatar,
               className: _SteamUserPageScss2['default'].friendAvatar,
               alt: this.props.friend.steamid }),
