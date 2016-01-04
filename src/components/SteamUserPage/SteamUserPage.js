@@ -171,6 +171,9 @@ class SteamUserPage extends Component {
     const selectedSteamIds = Object.keys(this.state.ownedGames);
     const profileUrl = 'https://steamcommunity.com/id/' +
                        this.props.username + '/';
+    const haveSteamId = typeof this.state.steamId !== 'undefined';
+    const haveGamesList = typeof this.state.games === 'object';
+    const haveFriendsList = typeof this.state.friends === 'object';
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -182,24 +185,25 @@ class SteamUserPage extends Component {
             Steam /
             <a href={profileUrl} target="_blank"> {this.props.username}</a>
           </h1>
-          <p>
-            Choose some other players and a game to compare your achievements!
-          </p>
-          {typeof this.state.friends === 'object' ? (
+          {haveSteamId && haveFriendsList && haveGamesList ? (
+            <p>
+              Choose some other players and a game to compare your achievements!
+            </p>
+          ) : ''}
+          {haveSteamId && haveFriendsList ? (
             <FriendsList selectedIds={selectedSteamIds}
                          username={this.props.username}
                          friends={this.state.friends}
                          onSelectionChange={this.onFriendSelectionChanged.bind(this)} />
-          ) : ''}
-          {typeof this.state.steamId === 'undefined' ? (
-            <p>Loading...</p>
-          ) : typeof this.state.games === 'object' ? (
+          ) : haveSteamId ? <p>Loading friends list...</p> : ''}
+          {haveFriendsList && haveGamesList ? <hr /> : ''}
+          {haveSteamId ? haveGamesList ? (
             <PlayedGamesList steamId={this.state.steamId}
                              games={this.state.games}
                              username={this.props.username} />
           ) : (
             <p>Loading games list...</p>
-          )}
+          ) : <p>Loading...</p>}
         </div>
       </div>
     );
