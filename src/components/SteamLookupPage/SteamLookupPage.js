@@ -68,11 +68,11 @@ class SteamLookupPage extends Component {
           <h1>{title}</h1>
           <form className={s.steamUsernameForm} onSubmit={this.onFormSubmit.bind(this)}>
             <label htmlFor="steam-username">
-              Your Steam user name:
+              Steam user name:
             </label>
             <input type="text" ref="username" id="steam-username" autofocus="autofocus" placeholder="e.g., cheshire137" onChange={this.onInputChange} />
             <p className={s.helpBlock}>
-              Your Steam profile must be public.
+              The Steam profile must be public.
             </p>
           </form>
         </div>

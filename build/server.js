@@ -2746,13 +2746,13 @@ module.exports =
               _react2['default'].createElement(
                 'label',
                 { htmlFor: 'steam-username' },
-                'Your Steam user name:'
+                'Steam user name:'
               ),
               _react2['default'].createElement('input', { type: 'text', ref: 'username', id: 'steam-username', autofocus: 'autofocus', placeholder: 'e.g., cheshire137', onChange: this.onInputChange }),
               _react2['default'].createElement(
                 'p',
                 { className: _SteamLookupPageScss2['default'].helpBlock },
-                'Your Steam profile must be public.'
+                'The Steam profile must be public.'
               )
             )
           )
@@ -2815,7 +2815,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n\n.SteamLookupPage_root_2uV {\n  width: 100%;\n}\n\n.SteamLookupPage_container_3f4 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\nlabel {\n  display: inline-block;\n  max-width: 100%;\n  margin-bottom: 5px;\n  font-weight: 700;\n}\n\ninput[type=\"text\"] {\n  display: block;\n  width: 100%;\n  height: 1.4rem;\n  padding: 0.3em 0.6em;\n  font-size: 1.1rem;\n  line-height: 1.42857143;\n  color: #555;\n  background-color: #fff;\n  background-image: none;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;\n  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n  transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;\n  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;\n}\n\ninput[type=\"text\"]:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);\n  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);\n}\n\np.SteamLookupPage_helpBlock_3Tx {\n  display: block;\n  margin-top: 5px;\n  margin-bottom: 10px;\n  color: #737373;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamLookupPage/SteamLookupPage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;ACdjE;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,sBAAsB;EACtB,gBAAgB;EAChB,mBAAmB;EACnB,iBAAiB;CAClB;;AAED;EACE,eAAe;EACf,YAAY;EACZ,eAAe;EACf,qBAAqB;EACrB,kBAAkB;EAClB,wBAAwB;EACxB,YAAY;EACZ,uBAAuB;EACvB,uBAAuB;EACvB,uBAAuB;EACvB,mBAAmB;EACnB,qDAAqD;EACrD,6CAA6C;EAC7C,sFAAsF;EACtF,yEAAyE;EACzE,8EAAsE;EAAtE,sEAAsE;EAAtE,0GAAsE;CAQvE;;AANC;EACE,sBAAsB;EACtB,WAAW;EACX,kFAAkF;EAClF,0EAA0E;CAC3E;;AAGH;EACE,eAAe;EACf,gBAAgB;EAChB,oBAAoB;EACpB,eAAe;CAChB","file":"SteamLookupPage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\nlabel {\n  display: inline-block;\n  max-width: 100%;\n  margin-bottom: 5px;\n  font-weight: 700;\n}\n\ninput[type=\"text\"] {\n  display: block;\n  width: 100%;\n  height: 1.4rem;\n  padding: 0.3em 0.6em;\n  font-size: 1.1rem;\n  line-height: 1.42857143;\n  color: #555;\n  background-color: #fff;\n  background-image: none;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;\n  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n\n  &:focus {\n    border-color: #66afe9;\n    outline: 0;\n    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);\n  }\n}\n\np.helpBlock {\n  display: block;\n  margin-top: 5px;\n  margin-bottom: 10px;\n  color: #737373;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n\n.SteamLookupPage_root_2uV {\n  width: 100%;\n}\n\n.SteamLookupPage_container_3f4 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\nlabel {\n  display: inline-block;\n  max-width: 100%;\n  margin-bottom: 5px;\n  font-weight: 700;\n}\n\ninput[type=\"text\"] {\n  display: block;\n  width: 30em;\n  height: 1.4rem;\n  padding: 0.3em 0.6em;\n  font-size: 1.1rem;\n  line-height: 1.42857143;\n  color: #555;\n  background-color: #fff;\n  background-image: none;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;\n  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n  transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;\n  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;\n}\n\ninput[type=\"text\"]:focus {\n  border-color: #66afe9;\n  outline: 0;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);\n  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);\n}\n\np.SteamLookupPage_helpBlock_3Tx {\n  display: block;\n  margin-top: 5px;\n  margin-bottom: 10px;\n  color: #737373;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamLookupPage/SteamLookupPage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;ACdjE;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,sBAAsB;EACtB,gBAAgB;EAChB,mBAAmB;EACnB,iBAAiB;CAClB;;AAED;EACE,eAAe;EACf,YAAY;EACZ,eAAe;EACf,qBAAqB;EACrB,kBAAkB;EAClB,wBAAwB;EACxB,YAAY;EACZ,uBAAuB;EACvB,uBAAuB;EACvB,uBAAuB;EACvB,mBAAmB;EACnB,qDAAqD;EACrD,6CAA6C;EAC7C,sFAAsF;EACtF,yEAAyE;EACzE,8EAAsE;EAAtE,sEAAsE;EAAtE,0GAAsE;CAQvE;;AANC;EACE,sBAAsB;EACtB,WAAW;EACX,kFAAkF;EAClF,0EAA0E;CAC3E;;AAGH;EACE,eAAe;EACf,gBAAgB;EAChB,oBAAoB;EACpB,eAAe;CAChB","file":"SteamLookupPage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\nlabel {\n  display: inline-block;\n  max-width: 100%;\n  margin-bottom: 5px;\n  font-weight: 700;\n}\n\ninput[type=\"text\"] {\n  display: block;\n  width: 30em;\n  height: 1.4rem;\n  padding: 0.3em 0.6em;\n  font-size: 1.1rem;\n  line-height: 1.42857143;\n  color: #555;\n  background-color: #fff;\n  background-image: none;\n  border: 1px solid #ccc;\n  border-radius: 2px;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);\n  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;\n  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;\n\n  &:focus {\n    border-color: #66afe9;\n    outline: 0;\n    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);\n    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);\n  }\n}\n\np.helpBlock {\n  display: block;\n  margin-top: 5px;\n  margin-bottom: 10px;\n  color: #737373;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
@@ -3212,8 +3212,6 @@ module.exports =
   
   var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
   
-  var title = 'Steam Achievements';
-  
   var SteamUserPage = (function (_Component) {
     _inherits(SteamUserPage, _Component);
   
@@ -3235,7 +3233,7 @@ module.exports =
     _createClass(SteamUserPage, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
-        this.context.onSetTitle(title);
+        this.context.onSetTitle('Steam / ' + this.props.username);
         _storesLocalStorage2['default'].set('steam-username', this.props.username);
       }
     }, {
@@ -3313,7 +3311,8 @@ module.exports =
                   onClick: this.clearSteamUsername },
                 '«'
               ),
-              title
+              'Steam / ',
+              this.props.username
             ),
             typeof this.state.steamId === 'undefined' ? _react2['default'].createElement(
               'p',
@@ -92490,7 +92489,9 @@ module.exports =
   
   var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
   
-  var title = 'Steam Game';
+  var _AchievementsList = __webpack_require__(74);
+  
+  var _AchievementsList2 = _interopRequireDefault(_AchievementsList);
   
   var SteamGamePage = (function (_Component) {
     _inherits(SteamGamePage, _Component);
@@ -92511,16 +92512,12 @@ module.exports =
     }
   
     _createClass(SteamGamePage, [{
-      key: 'componentWillMount',
-      value: function componentWillMount() {
-        this.context.onSetTitle(title);
-      }
-    }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
         var steamId = _storesLocalStorage2['default'].get('steam-id');
-        this.setState({ gameName: _storesSteamApps2['default'].getName(this.props.appId),
-          steamId: steamId });
+        var name = _storesSteamApps2['default'].getName(this.props.appId);
+        this.context.onSetTitle('Steam / ' + this.props.username + ' / ' + name);
+        this.setState({ gameName: name, steamId: steamId });
         _actionsSteam2['default'].getAchievements(steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this));
       }
     }, {
@@ -92556,32 +92553,12 @@ module.exports =
               ),
               typeof this.state.iconUri === 'string' ? _react2['default'].createElement('img', { src: this.state.iconUri, alt: this.state.gameName,
                 className: _SteamGamePageScss2['default'].gameIcon }) : '',
-              title,
-              ': ',
+              'Steam / ',
+              this.props.username,
+              ' / ',
               this.state.gameName
             ),
-            typeof this.state.achievements === 'object' ? _react2['default'].createElement(
-              'ul',
-              { className: _SteamGamePageScss2['default'].achievementsList },
-              this.state.achievements.map((function (achievement) {
-                var title = achievement.isUnlocked ? 'Unlocked' : 'Not yet unlocked';
-                return _react2['default'].createElement(
-                  'li',
-                  { key: achievement.key, className: _SteamGamePageScss2['default'].achievement },
-                  _react2['default'].createElement(
-                    'span',
-                    { title: title },
-                    typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
-                      className: _SteamGamePageScss2['default'].achievementIcon }) : '',
-                    _react2['default'].createElement(
-                      'span',
-                      { className: _SteamGamePageScss2['default'].achievementName },
-                      achievement.name
-                    )
-                  )
-                );
-              }).bind(this))
-            ) : _react2['default'].createElement(
+            typeof this.state.achievements === 'object' ? _react2['default'].createElement(_AchievementsList2['default'], { achievements: this.state.achievements }) : _react2['default'].createElement(
               'span',
               null,
               'Loading achievements...'
@@ -93200,6 +93177,112 @@ module.exports =
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
+
+/***/ },
+/* 74 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamGamePageScss = __webpack_require__(59);
+  
+  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
+  
+  var AchievementsList = (function (_Component) {
+    _inherits(AchievementsList, _Component);
+  
+    function AchievementsList() {
+      _classCallCheck(this, AchievementsList);
+  
+      _get(Object.getPrototypeOf(AchievementsList.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(AchievementsList, [{
+      key: 'getUnlockedCount',
+      value: function getUnlockedCount() {
+        var count = 0;
+        for (var i = 0; i < this.props.achievements.length; i++) {
+          if (this.props.achievements[i].isUnlocked) {
+            count++;
+          }
+        }
+        return count;
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        if (this.props.achievements.length < 1) {
+          return _react2['default'].createElement(
+            'p',
+            null,
+            'No achievements'
+          );
+        }
+        var unlockedCount = this.getUnlockedCount();
+        var percentage = Math.round(unlockedCount / this.props.achievements.length * 100);
+        return _react2['default'].createElement(
+          'div',
+          { className: _SteamGamePageScss2['default'].achievements },
+          _react2['default'].createElement(
+            'p',
+            { className: _SteamGamePageScss2['default'].achievementsSummary },
+            'Unlocked ',
+            unlockedCount,
+            ' / ',
+            this.props.achievements.length,
+            ' — ',
+            percentage,
+            '%'
+          ),
+          _react2['default'].createElement(
+            'ul',
+            { className: _SteamGamePageScss2['default'].achievementsList },
+            this.props.achievements.map(function (achievement) {
+              var title = achievement.isUnlocked ? 'Unlocked' : 'Not yet unlocked';
+              return _react2['default'].createElement(
+                'li',
+                { key: achievement.key, className: _SteamGamePageScss2['default'].achievement },
+                _react2['default'].createElement(
+                  'span',
+                  { title: title },
+                  typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
+                    className: _SteamGamePageScss2['default'].achievementIcon }) : '',
+                  _react2['default'].createElement(
+                    'span',
+                    { className: _SteamGamePageScss2['default'].achievementName },
+                    achievement.name
+                  )
+                )
+              );
+            })
+          )
+        );
+      }
+    }]);
+  
+    return AchievementsList;
+  })(_react.Component);
+  
+  exports['default'] = AchievementsList;
+  module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

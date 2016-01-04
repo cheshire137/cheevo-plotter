@@ -8,8 +8,7 @@ import parsePath from 'history/lib/parsePath';
 import Location from '../../core/Location';
 import Link from '../Link';
 import SteamApps from '../../stores/steamApps';
-
-const title = 'Steam Game';
+import AchievementsList from './AchievementsList';
 
 @withStyles(s)
 class SteamGamePage extends Component {
@@ -22,14 +21,11 @@ class SteamGamePage extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
-    this.context.onSetTitle(title);
-  }
-
   componentDidMount() {
     const steamId = LocalStorage.get('steam-id');
-    this.setState({gameName: SteamApps.getName(this.props.appId),
-                   steamId: steamId});
+    const name = SteamApps.getName(this.props.appId);
+    this.context.onSetTitle('Steam / ' + this.props.username + ' / ' + name);
+    this.setState({gameName: name, steamId: steamId});
     Steam.getAchievements(steamId, this.props.appId).
           then(this.onAchievementsLoaded.bind(this));
   }
@@ -59,27 +55,10 @@ class SteamGamePage extends Component {
               <img src={this.state.iconUri} alt={this.state.gameName}
                    className={s.gameIcon} />
             ) : ''}
-            {title}: {this.state.gameName}
+            Steam / {this.props.username} / {this.state.gameName}
           </h1>
           {typeof this.state.achievements === 'object' ? (
-            <ul className={s.achievementsList}>
-              {this.state.achievements.map((achievement) => {
-                var title = achievement.isUnlocked ? 'Unlocked' : 'Not yet unlocked';
-                return (
-                  <li key={achievement.key} className={s.achievement}>
-                    <span title={title}>
-                      {typeof achievement.iconUri === 'string' ? (
-                        <img src={achievement.iconUri} alt={achievement.name}
-                             className={s.achievementIcon} />
-                      ) : ''}
-                      <span className={s.achievementName}>
-                        {achievement.name}
-                      </span>
-                    </span>
-                  </li>
-                );
-              }.bind(this))}
-            </ul>
+            <AchievementsList achievements={this.state.achievements} />
           ) : (
             <span>Loading achievements...</span>
           )}

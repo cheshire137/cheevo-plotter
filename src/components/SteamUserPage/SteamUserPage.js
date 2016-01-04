@@ -10,8 +10,6 @@ import Link from '../Link';
 import PlayedGamesList from './PlayedGamesList';
 import SteamApps from '../../stores/steamApps';
 
-const title = 'Steam Achievements';
-
 @withStyles(s)
 class SteamUserPage extends Component {
   static contextTypes = {
@@ -24,7 +22,7 @@ class SteamUserPage extends Component {
   }
 
   componentWillMount() {
-    this.context.onSetTitle(title);
+    this.context.onSetTitle('Steam / ' + this.props.username);
     LocalStorage.set('steam-username', this.props.username);
   }
 
@@ -92,7 +90,7 @@ class SteamUserPage extends Component {
                   onClick={this.clearSteamUsername}>
               &laquo;
             </Link>
-            {title}
+            Steam / {this.props.username}
           </h1>
           {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>
