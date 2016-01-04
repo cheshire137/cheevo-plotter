@@ -78,11 +78,6 @@ class SteamUserPage extends Component {
   }
 
   onFriendSummariesFetched(friends) {
-    friends.sort((a, b) => {
-      const aName = a.personaname.toLowerCase();
-      const bName = b.personaname.toLowerCase();
-      return aName.localeCompare(bName);
-    });
     this.setState({friends: friends});
   }
 

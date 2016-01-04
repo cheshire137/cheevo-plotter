@@ -3008,9 +3008,14 @@ module.exports =
               break;
   
             case 14:
+              summaries.sort(function (a, b) {
+                var aName = a.personaname.toLowerCase();
+                var bName = b.personaname.toLowerCase();
+                return aName.localeCompare(bName);
+              });
               return context$2$0.abrupt('return', summaries);
   
-            case 15:
+            case 16:
             case 'end':
               return context$2$0.stop();
           }
@@ -3163,38 +3168,36 @@ module.exports =
             case 0:
               type = type || 'json';
               url = _configJson2['default'][("development")].serverUri + path;
-  
-              console.log(url);
-              context$2$0.next = 5;
+              context$2$0.next = 4;
               return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
   
-            case 5:
+            case 4:
               response = context$2$0.sent;
   
               if (!(type === 'json')) {
-                context$2$0.next = 12;
+                context$2$0.next = 11;
                 break;
               }
   
-              context$2$0.next = 9;
+              context$2$0.next = 8;
               return regeneratorRuntime.awrap(response.json());
   
-            case 9:
+            case 8:
               context$2$0.t0 = context$2$0.sent;
-              context$2$0.next = 15;
+              context$2$0.next = 14;
               break;
   
-            case 12:
-              context$2$0.next = 14;
+            case 11:
+              context$2$0.next = 13;
               return regeneratorRuntime.awrap(response.text());
   
-            case 14:
+            case 13:
               context$2$0.t0 = context$2$0.sent;
   
-            case 15:
+            case 14:
               return context$2$0.abrupt('return', context$2$0.t0);
   
-            case 16:
+            case 15:
             case 'end':
               return context$2$0.stop();
           }
@@ -3371,11 +3374,6 @@ module.exports =
     }, {
       key: 'onFriendSummariesFetched',
       value: function onFriendSummariesFetched(friends) {
-        friends.sort(function (a, b) {
-          var aName = a.personaname.toLowerCase();
-          var bName = b.personaname.toLowerCase();
-          return aName.localeCompare(bName);
-        });
         this.setState({ friends: friends });
       }
     }, {
@@ -92858,14 +92856,6 @@ module.exports =
   
   var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
   
-  var _historyLibParsePath = __webpack_require__(26);
-  
-  var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
-  
-  var _coreLocation = __webpack_require__(27);
-  
-  var _coreLocation2 = _interopRequireDefault(_coreLocation);
-  
   var _Link = __webpack_require__(25);
   
   var _Link2 = _interopRequireDefault(_Link);
@@ -92877,6 +92867,14 @@ module.exports =
   var _AchievementsList = __webpack_require__(63);
   
   var _AchievementsList2 = _interopRequireDefault(_AchievementsList);
+  
+  var _AchievementsComparison = __webpack_require__(77);
+  
+  var _AchievementsComparison2 = _interopRequireDefault(_AchievementsComparison);
+  
+  var _PlayersList = __webpack_require__(78);
+  
+  var _PlayersList2 = _interopRequireDefault(_PlayersList);
   
   var SteamGamePage = (function (_Component) {
     _inherits(SteamGamePage, _Component);
@@ -92893,36 +92891,42 @@ module.exports =
       _classCallCheck(this, _SteamGamePage);
   
       _get(Object.getPrototypeOf(_SteamGamePage.prototype), 'constructor', this).call(this, props, context);
-      this.state = {};
+      var selectedIds = _storesLocalStorage2['default'].get('steam-selected-friends') || [_storesLocalStorage2['default'].get('steam-id')];
+      this.state = { selectedIds: selectedIds };
     }
   
     _createClass(SteamGamePage, [{
       key: 'componentDidMount',
       value: function componentDidMount() {
-        var steamId = _storesLocalStorage2['default'].get('steam-id');
         var name = _storesSteamApps2['default'].getName(this.props.appId);
         this.context.onSetTitle('Steam / ' + this.props.username + ' / ' + name);
-        this.setState({ gameName: name, steamId: steamId });
-        _actionsSteam2['default'].getAchievements(steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this));
+        this.setState({ gameName: name, steamId: _storesLocalStorage2['default'].get('steam-id') });
+        for (var i = 0; i < this.state.selectedIds.length; i++) {
+          var steamId = this.state.selectedIds[i];
+          _actionsSteam2['default'].getAchievements(steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this, steamId));
+        }
+        _actionsSteam2['default'].getPlayerSummaries(this.state.selectedIds).then(this.onPlayerSummariesFetched.bind(this));
+      }
+    }, {
+      key: 'onPlayerSummariesFetched',
+      value: function onPlayerSummariesFetched(players) {
+        this.setState({ players: players });
       }
     }, {
       key: 'onAchievementsLoaded',
-      value: function onAchievementsLoaded(data) {
-        console.log('data', data);
-        this.setState({ iconUri: data.iconUri,
-          achievements: data.achievements });
-      }
-    }, {
-      key: 'prettyTime',
-      value: function prettyTime(timestamp) {
-        var date = new Date(timestamp * 1000);
-        return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes();
+      value: function onAchievementsLoaded(steamId, data) {
+        var achievements = this.state.achievements || {};
+        achievements[steamId] = data.achievements;
+        this.setState({ iconUri: data.iconUri, achievements: achievements });
       }
     }, {
       key: 'render',
       value: function render() {
         var gameUrl = 'https://steamcommunity.com/app/' + this.props.appId;
         var profileUrl = 'https://steamcommunity.com/id/' + this.props.username + '/';
+        var onlyOneUser = this.state.selectedIds.length === 1;
+        var haveAchievements = typeof this.state.achievements === 'object';
+        var havePlayers = typeof this.state.players === 'object';
         return _react2['default'].createElement(
           'div',
           { className: _SteamGamePageScss2['default'].root },
@@ -92956,8 +92960,14 @@ module.exports =
                 this.state.gameName
               )
             ),
-            typeof this.state.achievements === 'object' ? _react2['default'].createElement(_AchievementsList2['default'], { achievements: this.state.achievements }) : _react2['default'].createElement(
-              'span',
+            havePlayers ? _react2['default'].createElement(_PlayersList2['default'], { players: this.state.players }) : _react2['default'].createElement(
+              'p',
+              null,
+              'Loading player data...'
+            ),
+            haveAchievements ? onlyOneUser ? _react2['default'].createElement(_AchievementsList2['default'], {
+              achievements: this.state.achievements[this.state.steamId] }) : _react2['default'].createElement(_AchievementsComparison2['default'], { achievements: this.state.achievements }) : _react2['default'].createElement(
+              'p',
               null,
               'Loading achievements...'
             )
@@ -93015,19 +93025,19 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.SteamGamePage_achievementsList_3F0 {\n  padding-left: 0;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r {\n  display: inline-block;\n  list-style: none;\n  width: 240px;\n  margin: 0 8px 8px 0;\n  float: left;\n  position: relative;\n  overflow: hidden;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r > span {\n  display: inline-block;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz {\n  display: inline-block;\n  vertical-align: middle;\n  position: absolute;\n  left: 72px;\n  width: 168px;\n}\n\n.SteamGamePage_clearfix_1GN:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;ACdjE;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;;AAED;EACE,gBAAgB;CA6BjB;;AA3BC;EACE,sBAAsB;EACtB,iBAAiB;EACjB,aAAa;EACb,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;EACnB,iBAAiB;CAmBlB;;AAjBC;EACE,sBAAsB;CACvB;;AAED;EACE,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;;AAED;EACE,sBAAsB;EACtB,uBAAuB;EACvB,mBAAmB;EACnB,WAAW;EACX,aAAa;CACd;;AAIL;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX","file":"SteamGamePage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.achievementsList {\n  padding-left: 0;\n\n  .achievement {\n    display: inline-block;\n    list-style: none;\n    width: 240px;\n    margin: 0 8px 8px 0;\n    float: left;\n    position: relative;\n    overflow: hidden;\n\n    & > span {\n      display: inline-block;\n    }\n\n    .achievementIcon {\n      border-radius: 4px;\n      display: inline-block;\n      vertical-align: middle;\n    }\n\n    .achievementName {\n      display: inline-block;\n      vertical-align: middle;\n      position: absolute;\n      left: 72px;\n      width: 168px;\n    }\n  }\n}\n\n.clearfix:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamGamePage_achievementsList_3F0 {\n  padding-left: 0;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r {\n  display: inline-block;\n  list-style: none;\n  width: 240px;\n  margin: 0 8px 8px 0;\n  float: left;\n  position: relative;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz {\n  display: inline-block;\n  vertical-align: middle;\n  position: absolute;\n  left: 72px;\n  width: 168px;\n}\n\n.SteamGamePage_clearfix_1GN:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/AchievementsList.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;EACE,gBAAgB;CAwBjB;AAtBC;EACE,sBAAsB;EACtB,iBAAiB;EACjB,aAAa;EACb,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;CAepB;AAbC;EACE,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;AAED;EACE,sBAAsB;EACtB,uBAAuB;EACvB,mBAAmB;EACnB,WAAW;EACX,aAAa;CACd;;AAIL;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX;;ACjCD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB","file":"SteamGamePage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.achievementsList {\n  padding-left: 0;\n\n  .achievement {\n    display: inline-block;\n    list-style: none;\n    width: 240px;\n    margin: 0 8px 8px 0;\n    float: left;\n    position: relative;\n\n    .achievementIcon {\n      border-radius: 4px;\n      display: inline-block;\n      vertical-align: middle;\n    }\n\n    .achievementName {\n      display: inline-block;\n      vertical-align: middle;\n      position: absolute;\n      left: 72px;\n      width: 168px;\n    }\n  }\n}\n\n.clearfix:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n","@import '../variables.scss';\n@import './AchievementsList.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
-  	"root": "SteamGamePage_root_3OO",
-  	"container": "SteamGamePage_container_2h6",
-  	"clearSteamGame": "SteamGamePage_clearSteamGame_2Cz",
-  	"gameIcon": "SteamGamePage_gameIcon_2GW",
   	"achievementsList": "SteamGamePage_achievementsList_3F0",
   	"achievement": "SteamGamePage_achievement_14r",
   	"achievementIcon": "SteamGamePage_achievementIcon_O3H",
   	"achievementName": "SteamGamePage_achievementName_3tz",
-  	"clearfix": "SteamGamePage_clearfix_1GN"
+  	"clearfix": "SteamGamePage_clearfix_1GN",
+  	"root": "SteamGamePage_root_3OO",
+  	"container": "SteamGamePage_container_2h6",
+  	"clearSteamGame": "SteamGamePage_clearSteamGame_2Cz",
+  	"gameIcon": "SteamGamePage_gameIcon_2GW"
   };
 
 /***/ },
@@ -93121,16 +93131,12 @@ module.exports =
               return _react2['default'].createElement(
                 'li',
                 { key: achievement.key, className: _SteamGamePageScss2['default'].achievement },
+                typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
+                  className: _SteamGamePageScss2['default'].achievementIcon, width: '64', height: '64' }) : '',
                 _react2['default'].createElement(
                   'span',
-                  { 'data-tt': title },
-                  typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
-                    className: _SteamGamePageScss2['default'].achievementIcon, width: '64', height: '64' }) : '',
-                  _react2['default'].createElement(
-                    'span',
-                    { className: _SteamGamePageScss2['default'].achievementName },
-                    achievement.name
-                  )
+                  { 'data-tt': title, className: _SteamGamePageScss2['default'].achievementName },
+                  achievement.name
                 )
               );
             })
@@ -93692,6 +93698,149 @@ module.exports =
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
+
+/***/ },
+/* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamGamePageScss = __webpack_require__(61);
+  
+  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
+  
+  var _classnames = __webpack_require__(33);
+  
+  var _classnames2 = _interopRequireDefault(_classnames);
+  
+  var AchievementsComparison = (function (_Component) {
+    _inherits(AchievementsComparison, _Component);
+  
+    function AchievementsComparison() {
+      _classCallCheck(this, AchievementsComparison);
+  
+      _get(Object.getPrototypeOf(AchievementsComparison.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(AchievementsComparison, [{
+      key: 'render',
+      value: function render() {
+        var _this = this;
+  
+        var steamIds = Object.keys(this.props.achievements);
+        return _react2['default'].createElement(
+          'div',
+          { className: _SteamGamePageScss2['default'].achievementsComparison },
+          steamIds.map((function (steamId) {
+            var achievements = _this.props.achievements[steamId];
+            return _react2['default'].createElement(
+              'p',
+              null,
+              steamId
+            );
+          }).bind(this))
+        );
+      }
+    }]);
+  
+    return AchievementsComparison;
+  })(_react.Component);
+  
+  exports['default'] = AchievementsComparison;
+  module.exports = exports['default'];
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamGamePageScss = __webpack_require__(61);
+  
+  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
+  
+  var _classnames = __webpack_require__(33);
+  
+  var _classnames2 = _interopRequireDefault(_classnames);
+  
+  var PlayersList = (function (_Component) {
+    _inherits(PlayersList, _Component);
+  
+    function PlayersList() {
+      _classCallCheck(this, PlayersList);
+  
+      _get(Object.getPrototypeOf(PlayersList.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(PlayersList, [{
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'ul',
+          { className: _SteamGamePageScss2['default'].playersList },
+          this.props.players.map(function (player) {
+            return _react2['default'].createElement(
+              'li',
+              { className: _SteamGamePageScss2['default'].player },
+              _react2['default'].createElement(
+                'a',
+                { href: player.profileurl, target: '_blank',
+                  className: _SteamGamePageScss2['default'].playerProfileLink },
+                _react2['default'].createElement('img', { src: player.avatar, className: _SteamGamePageScss2['default'].playerAvatar,
+                  alt: player.steamid }),
+                _react2['default'].createElement(
+                  'span',
+                  { className: _SteamGamePageScss2['default'].playerName },
+                  player.personaname
+                )
+              )
+            );
+          })
+        );
+      }
+    }]);
+  
+    return PlayersList;
+  })(_react.Component);
+  
+  exports['default'] = PlayersList;
+  module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

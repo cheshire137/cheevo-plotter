@@ -1,4 +1,5 @@
 @import '../variables.scss';
+@import './AchievementsList.scss';
 
 .root {
   width: 100%;
@@ -27,45 +28,4 @@ h1 {
   border-radius: 4px;
   display: inline-block;
   vertical-align: middle;
-}
-
-.achievementsList {
-  padding-left: 0;
-
-  .achievement {
-    display: inline-block;
-    list-style: none;
-    width: 240px;
-    margin: 0 8px 8px 0;
-    float: left;
-    position: relative;
-    overflow: hidden;
-
-    & > span {
-      display: inline-block;
-    }
-
-    .achievementIcon {
-      border-radius: 4px;
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    .achievementName {
-      display: inline-block;
-      vertical-align: middle;
-      position: absolute;
-      left: 72px;
-      width: 168px;
-    }
-  }
-}
-
-.clearfix:after {
-  visibility: hidden;
-  display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
 }

@@ -30,6 +30,11 @@ class Steam {
                          '&steamids=' + batches[i].join(','));
       summaries = summaries.concat(result.response.players);
     }
+    summaries.sort((a, b) => {
+      const aName = a.personaname.toLowerCase();
+      const bName = b.personaname.toLowerCase();
+      return aName.localeCompare(bName);
+    });
     return summaries;
   }
 
@@ -115,7 +120,6 @@ class Steam {
   static async get(path, type) {
     type = type || 'json';
     const url = Config[process.env.NODE_ENV].serverUri + path;
-    console.log(url);
     const response = await fetch(url);
     return type === 'json' ? await response.json() : await response.text();
   }
