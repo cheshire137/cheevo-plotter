@@ -43,8 +43,14 @@ class SteamGamePage extends Component {
 
   onAchievementsLoaded(steamId, data) {
     var achievements = this.state.achievements || {};
+    var loadCount = this.state.achievementLoadCount;
+    if (typeof loadCount === 'undefined') {
+      loadCount = 0;
+    }
+    loadCount++;
     achievements[steamId] = data.achievements;
-    this.setState({iconUri: data.iconUri, achievements: achievements});
+    this.setState({iconUri: data.iconUri, achievements: achievements,
+                   achievementLoadCount: loadCount});
   }
 
   render() {
@@ -52,7 +58,8 @@ class SteamGamePage extends Component {
     const profileUrl = 'https://steamcommunity.com/id/' +
                        this.props.username + '/';
     const onlyOneUser = this.state.selectedIds.length === 1;
-    const haveAchievements = typeof this.state.achievements === 'object';
+    const haveAchievements = typeof this.state.achievements === 'object' &&
+        this.state.achievementLoadCount === this.state.selectedIds.length;
     const havePlayers = typeof this.state.players === 'object';
     return (
       <div className={s.root}>
@@ -80,7 +87,8 @@ class SteamGamePage extends Component {
             <AchievementsList
                 achievements={this.state.achievements[this.state.steamId]} />
           ) : (
-            <AchievementsComparison achievements={this.state.achievements} />
+            <AchievementsComparison
+                achievementsBySteamId={this.state.achievements} />
           ) : (
             <p>Loading achievements...</p>
           )}

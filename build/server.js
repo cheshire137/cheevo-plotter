@@ -3491,7 +3491,6 @@ module.exports =
       key: 'render',
       value: function render() {
         var selectedSteamIds = Object.keys(this.state.ownedGames);
-        console.log('selected ids', selectedSteamIds);
         var profileUrl = 'https://steamcommunity.com/id/' + this.props.username + '/';
         var haveSteamId = typeof this.state.steamId !== 'undefined';
         var haveGamesList = typeof this.state.games === 'object';
@@ -92916,8 +92915,14 @@ module.exports =
       key: 'onAchievementsLoaded',
       value: function onAchievementsLoaded(steamId, data) {
         var achievements = this.state.achievements || {};
+        var loadCount = this.state.achievementLoadCount;
+        if (typeof loadCount === 'undefined') {
+          loadCount = 0;
+        }
+        loadCount++;
         achievements[steamId] = data.achievements;
-        this.setState({ iconUri: data.iconUri, achievements: achievements });
+        this.setState({ iconUri: data.iconUri, achievements: achievements,
+          achievementLoadCount: loadCount });
       }
     }, {
       key: 'render',
@@ -92925,7 +92930,7 @@ module.exports =
         var gameUrl = 'https://steamcommunity.com/app/' + this.props.appId;
         var profileUrl = 'https://steamcommunity.com/id/' + this.props.username + '/';
         var onlyOneUser = this.state.selectedIds.length === 1;
-        var haveAchievements = typeof this.state.achievements === 'object';
+        var haveAchievements = typeof this.state.achievements === 'object' && this.state.achievementLoadCount === this.state.selectedIds.length;
         var havePlayers = typeof this.state.players === 'object';
         return _react2['default'].createElement(
           'div',
@@ -92966,7 +92971,8 @@ module.exports =
               'Loading player data...'
             ),
             haveAchievements ? onlyOneUser ? _react2['default'].createElement(_AchievementsList2['default'], {
-              achievements: this.state.achievements[this.state.steamId] }) : _react2['default'].createElement(_AchievementsComparison2['default'], { achievements: this.state.achievements }) : _react2['default'].createElement(
+              achievements: this.state.achievements[this.state.steamId] }) : _react2['default'].createElement(_AchievementsComparison2['default'], {
+              achievementsBySteamId: this.state.achievements }) : _react2['default'].createElement(
               'p',
               null,
               'Loading achievements...'
@@ -93025,7 +93031,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamGamePage_achievementsList_3F0 {\n  padding-left: 0;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r {\n  display: inline-block;\n  list-style: none;\n  width: 240px;\n  margin: 0 8px 8px 0;\n  float: left;\n  position: relative;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz {\n  display: inline-block;\n  vertical-align: middle;\n  position: absolute;\n  left: 72px;\n  width: 168px;\n}\n\n.SteamGamePage_clearfix_1GN:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/AchievementsList.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;EACE,gBAAgB;CAwBjB;AAtBC;EACE,sBAAsB;EACtB,iBAAiB;EACjB,aAAa;EACb,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;CAepB;AAbC;EACE,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;AAED;EACE,sBAAsB;EACtB,uBAAuB;EACvB,mBAAmB;EACnB,WAAW;EACX,aAAa;CACd;;AAIL;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX;;ACjCD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB","file":"SteamGamePage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.achievementsList {\n  padding-left: 0;\n\n  .achievement {\n    display: inline-block;\n    list-style: none;\n    width: 240px;\n    margin: 0 8px 8px 0;\n    float: left;\n    position: relative;\n\n    .achievementIcon {\n      border-radius: 4px;\n      display: inline-block;\n      vertical-align: middle;\n    }\n\n    .achievementName {\n      display: inline-block;\n      vertical-align: middle;\n      position: absolute;\n      left: 72px;\n      width: 168px;\n    }\n  }\n}\n\n.clearfix:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n","@import '../variables.scss';\n@import './AchievementsList.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamGamePage_achievementsList_3F0 {\n  padding-left: 0;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r {\n  display: inline-block;\n  list-style: none;\n  width: 240px;\n  margin: 0 8px 8px 0;\n  float: left;\n  position: relative;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz {\n  display: inline-block;\n  vertical-align: middle;\n  position: absolute;\n  left: 72px;\n  width: 168px;\n}\n\n.SteamGamePage_clearfix_1GN:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n.SteamGamePage_achievementsComparison_2Ql {\n\n}\n.SteamGamePage_playersList_3MY {\n  list-style: none;\n  padding-left: 0;\n}\n.SteamGamePage_playersList_3MY li {\n  display: inline-block;\n  margin: 0 12px 8px 0;\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_intro_20n {\n  font-weight: 700;\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_player_2ID .SteamGamePage_playerProfileLink_2Ua {\n\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_player_2ID .SteamGamePage_playerAvatar_yN0 {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 8px;\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_player_2ID .SteamGamePage_playerName_3Y6 {\n\n}\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/AchievementsList.scss","/./src/components/SteamGamePage/AchievementsComparison.scss","/./src/components/SteamGamePage/PlayersList.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;EACE,gBAAgB;CAwBjB;AAtBC;EACE,sBAAsB;EACtB,iBAAiB;EACjB,aAAa;EACb,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;CAepB;AAbC;EACE,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;AAED;EACE,sBAAsB;EACtB,uBAAuB;EACvB,mBAAmB;EACnB,WAAW;EACX,aAAa;CACd;;AAIL;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX;AClCD;;CAEC;ACFD;EACE,iBAAiB;EACjB,gBAAgB;CA0BjB;AAxBC;EACE,sBAAsB;EACtB,qBAAqB;CAqBtB;AAnBC;EACE,iBAAiB;CAClB;AAGC;;CAEC;AAED;EACE,mBAAmB;EACnB,sBAAsB;EACtB,kBAAkB;CACnB;AAED;;CAEC;;ACtBP;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB","file":"SteamGamePage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.achievementsList {\n  padding-left: 0;\n\n  .achievement {\n    display: inline-block;\n    list-style: none;\n    width: 240px;\n    margin: 0 8px 8px 0;\n    float: left;\n    position: relative;\n\n    .achievementIcon {\n      border-radius: 4px;\n      display: inline-block;\n      vertical-align: middle;\n    }\n\n    .achievementName {\n      display: inline-block;\n      vertical-align: middle;\n      position: absolute;\n      left: 72px;\n      width: 168px;\n    }\n  }\n}\n\n.clearfix:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n","@import '../variables.scss';\n\n.achievementsComparison {\n\n}\n","@import '../variables.scss';\n\n.playersList {\n  list-style: none;\n  padding-left: 0;\n\n  li {\n    display: inline-block;\n    margin: 0 12px 8px 0;\n\n    &.intro {\n      font-weight: 700;\n    }\n\n    &.player {\n      .playerProfileLink {\n\n      }\n\n      .playerAvatar {\n        border-radius: 4px;\n        display: inline-block;\n        margin-right: 8px;\n      }\n\n      .playerName {\n\n      }\n    }\n  }\n}\n","@import '../variables.scss';\n@import './AchievementsList.scss';\n@import './AchievementsComparison.scss';\n@import './PlayersList.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
@@ -93034,6 +93040,13 @@ module.exports =
   	"achievementIcon": "SteamGamePage_achievementIcon_O3H",
   	"achievementName": "SteamGamePage_achievementName_3tz",
   	"clearfix": "SteamGamePage_clearfix_1GN",
+  	"achievementsComparison": "SteamGamePage_achievementsComparison_2Ql",
+  	"playersList": "SteamGamePage_playersList_3MY",
+  	"intro": "SteamGamePage_intro_20n",
+  	"player": "SteamGamePage_player_2ID",
+  	"playerProfileLink": "SteamGamePage_playerProfileLink_2Ua",
+  	"playerAvatar": "SteamGamePage_playerAvatar_yN0",
+  	"playerName": "SteamGamePage_playerName_3Y6",
   	"root": "SteamGamePage_root_3OO",
   	"container": "SteamGamePage_container_2h6",
   	"clearSteamGame": "SteamGamePage_clearSteamGame_2Cz",
@@ -93734,27 +93747,73 @@ module.exports =
   var AchievementsComparison = (function (_Component) {
     _inherits(AchievementsComparison, _Component);
   
-    function AchievementsComparison() {
+    function AchievementsComparison(props, context) {
       _classCallCheck(this, AchievementsComparison);
   
-      _get(Object.getPrototypeOf(AchievementsComparison.prototype), 'constructor', this).apply(this, arguments);
+      _get(Object.getPrototypeOf(AchievementsComparison.prototype), 'constructor', this).call(this, props, context);
+      var achievements = [];
+      for (var steamId in props.achievementsBySteamId) {
+        for (var i = 0; i < props.achievementsBySteamId[steamId].length; i++) {
+          var achievement = props.achievementsBySteamId[steamId][i];
+          var inList = false;
+          for (var j = 0; j < achievements.length; j++) {
+            if (achievements[j].key === achievement.key) {
+              inList = true;
+              achievements[j].players[steamId] = {
+                isUnlocked: achievement.isUnlocked,
+                iconUri: achievement.iconUri
+              };
+              break;
+            }
+          }
+          if (!inList) {
+            var players = {};
+            players[steamId] = {
+              isUnlocked: achievement.isUnlocked,
+              iconUri: achievement.iconUri
+            };
+            achievements.push({
+              key: achievement.key,
+              name: achievement.name,
+              players: players
+            });
+          }
+        }
+      }
+      this.state = { achievements: achievements };
     }
   
     _createClass(AchievementsComparison, [{
       key: 'render',
       value: function render() {
-        var _this = this;
-  
-        var steamIds = Object.keys(this.props.achievements);
         return _react2['default'].createElement(
           'div',
           { className: _SteamGamePageScss2['default'].achievementsComparison },
-          steamIds.map((function (steamId) {
-            var achievements = _this.props.achievements[steamId];
+          this.state.achievements.map((function (achievement) {
+            var playerIds = Object.keys(achievement.players);
             return _react2['default'].createElement(
-              'p',
-              null,
-              steamId
+              'div',
+              { key: achievement.key },
+              _react2['default'].createElement(
+                'h2',
+                null,
+                achievement.name
+              ),
+              _react2['default'].createElement(
+                'ul',
+                null,
+                playerIds.map(function (playerId) {
+                  var status = achievement.players[playerId];
+                  return _react2['default'].createElement(
+                    'li',
+                    { key: playerId },
+                    typeof status.iconUri === 'string' ? _react2['default'].createElement('img', { src: status.iconUri, alt: achievement.name,
+                      className: _SteamGamePageScss2['default'].achievementIcon, width: '64',
+                      height: '64' }) : '',
+                    playerId
+                  );
+                })
+              )
             );
           }).bind(this))
         );
@@ -93795,10 +93854,6 @@ module.exports =
   
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
   
-  var _classnames = __webpack_require__(33);
-  
-  var _classnames2 = _interopRequireDefault(_classnames);
-  
   var PlayersList = (function (_Component) {
     _inherits(PlayersList, _Component);
   
@@ -93814,10 +93869,16 @@ module.exports =
         return _react2['default'].createElement(
           'ul',
           { className: _SteamGamePageScss2['default'].playersList },
+          _react2['default'].createElement(
+            'li',
+            { className: _SteamGamePageScss2['default'].intro },
+            'Comparing:'
+          ),
           this.props.players.map(function (player) {
+            var title = 'Steam ID: ' + player.steamid;
             return _react2['default'].createElement(
               'li',
-              { className: _SteamGamePageScss2['default'].player },
+              { 'data-tt': title, key: player.steamid, className: _SteamGamePageScss2['default'].player },
               _react2['default'].createElement(
                 'a',
                 { href: player.profileurl, target: '_blank',

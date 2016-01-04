@@ -190,7 +190,6 @@ class SteamUserPage extends Component {
 
   render() {
     const selectedSteamIds = Object.keys(this.state.ownedGames);
-    console.log('selected ids', selectedSteamIds);
     const profileUrl = 'https://steamcommunity.com/id/' +
                        this.props.username + '/';
     const haveSteamId = typeof this.state.steamId !== 'undefined';
