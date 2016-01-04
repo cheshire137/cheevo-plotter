@@ -2,11 +2,15 @@
 @import '../variables.scss';
 
 html {
-  color: #222;
   font-weight: 100;
   font-size: 1em;
   font-family: $font-family-base;
   line-height: 1.375;
+}
+
+body {
+  color: $text-color;
+  background-color: $background-color;
 }
 
 body, .appContainer {
@@ -28,13 +32,22 @@ a, a:link, a:visited {
   -ms-transition: all 0.25s ease-in-out;
   -o-transition: all 0.25s ease-in-out;
   transition: all 0.25s ease-in-out;
+  color: $link-color;
 }
 
 a:hover, a:focus, a:active {
+  color: $link-hover-color;
 }
 
 h1, h2, h3 {
   font-weight: 400;
+}
+
+h1 {
+  margin-top: 1rem;
+}
+
+h2, h3 {
   margin-top: 0;
 }
 
