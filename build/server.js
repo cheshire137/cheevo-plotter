@@ -3354,6 +3354,11 @@ module.exports =
     }, {
       key: 'onFriendSummariesFetched',
       value: function onFriendSummariesFetched(friends) {
+        friends.sort(function (a, b) {
+          var aName = a.personaname.toLowerCase();
+          var bName = b.personaname.toLowerCase();
+          return aName.localeCompare(bName);
+        });
         this.setState({ friends: friends });
       }
     }, {
@@ -3779,7 +3784,7 @@ module.exports =
           if (bName.indexOf('a ') === 0) {
             bName = bName.substring(2);
           }
-          return aName < bName ? -1 : aName > bName ? 1 : 0;
+          return aName.localeCompare(bName);
         });
         this._sortedIds = apps.map(function (app) {
           return String(app.appid);

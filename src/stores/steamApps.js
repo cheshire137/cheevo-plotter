@@ -21,7 +21,7 @@ class SteamApps {
       if (bName.indexOf('a ') === 0) {
         bName = bName.substring(2);
       }
-      return aName < bName ? -1 : aName > bName ? 1 : 0;
+      return aName.localeCompare(bName);
     });
     this._sortedIds = apps.map((app) => String(app.appid));
     this._sortedNames = apps.map((app) => app.name);
