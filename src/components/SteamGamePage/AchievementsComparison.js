@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import s from './SteamGamePage.scss';
-import cx from 'classnames';
 import AchievementComparison from './AchievementComparison';
+import UnlockedBarChart from './UnlockedBarChart';
 
 class AchievementsComparison extends Component {
   constructor(props, context) {
@@ -80,13 +80,17 @@ class AchievementsComparison extends Component {
 
   render() {
     return (
-      <ul className={s.achievementsComparison}>
-        {this.state.achievements.map((achievement) => {
-          return <AchievementComparison players={this.state.players}
-                                        achievement={achievement}
-                                        key={achievement.key} />;
-        }.bind(this))}
-      </ul>
+      <div className={s.achievementsComparison}>
+        <UnlockedBarChart achievements={this.state.achievements}
+                          players={this.state.players} />
+        <ul className={s.achievementsList}>
+          {this.state.achievements.map((achievement) => {
+            return <AchievementComparison players={this.state.players}
+                                          achievement={achievement}
+                                          key={achievement.key} />;
+          }.bind(this))}
+        </ul>
+      </div>
     );
   }
 }

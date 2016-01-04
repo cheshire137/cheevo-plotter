@@ -1,0 +1,25 @@
+@import '../variables.scss';
+
+.bar {
+  fill: $periwinkle;
+
+  &:hover {
+    fill: $cobalt;
+  }
+}
+
+.axis {
+  font: 0.9rem $font-family-base;
+
+  path, line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  &.x {
+    path {
+      display: none;
+    }
+  }
+}
