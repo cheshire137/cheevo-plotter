@@ -19,7 +19,7 @@ class SteamUserPage extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {};
+    this.state = {ownedGames: {}};
   }
 
   componentWillMount() {
@@ -68,14 +68,16 @@ class SteamUserPage extends Component {
   fetchGames(steamId) {
     var games = LocalStorage.get('steam-games');
     if (typeof games === 'object') {
-      this.setState({games: games});
+      var ownedGames = this.state.ownedGames;
+      ownedGames[steamId] = games;
+      this.setState({ownedGames: ownedGames});
+      this.updateSharedGames();
       return;
     }
-    Steam.getOwnedGames(steamId).
-          then(this.onGamesFetched.bind(this));
+    Steam.getOwnedGames(steamId).then(this.onGamesFetched.bind(this, steamId));
   }
 
-  onGamesFetched(data) {
+  organizeGamesResponse(data) {
     var games = data.response.games;
     var playedGames = [];
     for (var i = 0; i < games.length; i++) {
@@ -84,8 +86,38 @@ class SteamUserPage extends Component {
         playedGames.push(game.appid);
       }
     }
-    LocalStorage.set('steam-games', SteamApps.sortIds(playedGames));
-    this.setState({games: playedGames});
+    return SteamApps.sortIds(playedGames);
+  }
+
+  onGamesFetched(steamId, data) {
+    const playedGames = this.organizeGamesResponse(data);
+    LocalStorage.set('steam-games', playedGames);
+    var ownedGames = this.state.ownedGames;
+    ownedGames[steamId] = playedGames;
+    this.setState({ownedGames: ownedGames});
+    this.updateSharedGames();
+  }
+
+  updateSharedGames(gamesBySteamId) {
+    gamesBySteamId = gamesBySteamId || this.state.ownedGames;
+    var ownedGames = [];
+    for (var steamId in gamesBySteamId) {
+      ownedGames.push(this.state.ownedGames[steamId]);
+    }
+    ownedGames.sort((a, b) => {
+      return a.length - b.length;
+    });
+    var sharedGames;
+    if (ownedGames.length < 2) {
+      sharedGames = ownedGames[0];
+    } else {
+      sharedGames = ownedGames.shift().filter((v) => {
+        return ownedGames.every((a) => {
+          return a.indexOf(v) > -1;
+        });
+      });
+    }
+    this.setState({games: sharedGames});
   }
 
   clearSteamUsername(event) {
@@ -96,6 +128,38 @@ class SteamUserPage extends Component {
     Location.push({
       ...(parsePath('/'))
     });
+  }
+
+  onFriendSelectionChanged(selectedFriends) {
+    console.log('now selected', selectedFriends);
+    var ownedGames = this.state.ownedGames;
+    if (typeof this.state.steamId !== 'undefined') {
+      for (var steamId in ownedGames) {
+        if (selectedFriends.indexOf(steamId) < 0 &&
+            steamId !== this.state.steamId) {
+          delete ownedGames[steamId];
+        }
+      }
+      this.updateSharedGames(ownedGames);
+      this.setState({ownedGames: ownedGames});
+    }
+    const knownFriends = Object.keys(ownedGames);
+    for (var i = 0; i < selectedFriends.length; i++) {
+      var steamId = selectedFriends[i];
+      if (knownFriends.indexOf(steamId) < 0) {
+        console.log('looking up games for', steamId);
+        Steam.getOwnedGames(steamId).
+              then(this.onFriendGamesFetched.bind(this, steamId));
+      }
+    }
+  }
+
+  onFriendGamesFetched(steamId, data) {
+    var ownedGames = this.state.ownedGames;
+    const friendGames = this.organizeGamesResponse(data);
+    ownedGames[steamId] = friendGames;
+    this.setState({ownedGames: ownedGames});
+    this.updateSharedGames();
   }
 
   render() {
@@ -114,7 +178,8 @@ class SteamUserPage extends Component {
           </h1>
           {typeof this.state.friends === 'object' ? (
             <FriendsList username={this.props.username}
-                         friends={this.state.friends} />
+                         friends={this.state.friends}
+                         onSelectionChange={this.onFriendSelectionChanged.bind(this)} />
           ) : ''}
           {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>

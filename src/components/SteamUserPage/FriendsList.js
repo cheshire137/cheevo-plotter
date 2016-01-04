@@ -9,9 +9,7 @@ class FriendsList extends Component {
   }
 
   onFriendToggled(steamId, isSelected) {
-    console.log(steamId, isSelected);
     var selectedFriends = this.state.selectedFriends;
-    console.log('prev selected', selectedFriends);
     const index = selectedFriends.indexOf(steamId);
     if (isSelected && index < 0) {
       selectedFriends.push(steamId);
@@ -19,8 +17,8 @@ class FriendsList extends Component {
       selectedFriends = selectedFriends.slice(0, index).
           concat(selectedFriends.slice(index + 1));
     }
-    console.log('now selected', selectedFriends);
     this.setState({selectedFriends: selectedFriends});
+    this.props.onSelectionChange(selectedFriends);
   }
 
   render() {
