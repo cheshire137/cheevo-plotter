@@ -3,10 +3,8 @@ import SteamAppsList from './steam-apps.json';
 class SteamApps {
   static sortedIds() {
     if (typeof this._sortedIds === 'object') {
-      console.log('using existing list of app ids');
       return this._sortedIds;
     }
-    console.log('constructing list of sorted app ids');
     const apps = SteamAppsList.applist.apps;
     apps.sort((a, b) => {
       var aName = a.name.toLowerCase();

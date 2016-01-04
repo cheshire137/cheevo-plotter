@@ -1,23 +1,27 @@
 import React, { Component, PropTypes } from 'react';
 import s from './SteamUserPage.scss';
-import Link from '../Link';
-import SteamApps from '../../stores/steamApps';
+import SteamGame from './SteamGame';
 
 class PlayedGamesList extends Component {
   render() {
+    const index = Math.ceil(this.props.games.length / 2.0);
+    const column1 = this.props.games.slice(0, index);
+    const column2 = this.props.games.slice(index);
     return (
-      <ul>
-        {this.props.games.map((appId) => {
-          return (
-            <li key={appId}>
-              <Link className={s.gameLink}
-                    to={'/steam/' + this.props.username + '/game/' + appId}>
-                {SteamApps.getName(appId)}
-              </Link>
-            </li>
-          );
-        }.bind(this))}
-      </ul>
+      <div className={s.playedGames}>
+        <ul className={s.leftColumn}>
+          {column1.map((appId) => {
+            return <SteamGame username={this.props.username}
+                              appId={appId} key={appId} />;
+          }.bind(this))}
+        </ul>
+        <ul className={s.rightColumn}>
+          {column2.map((appId) => {
+            return <SteamGame username={this.props.username}
+                              appId={appId} key={appId} />;
+          }.bind(this))}
+        </ul>
+      </div>
     );
   }
 }
