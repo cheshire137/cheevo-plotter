@@ -32,11 +32,6 @@ h1 {
 .achievementsList {
   padding-left: 0;
 
-  &:after {
-    content: " ";
-    display: table;
-  }
-
   .achievement {
     display: inline-block;
     list-style: none;
@@ -63,4 +58,13 @@ h1 {
       left: 72px;
     }
   }
+}
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
 }

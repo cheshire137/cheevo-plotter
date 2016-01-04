@@ -82,6 +82,8 @@ class SteamUserPage extends Component {
   }
 
   render() {
+    const profileUrl = 'https://steamcommunity.com/id/' +
+                       this.props.username + '/';
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -90,7 +92,8 @@ class SteamUserPage extends Component {
                   onClick={this.clearSteamUsername}>
               &laquo;
             </Link>
-            Steam / {this.props.username}
+            Steam /
+            <a href={profileUrl} target="_blank"> {this.props.username}</a>
           </h1>
           {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>

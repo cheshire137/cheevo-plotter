@@ -43,6 +43,9 @@ class SteamGamePage extends Component {
   }
 
   render() {
+    const gameUrl = 'https://steamcommunity.com/app/' + this.props.appId;
+    const profileUrl = 'https://steamcommunity.com/id/' +
+                       this.props.username + '/';
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -55,7 +58,10 @@ class SteamGamePage extends Component {
               <img src={this.state.iconUri} alt={this.state.gameName}
                    className={s.gameIcon} />
             ) : ''}
-            Steam / {this.props.username} / {this.state.gameName}
+            Steam /
+            <a href={profileUrl} target="_blank"> {this.props.username} </a>
+            /
+            <a href={gameUrl} target="_blank"> {this.state.gameName}</a>
           </h1>
           {typeof this.state.achievements === 'object' ? (
             <AchievementsList achievements={this.state.achievements} />

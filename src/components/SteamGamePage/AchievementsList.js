@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import s from './SteamGamePage.scss';
+import cx from 'classnames';
 
 class AchievementsList extends Component {
   getUnlockedCount() {
@@ -23,7 +24,7 @@ class AchievementsList extends Component {
         <p className={s.achievementsSummary}>
           Unlocked {unlockedCount} / {this.props.achievements.length} &mdash; {percentage}%
         </p>
-        <ul className={s.achievementsList}>
+        <ul className={cx(s.achievementsList, s.clearfix)}>
           {this.props.achievements.map((achievement) => {
             var title = achievement.isUnlocked ? 'Unlocked' : 'Not yet unlocked';
             return (
