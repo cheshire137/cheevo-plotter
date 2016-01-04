@@ -1,0 +1,46 @@
+@import '../variables.scss';
+
+.achievementComparison {
+  display: inline-block;
+  margin: 0 8px 8px 0;
+  width: 300px;
+  border: 1px solid $mauve;
+  border-radius: 4px;
+  padding: 8px;
+
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+.achievementIcon {
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 8px;
+  float: left;
+}
+
+.achievementName {
+  margin: 0 0 8px 0;
+}
+
+.playerAchievements {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 0 72px;
+
+  .playerAchievement {
+    .playerName {
+      padding-left: 8px;
+    }
+  }
+}
+
+.status {
+
+}

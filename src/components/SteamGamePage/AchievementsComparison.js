@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import s from './SteamGamePage.scss';
 import cx from 'classnames';
+import AchievementComparison from './AchievementComparison';
 
 class AchievementsComparison extends Component {
   constructor(props, context) {
@@ -79,34 +80,13 @@ class AchievementsComparison extends Component {
 
   render() {
     return (
-      <div className={s.achievementsComparison}>
+      <ul className={s.achievementsComparison}>
         {this.state.achievements.map((achievement) => {
-          var playerIds = Object.keys(achievement.players);
-          return (
-            <div key={achievement.key}>
-              <h2>
-                {typeof achievement.iconUri === 'string' ? (
-                  <img src={achievement.iconUri} alt={achievement.name}
-                       className={s.achievementIcon} width="64"
-                       height="64" />
-                ) : ''}
-                {achievement.name}
-              </h2>
-              <ul className={s.playerAchievements}>
-                {playerIds.map((playerId) => {
-                  var player = this.state.players[playerId];
-                  var status = achievement.players[playerId];
-                  return (
-                    <li key={playerId} className={s.playerAchievement}>
-                      {player.personaname} - {status.isUnlocked ? 'unlocked' : 'not yet unlocked'}
-                    </li>
-                  );
-                }.bind(this))}
-              </ul>
-            </div>
-          );
+          return <AchievementComparison players={this.state.players}
+                                        achievement={achievement}
+                                        key={achievement.key} />;
         }.bind(this))}
-      </div>
+      </ul>
     );
   }
 }
