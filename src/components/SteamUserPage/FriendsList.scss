@@ -1,0 +1,19 @@
+@import '../variables.scss';
+
+.friends {
+
+}
+
+.friendsList {
+  list-style: none;
+  padding-left: 0;
+
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}

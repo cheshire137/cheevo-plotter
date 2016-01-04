@@ -1,6 +1,10 @@
 @import '../variables.scss';
 
 .playedGames {
+
+}
+
+.row {
   margin-right: -15px;
   margin-left: -15px;
   -webkit-box-sizing: border-box;
@@ -29,7 +33,7 @@
 }
 
 @media (min-width: $screen-md-min) {
-  .playedGames {
+  .row {
     .leftColumn, .rightColumn {
       width: 47%;
       float: left;

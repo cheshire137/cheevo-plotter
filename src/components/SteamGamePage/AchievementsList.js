@@ -30,7 +30,7 @@ class AchievementsList extends Component {
             var title = achievement.isUnlocked ? 'Unlocked' : 'Not yet unlocked';
             return (
               <li key={achievement.key} className={s.achievement}>
-                <span title={title}>
+                <span data-tt={title}>
                   {typeof achievement.iconUri === 'string' ? (
                     <img src={achievement.iconUri} alt={achievement.name}
                          className={s.achievementIcon} width="64" height="64" />

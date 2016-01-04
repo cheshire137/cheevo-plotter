@@ -3,11 +3,19 @@ import s from './SteamUserPage.scss';
 
 class Friend extends Component {
   render() {
+    const domId = 'friend-' + this.props.friend.steamid;
     return (
       <li className={s.friend}>
-        <a href={this.props.friend.profileurl} target="_blank">
-          <img src={this.props.friend.avatar} alt={this.props.friend.steamid} />
+        <label htmlFor={domId}>
+          <input type="checkbox" id={domId} />
+          <img src={this.props.friend.avatar}
+               className={s.friendAvatar}
+               alt={this.props.friend.steamid} />
           <span className={s.friendName}>{this.props.friend.personaname}</span>
+        </label>
+        <a href={this.props.friend.profileurl} className={s.friendLink}
+           target="_blank" data-tt="View profile">
+          <i className="fa fa-external-link"></i>
         </a>
       </li>
     );

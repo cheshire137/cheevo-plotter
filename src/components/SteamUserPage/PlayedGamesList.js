@@ -8,20 +8,23 @@ class PlayedGamesList extends Component {
     const column1 = this.props.games.slice(0, index);
     const column2 = this.props.games.slice(index);
     return (
-      <div className={s.playedGames}>
-        <ul className={s.leftColumn}>
-          {column1.map((appId) => {
-            return <SteamGame username={this.props.username}
-                              appId={appId} key={appId} />;
-          }.bind(this))}
-        </ul>
-        <ul className={s.rightColumn}>
-          {column2.map((appId) => {
-            return <SteamGame username={this.props.username}
-                              appId={appId} key={appId} />;
-          }.bind(this))}
-        </ul>
-      </div>
+      <section className={s.playedGames}>
+        <h2>Played Games ({this.props.games.length})</h2>
+        <div className={s.row}>
+          <ul className={s.leftColumn}>
+            {column1.map((appId) => {
+              return <SteamGame username={this.props.username}
+                                appId={appId} key={appId} />;
+            }.bind(this))}
+          </ul>
+          <ul className={s.rightColumn}>
+            {column2.map((appId) => {
+              return <SteamGame username={this.props.username}
+                                appId={appId} key={appId} />;
+            }.bind(this))}
+          </ul>
+        </div>
+      </section>
     );
   }
 }

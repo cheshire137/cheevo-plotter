@@ -113,21 +113,15 @@ class SteamUserPage extends Component {
             <a href={profileUrl} target="_blank"> {this.props.username}</a>
           </h1>
           {typeof this.state.friends === 'object' ? (
-            <FriendsList friends={this.state.friends} />
+            <FriendsList username={this.props.username}
+                         friends={this.state.friends} />
           ) : ''}
           {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>
           ) : typeof this.state.games === 'object' ? (
-            <div className={s.loadedGames}>
-              <p>
-                <strong>{this.props.username} </strong>
-                has played <strong>{this.state.games.length} </strong>
-                {this.state.games.length === 1 ? 'game' : 'games'}.
-              </p>
-              <PlayedGamesList steamId={this.state.steamId}
-                               games={this.state.games}
-                               username={this.props.username} />
-            </div>
+            <PlayedGamesList steamId={this.state.steamId}
+                             games={this.state.games}
+                             username={this.props.username} />
           ) : (
             <p>Loading games list...</p>
           )}

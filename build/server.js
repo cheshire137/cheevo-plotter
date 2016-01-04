@@ -83,11 +83,11 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _componentsHtml = __webpack_require__(67);
+  var _componentsHtml = __webpack_require__(70);
   
   var _componentsHtml2 = _interopRequireDefault(_componentsHtml);
   
-  var _assets = __webpack_require__(68);
+  var _assets = __webpack_require__(71);
   
   var _assets2 = _interopRequireDefault(_assets);
   
@@ -111,7 +111,7 @@ module.exports =
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api/content', __webpack_require__(69));
+  server.use('/api/content', __webpack_require__(72));
   
   server.all('*', function (req, res, next) {
     res.header('Access-Control-Allow-Origin', _configJson2['default'][("development")].clientUri);
@@ -341,15 +341,15 @@ module.exports =
   
   var _componentsSteamUserPage2 = _interopRequireDefault(_componentsSteamUserPage);
   
-  var _componentsSteamGamePage = __webpack_require__(58);
+  var _componentsSteamGamePage = __webpack_require__(60);
   
   var _componentsSteamGamePage2 = _interopRequireDefault(_componentsSteamGamePage);
   
-  var _componentsNotFoundPage = __webpack_require__(61);
+  var _componentsNotFoundPage = __webpack_require__(64);
   
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
   
-  var _componentsErrorPage = __webpack_require__(64);
+  var _componentsErrorPage = __webpack_require__(67);
   
   var _componentsErrorPage2 = _interopRequireDefault(_componentsErrorPage);
   
@@ -1536,10 +1536,13 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */\n\n/**\n * 1. Set default font family to sans-serif.\n * 2. Prevent iOS and IE text size adjust after device orientation change,\n *    without disabling user zoom.\n */\n\nhtml {\n  font-family: sans-serif; /* 1 */\n  -ms-text-size-adjust: 100%; /* 2 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/**\n * Remove default margin.\n */\n\nbody {\n  margin: 0;\n}\n\n/* HTML5 display definitions\n   ========================================================================== */\n\n/**\n * Correct `block` display not defined for any HTML5 element in IE 8/9.\n * Correct `block` display not defined for `details` or `summary` in IE 10/11\n * and Firefox.\n * Correct `block` display not defined for `main` in IE 11.\n */\n\narticle, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {\n  display: block;\n}\n\n/**\n * 1. Correct `inline-block` display not defined in IE 8/9.\n * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.\n */\n\naudio, canvas, progress, video {\n  display: inline-block; /* 1 */\n  vertical-align: baseline; /* 2 */\n}\n\n/**\n * Prevent modern browsers from displaying `audio` without controls.\n * Remove excess height in iOS 5 devices.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Address `[hidden]` styling not present in IE 8/9/10.\n * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.\n */\n\n[hidden], template {\n  display: none;\n}\n\n/* Links\n   ========================================================================== */\n\n/**\n * Remove the gray background color from active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * Improve readability of focused elements when they are also in an\n * active/hover state.\n */\n\na:active, a:hover {\n  outline: 0;\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Address styling not present in IE 8/9/10/11, Safari, and Chrome.\n */\n\nabbr[title] {\n  border-bottom: 1px dotted;\n}\n\n/**\n * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.\n */\n\nb, strong {\n  font-weight: bold;\n}\n\n/**\n * Address styling not present in Safari and Chrome.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Address variable `h1` font-size and margin within `section` and `article`\n * contexts in Firefox 4+, Safari, and Chrome.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/**\n * Address styling not present in IE 8/9.\n */\n\nmark {\n  background: #ff0;\n  color: #000;\n}\n\n/**\n * Address inconsistent and variable font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` affecting `line-height` in all browsers.\n */\n\nsub, sup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsup {\n  top: -0.5em;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove border when inside `a` element in IE 8/9/10.\n */\n\nimg {\n  border: 0;\n}\n\n/**\n * Correct overflow not hidden in IE 9/10/11.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * Address margin not present in IE 8/9 and Safari.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * Address differences between Firefox and other browsers.\n */\n\nhr {\n  -webkit-box-sizing: content-box;\n          box-sizing: content-box;\n  height: 0;\n}\n\n/**\n * Contain overflow in all browsers.\n */\n\npre {\n  overflow: auto;\n}\n\n/**\n * Address odd `em`-unit font size rendering in all browsers.\n */\n\ncode, kbd, pre, samp {\n  font-family: monospace, monospace;\n  font-size: 1em;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * Known limitation: by default, Chrome and Safari on OS X allow very limited\n * styling of `select`, unless a `border` property is set.\n */\n\n/**\n * 1. Correct color not being inherited.\n *    Known issue: affects color of disabled elements.\n * 2. Correct font properties not being inherited.\n * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.\n */\n\nbutton, input, optgroup, select, textarea {\n  color: inherit; /* 1 */\n  font: inherit; /* 2 */\n  margin: 0; /* 3 */\n}\n\n/**\n * Address `overflow` set to `hidden` in IE 8/9/10/11.\n */\n\nbutton {\n  overflow: visible;\n}\n\n/**\n * Address inconsistent `text-transform` inheritance for `button` and `select`.\n * All other form control elements do not inherit `text-transform` values.\n * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.\n * Correct `select` style inheritance in Firefox.\n */\n\nbutton, select {\n  text-transform: none;\n}\n\n/**\n * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`\n *    and `video` controls.\n * 2. Correct inability to style clickable `input` types in iOS.\n * 3. Improve usability and consistency of cursor style between image-type\n *    `input` and others.\n */\n\nbutton, html input[type=\"button\"], input[type=\"reset\"], input[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n  cursor: pointer; /* 3 */\n}\n\n/**\n * Re-set default cursor for disabled elements.\n */\n\nbutton[disabled], html input[disabled] {\n  cursor: default;\n}\n\n/**\n * Remove inner padding and border in Firefox 4+.\n */\n\nbutton::-moz-focus-inner, input::-moz-focus-inner {\n  border: 0;\n  padding: 0;\n}\n\n/**\n * Address Firefox 4+ setting `line-height` on `input` using `!important` in\n * the UA stylesheet.\n */\n\ninput {\n  line-height: normal;\n}\n\n/**\n * It's recommended that you don't attempt to style these elements.\n * Firefox's implementation doesn't respect box-sizing, padding, or width.\n *\n * 1. Address box sizing set to `content-box` in IE 8/9/10.\n * 2. Remove excess padding in IE 8/9/10.\n */\n\ninput[type=\"checkbox\"], input[type=\"radio\"] {\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Fix the cursor style for Chrome's increment/decrement buttons. For certain\n * `font-size` values of the `input`, it causes the cursor style of the\n * decrement button to change from `default` to `text`.\n */\n\ninput[type=\"number\"]::-webkit-inner-spin-button, input[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Address `appearance` set to `searchfield` in Safari and Chrome.\n * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.\n */\n\ninput[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  -webkit-box-sizing: content-box;\n          box-sizing: content-box; /* 2 */\n}\n\n/**\n * Remove inner padding and search cancel button in Safari and Chrome on OS X.\n * Safari (but not Chrome) clips the cancel button when the search input has\n * padding (and `textfield` appearance).\n */\n\ninput[type=\"search\"]::-webkit-search-cancel-button, input[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * Define consistent border, margin, and padding.\n */\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct `color` not being inherited in IE 8/9/10/11.\n * 2. Remove padding so people aren't caught out if they zero out fieldsets.\n */\n\nlegend {\n  border: 0; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Remove default vertical scrollbar in IE 8/9/10/11.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * Don't inherit the `font-weight` (applied by a rule above).\n * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.\n */\n\noptgroup {\n  font-weight: bold;\n}\n\n/* Tables\n   ========================================================================== */\n\n/**\n * Remove most spacing between table cells.\n */\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0;\n}\n\ntd, th {\n  padding: 0;\n}  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\nhtml {\r\n  font-weight: 100;\r\n  font-size: 1em;\r\n  font-family: 'Segoe UI','HelveticaNeue-Light',sans-serif;\r\n  line-height: 1.375;\r\n}\r\n\r\nbody {\r\n  color: rgb(0, 0, 0);\r\n  background-color: rgb(217, 223, 237);\r\n}\r\n\r\nbody, .App_appContainer__kC {\r\n  display: -webkit-box;\r\n  display: -webkit-flex;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n  min-height: 100vh;\r\n  -webkit-box-orient: vertical;\r\n  -webkit-box-direction: normal;\r\n  -webkit-flex-direction: column;\r\n      -ms-flex-direction: column;\r\n          flex-direction: column;\r\n}\r\n\r\nmain {\r\n  -webkit-box-flex: 1;\r\n  -webkit-flex: 1 0 auto;\r\n      -ms-flex: 1 0 auto;\r\n          flex: 1 0 auto;\r\n  -webkit-box-align: center;\r\n  -webkit-align-items: center;\r\n      -ms-flex-align: center;\r\n          align-items: center;\r\n  display: -webkit-box;\r\n  display: -webkit-flex;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n}\r\n\r\na, a:link, a:visited {\r\n  text-decoration: none;\r\n  -webkit-transition: all 0.25s ease-in-out;\r\n  -o-transition: all 0.25s ease-in-out;\r\n  transition: all 0.25s ease-in-out;\r\n  color: #562437;\r\n}\r\n\r\na:hover, a:focus, a:active {\r\n  color: #647CA4;\r\n}\r\n\r\nh1, h2, h3 {\r\n  font-weight: 400;\r\n}\r\n\r\nh1 {\r\n  margin-top: 1rem;\r\n}\r\n\r\nh2, h3 {\r\n  margin-top: 0;\r\n}\r\n\r\n::-moz-selection {\r\n  background: #b3d4fc;\r\n  text-shadow: none;\r\n}\r\n\r\n::selection {\r\n  background: #b3d4fc;\r\n  text-shadow: none;\r\n}\r\n\r\nhr {\r\n  display: block;\r\n  height: 1px;\r\n  border: 0;\r\n  border-top: 1px solid #ccc;\r\n  margin: 1em 0;\r\n  padding: 0;\r\n}\r\n\r\naudio, canvas, iframe, img, svg, video {\r\n  vertical-align: middle;\r\n}\r\n\r\nfieldset {\r\n  border: 0;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\ntextarea {\r\n  resize: vertical;\r\n}\r\n\r\n.App_browserupgrade_1t4 {\r\n  margin: 0.2em 0;\r\n  background: #ccc;\r\n  color: #000;\r\n  padding: 0.2em 0;\r\n}\r\n\r\n@media print {\r\n  *, *:before, *:after {\r\n    background: transparent !important;\r\n    color: #000 !important; /* Black prints faster: http://www.sanbeiji.com/archives/953 */\r\n    -webkit-box-shadow: none !important;\r\n            box-shadow: none !important;\r\n    text-shadow: none !important;\r\n  }\r\n\r\n  a, a:visited {\r\n    text-decoration: underline;\r\n  }\r\n\r\n  a[href]:after {\r\n    content: \" (\" attr(href) \")\";\r\n  }\r\n\r\n  abbr[title]:after {\r\n    content: \" (\" attr(title) \")\";\r\n  }\r\n\r\n  /*\r\n   * Don't show links that are fragment identifiers,\r\n   * or use the `javascript:` pseudo protocol\r\n   */\r\n\r\n  a[href^=\"#\"]:after, a[href^=\"javascript:\"]:after {\r\n    content: \"\";\r\n  }\r\n\r\n  pre, blockquote {\r\n    border: 1px solid #999;\r\n    page-break-inside: avoid;\r\n  }\r\n\r\n  /*\r\n   * Printing Tables:\r\n   * http://css-discuss.incutio.com/wiki/Printing_Tables\r\n   */\r\n\r\n  thead {\r\n    display: table-header-group;\r\n  }\r\n\r\n  tr, img {\r\n    page-break-inside: avoid;\r\n  }\r\n\r\n  img {\r\n    max-width: 100% !important;\r\n  }\r\n\r\n  p, h2, h3 {\r\n    orphans: 3;\r\n    widows: 3;\r\n  }\r\n\r\n  h2, h3 {\r\n    page-break-after: avoid;\r\n  }\r\n}\r\n", "", {"version":3,"sources":["/./node_modules/normalize.css/normalize.css","/./src/components/variables.scss","/./src/components/App/App.scss"],"names":[],"mappings":"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","file":"App.scss","sourcesContent":["/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */\n\n/**\n * 1. Set default font family to sans-serif.\n * 2. Prevent iOS and IE text size adjust after device orientation change,\n *    without disabling user zoom.\n */\n\nhtml {\n  font-family: sans-serif; /* 1 */\n  -ms-text-size-adjust: 100%; /* 2 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/**\n * Remove default margin.\n */\n\nbody {\n  margin: 0;\n}\n\n/* HTML5 display definitions\n   ========================================================================== */\n\n/**\n * Correct `block` display not defined for any HTML5 element in IE 8/9.\n * Correct `block` display not defined for `details` or `summary` in IE 10/11\n * and Firefox.\n * Correct `block` display not defined for `main` in IE 11.\n */\n\narticle,\naside,\ndetails,\nfigcaption,\nfigure,\nfooter,\nheader,\nhgroup,\nmain,\nmenu,\nnav,\nsection,\nsummary {\n  display: block;\n}\n\n/**\n * 1. Correct `inline-block` display not defined in IE 8/9.\n * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.\n */\n\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block; /* 1 */\n  vertical-align: baseline; /* 2 */\n}\n\n/**\n * Prevent modern browsers from displaying `audio` without controls.\n * Remove excess height in iOS 5 devices.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Address `[hidden]` styling not present in IE 8/9/10.\n * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.\n */\n\n[hidden],\ntemplate {\n  display: none;\n}\n\n/* Links\n   ========================================================================== */\n\n/**\n * Remove the gray background color from active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * Improve readability of focused elements when they are also in an\n * active/hover state.\n */\n\na:active,\na:hover {\n  outline: 0;\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Address styling not present in IE 8/9/10/11, Safari, and Chrome.\n */\n\nabbr[title] {\n  border-bottom: 1px dotted;\n}\n\n/**\n * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.\n */\n\nb,\nstrong {\n  font-weight: bold;\n}\n\n/**\n * Address styling not present in Safari and Chrome.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Address variable `h1` font-size and margin within `section` and `article`\n * contexts in Firefox 4+, Safari, and Chrome.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/**\n * Address styling not present in IE 8/9.\n */\n\nmark {\n  background: #ff0;\n  color: #000;\n}\n\n/**\n * Address inconsistent and variable font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` affecting `line-height` in all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsup {\n  top: -0.5em;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove border when inside `a` element in IE 8/9/10.\n */\n\nimg {\n  border: 0;\n}\n\n/**\n * Correct overflow not hidden in IE 9/10/11.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * Address margin not present in IE 8/9 and Safari.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * Address differences between Firefox and other browsers.\n */\n\nhr {\n  box-sizing: content-box;\n  height: 0;\n}\n\n/**\n * Contain overflow in all browsers.\n */\n\npre {\n  overflow: auto;\n}\n\n/**\n * Address odd `em`-unit font size rendering in all browsers.\n */\n\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace, monospace;\n  font-size: 1em;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * Known limitation: by default, Chrome and Safari on OS X allow very limited\n * styling of `select`, unless a `border` property is set.\n */\n\n/**\n * 1. Correct color not being inherited.\n *    Known issue: affects color of disabled elements.\n * 2. Correct font properties not being inherited.\n * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  color: inherit; /* 1 */\n  font: inherit; /* 2 */\n  margin: 0; /* 3 */\n}\n\n/**\n * Address `overflow` set to `hidden` in IE 8/9/10/11.\n */\n\nbutton {\n  overflow: visible;\n}\n\n/**\n * Address inconsistent `text-transform` inheritance for `button` and `select`.\n * All other form control elements do not inherit `text-transform` values.\n * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.\n * Correct `select` style inheritance in Firefox.\n */\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/**\n * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`\n *    and `video` controls.\n * 2. Correct inability to style clickable `input` types in iOS.\n * 3. Improve usability and consistency of cursor style between image-type\n *    `input` and others.\n */\n\nbutton,\nhtml input[type=\"button\"], /* 1 */\ninput[type=\"reset\"],\ninput[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n  cursor: pointer; /* 3 */\n}\n\n/**\n * Re-set default cursor for disabled elements.\n */\n\nbutton[disabled],\nhtml input[disabled] {\n  cursor: default;\n}\n\n/**\n * Remove inner padding and border in Firefox 4+.\n */\n\nbutton::-moz-focus-inner,\ninput::-moz-focus-inner {\n  border: 0;\n  padding: 0;\n}\n\n/**\n * Address Firefox 4+ setting `line-height` on `input` using `!important` in\n * the UA stylesheet.\n */\n\ninput {\n  line-height: normal;\n}\n\n/**\n * It's recommended that you don't attempt to style these elements.\n * Firefox's implementation doesn't respect box-sizing, padding, or width.\n *\n * 1. Address box sizing set to `content-box` in IE 8/9/10.\n * 2. Remove excess padding in IE 8/9/10.\n */\n\ninput[type=\"checkbox\"],\ninput[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Fix the cursor style for Chrome's increment/decrement buttons. For certain\n * `font-size` values of the `input`, it causes the cursor style of the\n * decrement button to change from `default` to `text`.\n */\n\ninput[type=\"number\"]::-webkit-inner-spin-button,\ninput[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Address `appearance` set to `searchfield` in Safari and Chrome.\n * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.\n */\n\ninput[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  box-sizing: content-box; /* 2 */\n}\n\n/**\n * Remove inner padding and search cancel button in Safari and Chrome on OS X.\n * Safari (but not Chrome) clips the cancel button when the search input has\n * padding (and `textfield` appearance).\n */\n\ninput[type=\"search\"]::-webkit-search-cancel-button,\ninput[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * Define consistent border, margin, and padding.\n */\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct `color` not being inherited in IE 8/9/10/11.\n * 2. Remove padding so people aren't caught out if they zero out fieldsets.\n */\n\nlegend {\n  border: 0; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Remove default vertical scrollbar in IE 8/9/10/11.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * Don't inherit the `font-weight` (applied by a rule above).\n * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.\n */\n\noptgroup {\n  font-weight: bold;\n}\n\n/* Tables\n   ========================================================================== */\n\n/**\n * Remove most spacing between table cells.\n */\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0;\n}\n\ntd,\nth {\n  padding: 0;\n}\n","$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../../../node_modules/normalize.css/normalize.css';\r\n@import '../variables.scss';\r\n\r\nhtml {\r\n  font-weight: 100;\r\n  font-size: 1em;\r\n  font-family: $font-family-base;\r\n  line-height: 1.375;\r\n}\r\n\r\nbody {\r\n  color: $text-color;\r\n  background-color: $background-color;\r\n}\r\n\r\nbody, .appContainer {\r\n  display: flex;\r\n  min-height: 100vh;\r\n  flex-direction: column;\r\n}\r\n\r\nmain {\r\n  flex: 1 0 auto;\r\n  align-items: center;\r\n  display: flex;\r\n}\r\n\r\na, a:link, a:visited {\r\n  text-decoration: none;\r\n  -webkit-transition: all 0.25s ease-in-out;\r\n  -moz-transition: all 0.25s ease-in-out;\r\n  -ms-transition: all 0.25s ease-in-out;\r\n  -o-transition: all 0.25s ease-in-out;\r\n  transition: all 0.25s ease-in-out;\r\n  color: $link-color;\r\n}\r\n\r\na:hover, a:focus, a:active {\r\n  color: $link-hover-color;\r\n}\r\n\r\nh1, h2, h3 {\r\n  font-weight: 400;\r\n}\r\n\r\nh1 {\r\n  margin-top: 1rem;\r\n}\r\n\r\nh2, h3 {\r\n  margin-top: 0;\r\n}\r\n\r\n::-moz-selection {\r\n  background: #b3d4fc;\r\n  text-shadow: none;\r\n}\r\n\r\n::selection {\r\n  background: #b3d4fc;\r\n  text-shadow: none;\r\n}\r\n\r\nhr {\r\n  display: block;\r\n  height: 1px;\r\n  border: 0;\r\n  border-top: 1px solid #ccc;\r\n  margin: 1em 0;\r\n  padding: 0;\r\n}\r\n\r\naudio,\r\ncanvas,\r\niframe,\r\nimg,\r\nsvg,\r\nvideo {\r\n  vertical-align: middle;\r\n}\r\n\r\nfieldset {\r\n  border: 0;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\ntextarea {\r\n  resize: vertical;\r\n}\r\n\r\n.browserupgrade {\r\n  margin: 0.2em 0;\r\n  background: #ccc;\r\n  color: #000;\r\n  padding: 0.2em 0;\r\n}\r\n\r\n@media print {\r\n  *,\r\n  *:before,\r\n  *:after {\r\n    background: transparent !important;\r\n    color: #000 !important; /* Black prints faster: http://www.sanbeiji.com/archives/953 */\r\n    box-shadow: none !important;\r\n    text-shadow: none !important;\r\n  }\r\n\r\n  a,\r\n  a:visited {\r\n    text-decoration: underline;\r\n  }\r\n\r\n  a[href]:after {\r\n    content: \" (\" attr(href) \")\";\r\n  }\r\n\r\n  abbr[title]:after {\r\n    content: \" (\" attr(title) \")\";\r\n  }\r\n\r\n  /*\r\n   * Don't show links that are fragment identifiers,\r\n   * or use the `javascript:` pseudo protocol\r\n   */\r\n\r\n  a[href^=\"#\"]:after,\r\n  a[href^=\"javascript:\"]:after {\r\n    content: \"\";\r\n  }\r\n\r\n  pre,\r\n  blockquote {\r\n    border: 1px solid #999;\r\n    page-break-inside: avoid;\r\n  }\r\n\r\n  /*\r\n   * Printing Tables:\r\n   * http://css-discuss.incutio.com/wiki/Printing_Tables\r\n   */\r\n\r\n  thead {\r\n    display: table-header-group;\r\n  }\r\n\r\n  tr,\r\n  img {\r\n    page-break-inside: avoid;\r\n  }\r\n\r\n  img {\r\n    max-width: 100% !important;\r\n  }\r\n\r\n  p,\r\n  h2,\r\n  h3 {\r\n    orphans: 3;\r\n    widows: 3;\r\n  }\r\n\r\n  h2,\r\n  h3 {\r\n    page-break-after: avoid;\r\n  }\r\n}\r\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */\n\n/**\n * 1. Set default font family to sans-serif.\n * 2. Prevent iOS and IE text size adjust after device orientation change,\n *    without disabling user zoom.\n */\n\nhtml {\n  font-family: sans-serif; /* 1 */\n  -ms-text-size-adjust: 100%; /* 2 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/**\n * Remove default margin.\n */\n\nbody {\n  margin: 0;\n}\n\n/* HTML5 display definitions\n   ========================================================================== */\n\n/**\n * Correct `block` display not defined for any HTML5 element in IE 8/9.\n * Correct `block` display not defined for `details` or `summary` in IE 10/11\n * and Firefox.\n * Correct `block` display not defined for `main` in IE 11.\n */\n\narticle, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {\n  display: block;\n}\n\n/**\n * 1. Correct `inline-block` display not defined in IE 8/9.\n * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.\n */\n\naudio, canvas, progress, video {\n  display: inline-block; /* 1 */\n  vertical-align: baseline; /* 2 */\n}\n\n/**\n * Prevent modern browsers from displaying `audio` without controls.\n * Remove excess height in iOS 5 devices.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Address `[hidden]` styling not present in IE 8/9/10.\n * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.\n */\n\n[hidden], template {\n  display: none;\n}\n\n/* Links\n   ========================================================================== */\n\n/**\n * Remove the gray background color from active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * Improve readability of focused elements when they are also in an\n * active/hover state.\n */\n\na:active, a:hover {\n  outline: 0;\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Address styling not present in IE 8/9/10/11, Safari, and Chrome.\n */\n\nabbr[title] {\n  border-bottom: 1px dotted;\n}\n\n/**\n * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.\n */\n\nb, strong {\n  font-weight: bold;\n}\n\n/**\n * Address styling not present in Safari and Chrome.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Address variable `h1` font-size and margin within `section` and `article`\n * contexts in Firefox 4+, Safari, and Chrome.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/**\n * Address styling not present in IE 8/9.\n */\n\nmark {\n  background: #ff0;\n  color: #000;\n}\n\n/**\n * Address inconsistent and variable font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` affecting `line-height` in all browsers.\n */\n\nsub, sup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsup {\n  top: -0.5em;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove border when inside `a` element in IE 8/9/10.\n */\n\nimg {\n  border: 0;\n}\n\n/**\n * Correct overflow not hidden in IE 9/10/11.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * Address margin not present in IE 8/9 and Safari.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * Address differences between Firefox and other browsers.\n */\n\nhr {\n  -webkit-box-sizing: content-box;\n          box-sizing: content-box;\n  height: 0;\n}\n\n/**\n * Contain overflow in all browsers.\n */\n\npre {\n  overflow: auto;\n}\n\n/**\n * Address odd `em`-unit font size rendering in all browsers.\n */\n\ncode, kbd, pre, samp {\n  font-family: monospace, monospace;\n  font-size: 1em;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * Known limitation: by default, Chrome and Safari on OS X allow very limited\n * styling of `select`, unless a `border` property is set.\n */\n\n/**\n * 1. Correct color not being inherited.\n *    Known issue: affects color of disabled elements.\n * 2. Correct font properties not being inherited.\n * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.\n */\n\nbutton, input, optgroup, select, textarea {\n  color: inherit; /* 1 */\n  font: inherit; /* 2 */\n  margin: 0; /* 3 */\n}\n\n/**\n * Address `overflow` set to `hidden` in IE 8/9/10/11.\n */\n\nbutton {\n  overflow: visible;\n}\n\n/**\n * Address inconsistent `text-transform` inheritance for `button` and `select`.\n * All other form control elements do not inherit `text-transform` values.\n * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.\n * Correct `select` style inheritance in Firefox.\n */\n\nbutton, select {\n  text-transform: none;\n}\n\n/**\n * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`\n *    and `video` controls.\n * 2. Correct inability to style clickable `input` types in iOS.\n * 3. Improve usability and consistency of cursor style between image-type\n *    `input` and others.\n */\n\nbutton, html input[type=\"button\"], input[type=\"reset\"], input[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n  cursor: pointer; /* 3 */\n}\n\n/**\n * Re-set default cursor for disabled elements.\n */\n\nbutton[disabled], html input[disabled] {\n  cursor: default;\n}\n\n/**\n * Remove inner padding and border in Firefox 4+.\n */\n\nbutton::-moz-focus-inner, input::-moz-focus-inner {\n  border: 0;\n  padding: 0;\n}\n\n/**\n * Address Firefox 4+ setting `line-height` on `input` using `!important` in\n * the UA stylesheet.\n */\n\ninput {\n  line-height: normal;\n}\n\n/**\n * It's recommended that you don't attempt to style these elements.\n * Firefox's implementation doesn't respect box-sizing, padding, or width.\n *\n * 1. Address box sizing set to `content-box` in IE 8/9/10.\n * 2. Remove excess padding in IE 8/9/10.\n */\n\ninput[type=\"checkbox\"], input[type=\"radio\"] {\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Fix the cursor style for Chrome's increment/decrement buttons. For certain\n * `font-size` values of the `input`, it causes the cursor style of the\n * decrement button to change from `default` to `text`.\n */\n\ninput[type=\"number\"]::-webkit-inner-spin-button, input[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Address `appearance` set to `searchfield` in Safari and Chrome.\n * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.\n */\n\ninput[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  -webkit-box-sizing: content-box;\n          box-sizing: content-box; /* 2 */\n}\n\n/**\n * Remove inner padding and search cancel button in Safari and Chrome on OS X.\n * Safari (but not Chrome) clips the cancel button when the search input has\n * padding (and `textfield` appearance).\n */\n\ninput[type=\"search\"]::-webkit-search-cancel-button, input[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * Define consistent border, margin, and padding.\n */\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct `color` not being inherited in IE 8/9/10/11.\n * 2. Remove padding so people aren't caught out if they zero out fieldsets.\n */\n\nlegend {\n  border: 0; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Remove default vertical scrollbar in IE 8/9/10/11.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * Don't inherit the `font-weight` (applied by a rule above).\n * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.\n */\n\noptgroup {\n  font-weight: bold;\n}\n\n/* Tables\n   ========================================================================== */\n\n/**\n * Remove most spacing between table cells.\n */\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0;\n}\n\ntd, th {\n  padding: 0;\n}\r\n[data-tt]{position:relative;-webkit-box-sizing:border-box;box-sizing:border-box}[data-tt]::before, [data-tt]::after{border:none;-webkit-box-sizing:inherit;box-sizing:inherit;display:inline-block;font-size:13px;font-style:normal;font-weight:300;line-height:18px;opacity:0;pointer-events:none;position:absolute;right:50%;text-align:center;text-decoration:none;text-shadow:none;text-transform:none;top:100%;-webkit-transform:translateX(50%);-ms-transform:translateX(50%);-o-transform:translateX(50%);transform:translateX(50%);-webkit-transition:opacity .2s step-start 100ms;-o-transition: opacity .2s step-start 100ms;transition:opacity .2s step-start 100ms;visibility:hidden;z-index:1000000}[data-tt]::before{background:#333;border-radius:3px;color:#eee;content:attr(data-tt);margin:10px 0 0;padding:9px 13px;white-space:pre;word-wrap:break-word}[data-tt]::after{border:5px solid transparent;border-bottom-color:#333;content:'';margin:0 0 0 -5px}[data-tt]:hover::before, [data-tt]:hover::after{visibility:visible;opacity:1}.App_tt-n_1Ns::before, .App_tt-n_1Ns::after{top:auto;bottom:100%}.App_tt-e_CK0::before, .App_tt-e_CK0::after, .App_tt-w_3gh::before, .App_tt-w_3gh::after{top:auto;bottom:50%;-webkit-transform:translateY(50%);-ms-transform:translateY(50%);-o-transform:translateY(50%);transform:translateY(50%)}.App_tt-e_CK0::before, .App_tt-e_CK0::after{left:100%;right:auto}.App_tt-w_3gh::before, .App_tt-w_3gh::after{left:auto;right:100%}.App_tt-n_1Ns::before{margin:0 0 10px}.App_tt-e_CK0::before{margin:0 0 0 10px}.App_tt-w_3gh::before{margin:0 10px 0 0}.App_tt-n_1Ns::after{border-color:transparent;border-top-color:#333;margin:0 0 0 5px}.App_tt-e_CK0::after, .App_tt-w_3gh::after{border-color:transparent;margin:5px 0 0}.App_tt-e_CK0::after{border-right-color:#333}.App_tt-w_3gh::after{border-left-color:#333}  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\nhtml {\r\n  font-weight: 100;\r\n  font-size: 1em;\r\n  font-family: 'Segoe UI','HelveticaNeue-Light',sans-serif;\r\n  line-height: 1.375;\r\n}\r\n\r\nbody {\r\n  color: rgb(0, 0, 0);\r\n  background-color: rgb(217, 223, 237);\r\n}\r\n\r\nbody, .App_appContainer__kC {\r\n  display: -webkit-box;\r\n  display: -webkit-flex;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n  min-height: 100vh;\r\n  -webkit-box-orient: vertical;\r\n  -webkit-box-direction: normal;\r\n  -webkit-flex-direction: column;\r\n      -ms-flex-direction: column;\r\n          flex-direction: column;\r\n}\r\n\r\nmain {\r\n  -webkit-box-flex: 1;\r\n  -webkit-flex: 1 0 auto;\r\n      -ms-flex: 1 0 auto;\r\n          flex: 1 0 auto;\r\n  -webkit-box-align: center;\r\n  -webkit-align-items: center;\r\n      -ms-flex-align: center;\r\n          align-items: center;\r\n  display: -webkit-box;\r\n  display: -webkit-flex;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n}\r\n\r\na, a:link, a:visited {\r\n  text-decoration: none;\r\n  -webkit-transition: all 0.25s ease-in-out;\r\n  -o-transition: all 0.25s ease-in-out;\r\n  transition: all 0.25s ease-in-out;\r\n  color: #562437;\r\n}\r\n\r\na:hover, a:focus, a:active {\r\n  color: #647CA4;\r\n}\r\n\r\nh1, h2, h3 {\r\n  font-weight: 400;\r\n}\r\n\r\nh1 {\r\n  margin-top: 1rem;\r\n}\r\n\r\nh2, h3 {\r\n  margin-top: 0;\r\n}\r\n\r\n::-moz-selection {\r\n  background: #b3d4fc;\r\n  text-shadow: none;\r\n}\r\n\r\n::selection {\r\n  background: #b3d4fc;\r\n  text-shadow: none;\r\n}\r\n\r\nhr {\r\n  display: block;\r\n  height: 1px;\r\n  border: 0;\r\n  border-top: 1px solid #ccc;\r\n  margin: 1em 0;\r\n  padding: 0;\r\n}\r\n\r\naudio, canvas, iframe, img, svg, video {\r\n  vertical-align: middle;\r\n}\r\n\r\nfieldset {\r\n  border: 0;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\ntextarea {\r\n  resize: vertical;\r\n}\r\n\r\n.App_browserupgrade_1t4 {\r\n  margin: 0.2em 0;\r\n  background: #ccc;\r\n  color: #000;\r\n  padding: 0.2em 0;\r\n}\r\n\r\n@media print {\r\n  *, *:before, *:after {\r\n    background: transparent !important;\r\n    color: #000 !important; /* Black prints faster: http://www.sanbeiji.com/archives/953 */\r\n    -webkit-box-shadow: none !important;\r\n            box-shadow: none !important;\r\n    text-shadow: none !important;\r\n  }\r\n\r\n  a, a:visited {\r\n    text-decoration: underline;\r\n  }\r\n\r\n  a[href]:after {\r\n    content: \" (\" attr(href) \")\";\r\n  }\r\n\r\n  abbr[title]:after {\r\n    content: \" (\" attr(title) \")\";\r\n  }\r\n\r\n  /*\r\n   * Don't show links that are fragment identifiers,\r\n   * or use the `javascript:` pseudo protocol\r\n   */\r\n\r\n  a[href^=\"#\"]:after, a[href^=\"javascript:\"]:after {\r\n    content: \"\";\r\n  }\r\n\r\n  pre, blockquote {\r\n    border: 1px solid #999;\r\n    page-break-inside: avoid;\r\n  }\r\n\r\n  /*\r\n   * Printing Tables:\r\n   * http://css-discuss.incutio.com/wiki/Printing_Tables\r\n   */\r\n\r\n  thead {\r\n    display: table-header-group;\r\n  }\r\n\r\n  tr, img {\r\n    page-break-inside: avoid;\r\n  }\r\n\r\n  img {\r\n    max-width: 100% !important;\r\n  }\r\n\r\n  p, h2, h3 {\r\n    orphans: 3;\r\n    widows: 3;\r\n  }\r\n\r\n  h2, h3 {\r\n    page-break-after: avoid;\r\n  }\r\n}\r\n", "", {"version":3,"sources":["/./node_modules/normalize.css/normalize.css","/./node_modules/simple-css-tooltips/tt.css","/./src/components/variables.scss","/./src/components/App/App.scss"],"names":[],"mappings":"AAAA,4EAA4E;;AAE5E;;;;GAIG;;AAEH;EACE,wBAAwB,CAAC,OAAO;EAChC,2BAA2B,CAAC,OAAO;EACnC,+BAA+B,CAAC,OAAO;CACxC;;AAED;;GAEG;;AAEH;EACE,UAAU;CACX;;AAED;gFACgF;;AAEhF;;;;;GAKG;;AAEH;EAaE,eAAe;CAChB;;AAED;;;GAGG;;AAEH;EAIE,sBAAsB,CAAC,OAAO;EAC9B,yBAAyB,CAAC,OAAO;CAClC;;AAED;;;GAGG;;AAEH;EACE,cAAc;EACd,UAAU;CACX;;AAED;;;GAGG;;AAEH;EAEE,cAAc;CACf;;AAED;gFACgF;;AAEhF;;GAEG;;AAEH;EACE,8BAA8B;CAC/B;;AAED;;;GAGG;;AAEH;EAEE,WAAW;CACZ;;AAED;gFACgF;;AAEhF;;GAEG;;AAEH;EACE,0BAA0B;CAC3B;;AAED;;GAEG;;AAEH;EAEE,kBAAkB;CACnB;;AAED;;GAEG;;AAEH;EACE,mBAAmB;CACpB;;AAED;;;GAGG;;AAEH;EACE,eAAe;EACf,iBAAiB;CAClB;;AAED;;GAEG;;AAEH;EACE,iBAAiB;EACjB,YAAY;CACb;;AAED;;GAEG;;AAEH;EACE,eAAe;CAChB;;AAED;;GAEG;;AAEH;EAEE,eAAe;EACf,eAAe;EACf,mBAAmB;EACnB,yBAAyB;CAC1B;;AAED;EACE,YAAY;CACb;;AAED;EACE,gBAAgB;CACjB;;AAED;gFACgF;;AAEhF;;GAEG;;AAEH;EACE,UAAU;CACX;;AAED;;GAEG;;AAEH;EACE,iBAAiB;CAClB;;AAED;gFACgF;;AAEhF;;GAEG;;AAEH;EACE,iBAAiB;CAClB;;AAED;;GAEG;;AAEH;EACE,gCAAwB;UAAxB,wBAAwB;EACxB,UAAU;CACX;;AAED;;GAEG;;AAEH;EACE,eAAe;CAChB;;AAED;;GAEG;;AAEH;EAIE,kCAAkC;EAClC,eAAe;CAChB;;AAED;gFACgF;;AAEhF;;;GAGG;;AAEH;;;;;GAKG;;AAEH;EAKE,eAAe,CAAC,OAAO;EACvB,cAAc,CAAC,OAAO;EACtB,UAAU,CAAC,OAAO;CACnB;;AAED;;GAEG;;AAEH;EACE,kBAAkB;CACnB;;AAED;;;;;GAKG;;AAEH;EAEE,qBAAqB;CACtB;;AAED;;;;;;GAMG;;AAEH;EAIE,2BAA2B,CAAC,OAAO;EACnC,gBAAgB,CAAC,OAAO;CACzB;;AAED;;GAEG;;AAEH;EAEE,gBAAgB;CACjB;;AAED;;GAEG;;AAEH;EAEE,UAAU;EACV,WAAW;CACZ;;AAED;;;GAGG;;AAEH;EACE,oBAAoB;CACrB;;AAED;;;;;;GAMG;;AAEH;EAEE,+BAAuB;UAAvB,uBAAuB,CAAC,OAAO;EAC/B,WAAW,CAAC,OAAO;CACpB;;AAED;;;;GAIG;;AAEH;EAEE,aAAa;CACd;;AAED;;;GAGG;;AAEH;EACE,8BAA8B,CAAC,OAAO;EACtC,gCAAwB;UAAxB,wBAAwB,CAAC,OAAO;CACjC;;AAED;;;;GAIG;;AAEH;EAEE,yBAAyB;CAC1B;;AAED;;GAEG;;AAEH;EACE,0BAA0B;EAC1B,cAAc;EACd,+BAA+B;CAChC;;AAED;;;GAGG;;AAEH;EACE,UAAU,CAAC,OAAO;EAClB,WAAW,CAAC,OAAO;CACpB;;AAED;;GAEG;;AAEH;EACE,eAAe;CAChB;;AAED;;;GAGG;;AAEH;EACE,kBAAkB;CACnB;;AAED;gFACgF;;AAEhF;;GAEG;;AAEH;EACE,0BAA0B;EAC1B,kBAAkB;CACnB;;AAED;EAEE,WAAW;CACZ;ACvaD,UAAU,kBAAkB,8BAAA,qBAAqB,CAAC,oCAAmC,YAAY,2BAAA,mBAAmB,qBAAqB,eAAe,kBAAkB,gBAAgB,iBAAiB,UAAU,oBAAoB,kBAAkB,UAAU,kBAAkB,qBAAqB,iBAAiB,oBAAoB,SAAS,kCAAkC,8BAA8B,6BAAA,0BAA0B,gDAAgD,4CAAA,wCAAwC,kBAAkB,eAAe,CAAC,kBAAkB,gBAAgB,kBAAkB,WAAW,sBAAsB,gBAAgB,iBAAiB,gBAAgB,oBAAoB,CAAC,iBAAiB,6BAA6B,yBAAyB,WAAW,iBAAiB,CAAC,gDAA+C,mBAAmB,SAAS,CAAC,4CAA2B,SAAS,WAAW,CAAC,yFAAsD,SAAS,WAAW,kCAAkC,8BAA8B,6BAAA,yBAAyB,CAAC,4CAA2B,UAAU,UAAU,CAAC,4CAA2B,UAAU,UAAU,CAAC,sBAAc,eAAe,CAAC,sBAAc,iBAAiB,CAAC,sBAAc,iBAAiB,CAAC,qBAAa,yBAAyB,sBAAsB,gBAAgB,CAAC,2CAA0B,yBAAyB,cAAc,CAAC,qBAAa,uBAAuB,CAAC,qBAAa,sBAAsB,CAAC,ECan8C,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;ACZjE;EACE,iBAAiB;EACjB,eAAe;EACf,yDAA+B;EAC/B,mBAAmB;CACpB;;AAED;EACE,oBAAmB;EACnB,qCAAoC;CACrC;;AAED;EACE,qBAAc;EAAd,sBAAc;EAAd,qBAAc;EAAd,cAAc;EACd,kBAAkB;EAClB,6BAAuB;EAAvB,8BAAuB;EAAvB,+BAAuB;MAAvB,2BAAuB;UAAvB,uBAAuB;CACxB;;AAED;EACE,oBAAe;EAAf,uBAAe;MAAf,mBAAe;UAAf,eAAe;EACf,0BAAoB;EAApB,4BAAoB;MAApB,uBAAoB;UAApB,oBAAoB;EACpB,qBAAc;EAAd,sBAAc;EAAd,qBAAc;EAAd,cAAc;CACf;;AAED;EACE,sBAAsB;EACtB,0CAA0C;EAG1C,qCAAqC;EACrC,kCAAkC;EAClC,eAAmB;CACpB;;AAED;EACE,eAAyB;CAC1B;;AAED;EACE,iBAAiB;CAClB;;AAED;EACE,iBAAiB;CAClB;;AAED;EACE,cAAc;CACf;;AAED;EACE,oBAAoB;EACpB,kBAAkB;CACnB;;AAED;EACE,oBAAoB;EACpB,kBAAkB;CACnB;;AAED;EACE,eAAe;EACf,YAAY;EACZ,UAAU;EACV,2BAA2B;EAC3B,cAAc;EACd,WAAW;CACZ;;AAED;EAME,uBAAuB;CACxB;;AAED;EACE,UAAU;EACV,UAAU;EACV,WAAW;CACZ;;AAED;EACE,iBAAiB;CAClB;;AAED;EACE,gBAAgB;EAChB,iBAAiB;EACjB,YAAY;EACZ,iBAAiB;CAClB;;AAED;EACE;IAGE,mCAAmC;IACnC,uBAAuB,CAAC,+DAA+D;IACvF,oCAA4B;YAA5B,4BAA4B;IAC5B,6BAA6B;GAC9B;;EAED;IAEE,2BAA2B;GAC5B;;EAED;IACE,6BAA6B;GAC9B;;EAED;IACE,8BAA8B;GAC/B;;EAED;;;KAGG;;EAEH;IAEE,YAAY;GACb;;EAED;IAEE,uBAAuB;IACvB,yBAAyB;GAC1B;;EAED;;;KAGG;;EAEH;IACE,4BAA4B;GAC7B;;EAED;IAEE,yBAAyB;GAC1B;;EAED;IACE,2BAA2B;GAC5B;;EAED;IAGE,WAAW;IACX,UAAU;GACX;;EAED;IAEE,wBAAwB;GACzB;CACF","file":"App.scss","sourcesContent":["/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */\n\n/**\n * 1. Set default font family to sans-serif.\n * 2. Prevent iOS and IE text size adjust after device orientation change,\n *    without disabling user zoom.\n */\n\nhtml {\n  font-family: sans-serif; /* 1 */\n  -ms-text-size-adjust: 100%; /* 2 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/**\n * Remove default margin.\n */\n\nbody {\n  margin: 0;\n}\n\n/* HTML5 display definitions\n   ========================================================================== */\n\n/**\n * Correct `block` display not defined for any HTML5 element in IE 8/9.\n * Correct `block` display not defined for `details` or `summary` in IE 10/11\n * and Firefox.\n * Correct `block` display not defined for `main` in IE 11.\n */\n\narticle,\naside,\ndetails,\nfigcaption,\nfigure,\nfooter,\nheader,\nhgroup,\nmain,\nmenu,\nnav,\nsection,\nsummary {\n  display: block;\n}\n\n/**\n * 1. Correct `inline-block` display not defined in IE 8/9.\n * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.\n */\n\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block; /* 1 */\n  vertical-align: baseline; /* 2 */\n}\n\n/**\n * Prevent modern browsers from displaying `audio` without controls.\n * Remove excess height in iOS 5 devices.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Address `[hidden]` styling not present in IE 8/9/10.\n * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.\n */\n\n[hidden],\ntemplate {\n  display: none;\n}\n\n/* Links\n   ========================================================================== */\n\n/**\n * Remove the gray background color from active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * Improve readability of focused elements when they are also in an\n * active/hover state.\n */\n\na:active,\na:hover {\n  outline: 0;\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Address styling not present in IE 8/9/10/11, Safari, and Chrome.\n */\n\nabbr[title] {\n  border-bottom: 1px dotted;\n}\n\n/**\n * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.\n */\n\nb,\nstrong {\n  font-weight: bold;\n}\n\n/**\n * Address styling not present in Safari and Chrome.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Address variable `h1` font-size and margin within `section` and `article`\n * contexts in Firefox 4+, Safari, and Chrome.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/**\n * Address styling not present in IE 8/9.\n */\n\nmark {\n  background: #ff0;\n  color: #000;\n}\n\n/**\n * Address inconsistent and variable font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` affecting `line-height` in all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsup {\n  top: -0.5em;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove border when inside `a` element in IE 8/9/10.\n */\n\nimg {\n  border: 0;\n}\n\n/**\n * Correct overflow not hidden in IE 9/10/11.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * Address margin not present in IE 8/9 and Safari.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * Address differences between Firefox and other browsers.\n */\n\nhr {\n  box-sizing: content-box;\n  height: 0;\n}\n\n/**\n * Contain overflow in all browsers.\n */\n\npre {\n  overflow: auto;\n}\n\n/**\n * Address odd `em`-unit font size rendering in all browsers.\n */\n\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace, monospace;\n  font-size: 1em;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * Known limitation: by default, Chrome and Safari on OS X allow very limited\n * styling of `select`, unless a `border` property is set.\n */\n\n/**\n * 1. Correct color not being inherited.\n *    Known issue: affects color of disabled elements.\n * 2. Correct font properties not being inherited.\n * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  color: inherit; /* 1 */\n  font: inherit; /* 2 */\n  margin: 0; /* 3 */\n}\n\n/**\n * Address `overflow` set to `hidden` in IE 8/9/10/11.\n */\n\nbutton {\n  overflow: visible;\n}\n\n/**\n * Address inconsistent `text-transform` inheritance for `button` and `select`.\n * All other form control elements do not inherit `text-transform` values.\n * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.\n * Correct `select` style inheritance in Firefox.\n */\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/**\n * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`\n *    and `video` controls.\n * 2. Correct inability to style clickable `input` types in iOS.\n * 3. Improve usability and consistency of cursor style between image-type\n *    `input` and others.\n */\n\nbutton,\nhtml input[type=\"button\"], /* 1 */\ninput[type=\"reset\"],\ninput[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n  cursor: pointer; /* 3 */\n}\n\n/**\n * Re-set default cursor for disabled elements.\n */\n\nbutton[disabled],\nhtml input[disabled] {\n  cursor: default;\n}\n\n/**\n * Remove inner padding and border in Firefox 4+.\n */\n\nbutton::-moz-focus-inner,\ninput::-moz-focus-inner {\n  border: 0;\n  padding: 0;\n}\n\n/**\n * Address Firefox 4+ setting `line-height` on `input` using `!important` in\n * the UA stylesheet.\n */\n\ninput {\n  line-height: normal;\n}\n\n/**\n * It's recommended that you don't attempt to style these elements.\n * Firefox's implementation doesn't respect box-sizing, padding, or width.\n *\n * 1. Address box sizing set to `content-box` in IE 8/9/10.\n * 2. Remove excess padding in IE 8/9/10.\n */\n\ninput[type=\"checkbox\"],\ninput[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Fix the cursor style for Chrome's increment/decrement buttons. For certain\n * `font-size` values of the `input`, it causes the cursor style of the\n * decrement button to change from `default` to `text`.\n */\n\ninput[type=\"number\"]::-webkit-inner-spin-button,\ninput[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Address `appearance` set to `searchfield` in Safari and Chrome.\n * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.\n */\n\ninput[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  box-sizing: content-box; /* 2 */\n}\n\n/**\n * Remove inner padding and search cancel button in Safari and Chrome on OS X.\n * Safari (but not Chrome) clips the cancel button when the search input has\n * padding (and `textfield` appearance).\n */\n\ninput[type=\"search\"]::-webkit-search-cancel-button,\ninput[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * Define consistent border, margin, and padding.\n */\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct `color` not being inherited in IE 8/9/10/11.\n * 2. Remove padding so people aren't caught out if they zero out fieldsets.\n */\n\nlegend {\n  border: 0; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Remove default vertical scrollbar in IE 8/9/10/11.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * Don't inherit the `font-weight` (applied by a rule above).\n * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.\n */\n\noptgroup {\n  font-weight: bold;\n}\n\n/* Tables\n   ========================================================================== */\n\n/**\n * Remove most spacing between table cells.\n */\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0;\n}\n\ntd,\nth {\n  padding: 0;\n}\n","[data-tt]{position:relative;box-sizing:border-box}[data-tt]::before,[data-tt]::after{border:none;box-sizing:inherit;display:inline-block;font-size:13px;font-style:normal;font-weight:300;line-height:18px;opacity:0;pointer-events:none;position:absolute;right:50%;text-align:center;text-decoration:none;text-shadow:none;text-transform:none;top:100%;-webkit-transform:translateX(50%);-ms-transform:translateX(50%);transform:translateX(50%);-webkit-transition:opacity .2s step-start 100ms;transition:opacity .2s step-start 100ms;visibility:hidden;z-index:1000000}[data-tt]::before{background:#333;border-radius:3px;color:#eee;content:attr(data-tt);margin:10px 0 0;padding:9px 13px;white-space:pre;word-wrap:break-word}[data-tt]::after{border:5px solid transparent;border-bottom-color:#333;content:'';margin:0 0 0 -5px}[data-tt]:hover::before,[data-tt]:hover::after{visibility:visible;opacity:1}.tt-n::before,.tt-n::after{top:auto;bottom:100%}.tt-e::before,.tt-e::after,.tt-w::before,.tt-w::after{top:auto;bottom:50%;-webkit-transform:translateY(50%);-ms-transform:translateY(50%);transform:translateY(50%)}.tt-e::before,.tt-e::after{left:100%;right:auto}.tt-w::before,.tt-w::after{left:auto;right:100%}.tt-n::before{margin:0 0 10px}.tt-e::before{margin:0 0 0 10px}.tt-w::before{margin:0 10px 0 0}.tt-n::after{border-color:transparent;border-top-color:#333;margin:0 0 0 5px}.tt-e::after,.tt-w::after{border-color:transparent;margin:5px 0 0}.tt-e::after{border-right-color:#333}.tt-w::after{border-left-color:#333}","$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../../../node_modules/normalize.css/normalize.css';\r\n@import '../../../node_modules/simple-css-tooltips/tt.css';\r\n@import '../variables.scss';\r\n\r\nhtml {\r\n  font-weight: 100;\r\n  font-size: 1em;\r\n  font-family: $font-family-base;\r\n  line-height: 1.375;\r\n}\r\n\r\nbody {\r\n  color: $text-color;\r\n  background-color: $background-color;\r\n}\r\n\r\nbody, .appContainer {\r\n  display: flex;\r\n  min-height: 100vh;\r\n  flex-direction: column;\r\n}\r\n\r\nmain {\r\n  flex: 1 0 auto;\r\n  align-items: center;\r\n  display: flex;\r\n}\r\n\r\na, a:link, a:visited {\r\n  text-decoration: none;\r\n  -webkit-transition: all 0.25s ease-in-out;\r\n  -moz-transition: all 0.25s ease-in-out;\r\n  -ms-transition: all 0.25s ease-in-out;\r\n  -o-transition: all 0.25s ease-in-out;\r\n  transition: all 0.25s ease-in-out;\r\n  color: $link-color;\r\n}\r\n\r\na:hover, a:focus, a:active {\r\n  color: $link-hover-color;\r\n}\r\n\r\nh1, h2, h3 {\r\n  font-weight: 400;\r\n}\r\n\r\nh1 {\r\n  margin-top: 1rem;\r\n}\r\n\r\nh2, h3 {\r\n  margin-top: 0;\r\n}\r\n\r\n::-moz-selection {\r\n  background: #b3d4fc;\r\n  text-shadow: none;\r\n}\r\n\r\n::selection {\r\n  background: #b3d4fc;\r\n  text-shadow: none;\r\n}\r\n\r\nhr {\r\n  display: block;\r\n  height: 1px;\r\n  border: 0;\r\n  border-top: 1px solid #ccc;\r\n  margin: 1em 0;\r\n  padding: 0;\r\n}\r\n\r\naudio,\r\ncanvas,\r\niframe,\r\nimg,\r\nsvg,\r\nvideo {\r\n  vertical-align: middle;\r\n}\r\n\r\nfieldset {\r\n  border: 0;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\ntextarea {\r\n  resize: vertical;\r\n}\r\n\r\n.browserupgrade {\r\n  margin: 0.2em 0;\r\n  background: #ccc;\r\n  color: #000;\r\n  padding: 0.2em 0;\r\n}\r\n\r\n@media print {\r\n  *,\r\n  *:before,\r\n  *:after {\r\n    background: transparent !important;\r\n    color: #000 !important; /* Black prints faster: http://www.sanbeiji.com/archives/953 */\r\n    box-shadow: none !important;\r\n    text-shadow: none !important;\r\n  }\r\n\r\n  a,\r\n  a:visited {\r\n    text-decoration: underline;\r\n  }\r\n\r\n  a[href]:after {\r\n    content: \" (\" attr(href) \")\";\r\n  }\r\n\r\n  abbr[title]:after {\r\n    content: \" (\" attr(title) \")\";\r\n  }\r\n\r\n  /*\r\n   * Don't show links that are fragment identifiers,\r\n   * or use the `javascript:` pseudo protocol\r\n   */\r\n\r\n  a[href^=\"#\"]:after,\r\n  a[href^=\"javascript:\"]:after {\r\n    content: \"\";\r\n  }\r\n\r\n  pre,\r\n  blockquote {\r\n    border: 1px solid #999;\r\n    page-break-inside: avoid;\r\n  }\r\n\r\n  /*\r\n   * Printing Tables:\r\n   * http://css-discuss.incutio.com/wiki/Printing_Tables\r\n   */\r\n\r\n  thead {\r\n    display: table-header-group;\r\n  }\r\n\r\n  tr,\r\n  img {\r\n    page-break-inside: avoid;\r\n  }\r\n\r\n  img {\r\n    max-width: 100% !important;\r\n  }\r\n\r\n  p,\r\n  h2,\r\n  h3 {\r\n    orphans: 3;\r\n    widows: 3;\r\n  }\r\n\r\n  h2,\r\n  h3 {\r\n    page-break-after: avoid;\r\n  }\r\n}\r\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
+  	"tt-n": "App_tt-n_1Ns",
+  	"tt-e": "App_tt-e_CK0",
+  	"tt-w": "App_tt-w_3gh",
   	"appContainer": "App_appContainer__kC",
   	"browserupgrade": "App_browserupgrade_1t4"
   };
@@ -3281,7 +3284,7 @@ module.exports =
   
   var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
   
-  var _FriendsList = __webpack_require__(75);
+  var _FriendsList = __webpack_require__(58);
   
   var _FriendsList2 = _interopRequireDefault(_FriendsList);
   
@@ -3413,37 +3416,15 @@ module.exports =
                 this.props.username
               )
             ),
-            typeof this.state.friends === 'object' ? _react2['default'].createElement(_FriendsList2['default'], { friends: this.state.friends }) : '',
+            typeof this.state.friends === 'object' ? _react2['default'].createElement(_FriendsList2['default'], { username: this.props.username,
+              friends: this.state.friends }) : '',
             typeof this.state.steamId === 'undefined' ? _react2['default'].createElement(
               'p',
               null,
               'Loading...'
-            ) : typeof this.state.games === 'object' ? _react2['default'].createElement(
-              'div',
-              { className: _SteamUserPageScss2['default'].loadedGames },
-              _react2['default'].createElement(
-                'p',
-                null,
-                _react2['default'].createElement(
-                  'strong',
-                  null,
-                  this.props.username,
-                  ' '
-                ),
-                'has played ',
-                _react2['default'].createElement(
-                  'strong',
-                  null,
-                  this.state.games.length,
-                  ' '
-                ),
-                this.state.games.length === 1 ? 'game' : 'games',
-                '.'
-              ),
-              _react2['default'].createElement(_PlayedGamesList2['default'], { steamId: this.state.steamId,
-                games: this.state.games,
-                username: this.props.username })
-            ) : _react2['default'].createElement(
+            ) : typeof this.state.games === 'object' ? _react2['default'].createElement(_PlayedGamesList2['default'], { steamId: this.state.steamId,
+              games: this.state.games,
+              username: this.props.username }) : _react2['default'].createElement(
               'p',
               null,
               'Loading games list...'
@@ -3502,17 +3483,22 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamUserPage_playedGames_31q {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n.SteamUserPage_playedGames_31q:before, .SteamUserPage_playedGames_31q:after {\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n  display: table;\n  content: \" \";\n}\n.SteamUserPage_playedGames_31q:after {\n  clear: both;\n}\n.SteamUserPage_playedGames_31q .SteamUserPage_leftColumn_3Re, .SteamUserPage_playedGames_31q .SteamUserPage_rightColumn_1qd {\n  position: relative;\n  min-height: 1px;\n  padding-right: 15px;\n  padding-left: 15px;\n  list-style: none;\n}\n\n@media (min-width: 992px) {\n  .SteamUserPage_playedGames_31q .SteamUserPage_leftColumn_3Re, .SteamUserPage_playedGames_31q .SteamUserPage_rightColumn_1qd {\n    width: 47%;\n    float: left;\n  }\n}\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamUserPage_row_1U1 {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n.SteamUserPage_row_1U1:before, .SteamUserPage_row_1U1:after {\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n  display: table;\n  content: \" \";\n}\n\n.SteamUserPage_row_1U1:after {\n  clear: both;\n}\n\n.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re, .SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd {\n  position: relative;\n  min-height: 1px;\n  padding-right: 15px;\n  padding-left: 15px;\n  list-style: none;\n}\n\n@media (min-width: 992px) {\n  .SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re, .SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd {\n    width: 47%;\n    float: left;\n  }\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/PlayedGamesList.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;EACE,oBAAoB;EACpB,mBAAmB;EACnB,+BAA+B;EAE/B,uBAAuB;CAqBxB;AAnBC;EACE,+BAA+B;EAE/B,uBAAuB;EACvB,eAAe;EACf,aAAa;CACd;AAED;EACE,YAAY;CACb;AAED;EACE,mBAAmB;EACnB,gBAAgB;EAChB,oBAAoB;EACpB,mBAAmB;EACnB,iBAAiB;CAClB;;AAGH;EAEI;IACE,WAAW;IACX,YAAY;GACb;CAEJ;;AClCD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,oBAAoB;EACpB,mBAAmB;EACnB,+BAA+B;EAE/B,uBAAuB;CAqBxB;;AAnBC;EACE,+BAA+B;EAE/B,uBAAuB;EACvB,eAAe;EACf,aAAa;CACd;;AAED;EACE,YAAY;CACb;;AAED;EACE,mBAAmB;EACnB,gBAAgB;EAChB,oBAAoB;EACpB,mBAAmB;EACnB,iBAAiB;CAClB;;AAGH;EAEI;IACE,WAAW;IACX,YAAY;GACb;CAEJ","file":"SteamUserPage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.playedGames {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n\n  &:before, &:after {\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    display: table;\n    content: \" \";\n  }\n\n  &:after {\n    clear: both;\n  }\n\n  .leftColumn, .rightColumn {\n    position: relative;\n    min-height: 1px;\n    padding-right: 15px;\n    padding-left: 15px;\n    list-style: none;\n  }\n}\n\n@media (min-width: $screen-md-min) {\n  .playedGames {\n    .leftColumn, .rightColumn {\n      width: 47%;\n      float: left;\n    }\n  }\n}\n","@import '../variables.scss';\n@import './PlayedGamesList.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.row {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n\n  &:before, &:after {\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    display: table;\n    content: \" \";\n  }\n\n  &:after {\n    clear: both;\n  }\n\n  .leftColumn, .rightColumn {\n    position: relative;\n    min-height: 1px;\n    padding-right: 15px;\n    padding-left: 15px;\n    list-style: none;\n  }\n}\n\n@media (min-width: $screen-md-min) {\n  .row {\n    .leftColumn, .rightColumn {\n      width: 47%;\n      float: left;\n    }\n  }\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamUserPage_playedGames_31q {\n\n}\n\n.SteamUserPage_row_1U1 {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n.SteamUserPage_row_1U1:before, .SteamUserPage_row_1U1:after {\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n  display: table;\n  content: \" \";\n}\n\n.SteamUserPage_row_1U1:after {\n  clear: both;\n}\n\n.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re, .SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd {\n  position: relative;\n  min-height: 1px;\n  padding-right: 15px;\n  padding-left: 15px;\n  list-style: none;\n}\n\n@media (min-width: 992px) {\n  .SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re, .SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd {\n    width: 47%;\n    float: left;\n  }\n}\n.SteamUserPage_friends_2au {\n\n}\n\n.SteamUserPage_friendsList_2ru {\n  list-style: none;\n  padding-left: 0;\n}\n\n.SteamUserPage_friendsList_2ru:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n.SteamUserPage_friend_2B- {\n  width: 200px;\n  float: left;\n  margin: 0 8px 8px 0;\n}\n\n.SteamUserPage_friendAvatar_ghP {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 8px;\n  margin-left: 8px;\n}\n\n.SteamUserPage_friendLink_2cX {\n  font-size: 0.8em;\n  display: inline-block;\n  margin-left: 0.3em;\n}\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamUserPage_row_1U1 {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n.SteamUserPage_row_1U1:before, .SteamUserPage_row_1U1:after {\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n  display: table;\n  content: \" \";\n}\n\n.SteamUserPage_row_1U1:after {\n  clear: both;\n}\n\n.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re, .SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd {\n  position: relative;\n  min-height: 1px;\n  padding-right: 15px;\n  padding-left: 15px;\n  list-style: none;\n}\n\n@media (min-width: 992px) {\n  .SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re, .SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd {\n    width: 47%;\n    float: left;\n  }\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/PlayedGamesList.scss","/./src/components/SteamUserPage/FriendsList.scss","/./src/components/SteamUserPage/Friend.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;;CAEC;;AAED;EACE,oBAAoB;EACpB,mBAAmB;EACnB,+BAA+B;EAE/B,uBAAuB;CAqBxB;;AAnBC;EACE,+BAA+B;EAE/B,uBAAuB;EACvB,eAAe;EACf,aAAa;CACd;;AAED;EACE,YAAY;CACb;;AAED;EACE,mBAAmB;EACnB,gBAAgB;EAChB,oBAAoB;EACpB,mBAAmB;EACnB,iBAAiB;CAClB;;AAGH;EAEI;IACE,WAAW;IACX,YAAY;GACb;CAEJ;ACvCD;;CAEC;;AAED;EACE,iBAAiB;EACjB,gBAAgB;CAUjB;;AARC;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX;ACfH;EACE,aAAa;EACb,YAAY;EACZ,oBAAoB;CACrB;;AAED;EACE,mBAAmB;EACnB,sBAAsB;EACtB,kBAAkB;EAClB,iBAAiB;CAClB;;AAED;EACE,iBAAiB;EACjB,sBAAsB;EACtB,mBAAmB;CACpB;;ACdD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,oBAAoB;EACpB,mBAAmB;EACnB,+BAA+B;EAE/B,uBAAuB;CAqBxB;;AAnBC;EACE,+BAA+B;EAE/B,uBAAuB;EACvB,eAAe;EACf,aAAa;CACd;;AAED;EACE,YAAY;CACb;;AAED;EACE,mBAAmB;EACnB,gBAAgB;EAChB,oBAAoB;EACpB,mBAAmB;EACnB,iBAAiB;CAClB;;AAGH;EAEI;IACE,WAAW;IACX,YAAY;GACb;CAEJ","file":"SteamUserPage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.playedGames {\n\n}\n\n.row {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n\n  &:before, &:after {\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    display: table;\n    content: \" \";\n  }\n\n  &:after {\n    clear: both;\n  }\n\n  .leftColumn, .rightColumn {\n    position: relative;\n    min-height: 1px;\n    padding-right: 15px;\n    padding-left: 15px;\n    list-style: none;\n  }\n}\n\n@media (min-width: $screen-md-min) {\n  .row {\n    .leftColumn, .rightColumn {\n      width: 47%;\n      float: left;\n    }\n  }\n}\n","@import '../variables.scss';\n\n.friends {\n\n}\n\n.friendsList {\n  list-style: none;\n  padding-left: 0;\n\n  &:after {\n    visibility: hidden;\n    display: block;\n    font-size: 0;\n    content: \" \";\n    clear: both;\n    height: 0;\n  }\n}\n","@import '../variables.scss';\n\n.friend {\n  width: 200px;\n  float: left;\n  margin: 0 8px 8px 0;\n}\n\n.friendAvatar {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 8px;\n  margin-left: 8px;\n}\n\n.friendLink {\n  font-size: 0.8em;\n  display: inline-block;\n  margin-left: 0.3em;\n}\n","@import '../variables.scss';\n@import './PlayedGamesList.scss';\n@import './FriendsList.scss';\n@import './Friend.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.row {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n\n  &:before, &:after {\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    display: table;\n    content: \" \";\n  }\n\n  &:after {\n    clear: both;\n  }\n\n  .leftColumn, .rightColumn {\n    position: relative;\n    min-height: 1px;\n    padding-right: 15px;\n    padding-left: 15px;\n    list-style: none;\n  }\n}\n\n@media (min-width: $screen-md-min) {\n  .row {\n    .leftColumn, .rightColumn {\n      width: 47%;\n      float: left;\n    }\n  }\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
   	"playedGames": "SteamUserPage_playedGames_31q",
+  	"row": "SteamUserPage_row_1U1",
   	"leftColumn": "SteamUserPage_leftColumn_3Re",
   	"rightColumn": "SteamUserPage_rightColumn_1qd",
+  	"friends": "SteamUserPage_friends_2au",
+  	"friendsList": "SteamUserPage_friendsList_2ru",
+  	"friend": "SteamUserPage_friend_2B-",
+  	"friendAvatar": "SteamUserPage_friendAvatar_ghP",
+  	"friendLink": "SteamUserPage_friendLink_2cX",
   	"root": "SteamUserPage_root_24_",
   	"container": "SteamUserPage_container_3qe",
-  	"clearSteamUsername": "SteamUserPage_clearSteamUsername_2G2",
-  	"row": "SteamUserPage_row_1U1"
+  	"clearSteamUsername": "SteamUserPage_clearSteamUsername_2G2"
   };
 
 /***/ },
@@ -3565,23 +3551,34 @@ module.exports =
         var column1 = this.props.games.slice(0, index);
         var column2 = this.props.games.slice(index);
         return _react2['default'].createElement(
-          'div',
+          'section',
           { className: _SteamUserPageScss2['default'].playedGames },
           _react2['default'].createElement(
-            'ul',
-            { className: _SteamUserPageScss2['default'].leftColumn },
-            column1.map((function (appId) {
-              return _react2['default'].createElement(_SteamGame2['default'], { username: _this.props.username,
-                appId: appId, key: appId });
-            }).bind(this))
+            'h2',
+            null,
+            'Played Games (',
+            this.props.games.length,
+            ')'
           ),
           _react2['default'].createElement(
-            'ul',
-            { className: _SteamUserPageScss2['default'].rightColumn },
-            column2.map((function (appId) {
-              return _react2['default'].createElement(_SteamGame2['default'], { username: _this.props.username,
-                appId: appId, key: appId });
-            }).bind(this))
+            'div',
+            { className: _SteamUserPageScss2['default'].row },
+            _react2['default'].createElement(
+              'ul',
+              { className: _SteamUserPageScss2['default'].leftColumn },
+              column1.map((function (appId) {
+                return _react2['default'].createElement(_SteamGame2['default'], { username: _this.props.username,
+                  appId: appId, key: appId });
+              }).bind(this))
+            ),
+            _react2['default'].createElement(
+              'ul',
+              { className: _SteamUserPageScss2['default'].rightColumn },
+              column2.map((function (appId) {
+                return _react2['default'].createElement(_SteamGame2['default'], { username: _this.props.username,
+                  appId: appId, key: appId });
+              }).bind(this))
+            )
           )
         );
       }
@@ -92554,7 +92551,153 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _SteamGamePageScss = __webpack_require__(59);
+  var _SteamUserPageScss = __webpack_require__(52);
+  
+  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
+  
+  var _Friend = __webpack_require__(59);
+  
+  var _Friend2 = _interopRequireDefault(_Friend);
+  
+  var FriendsList = (function (_Component) {
+    _inherits(FriendsList, _Component);
+  
+    function FriendsList() {
+      _classCallCheck(this, FriendsList);
+  
+      _get(Object.getPrototypeOf(FriendsList.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(FriendsList, [{
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'section',
+          { className: _SteamUserPageScss2['default'].friends },
+          _react2['default'].createElement(
+            'h2',
+            null,
+            this.props.username,
+            '\'s Friends (',
+            this.props.friends.length,
+            ')'
+          ),
+          _react2['default'].createElement(
+            'ul',
+            { className: _SteamUserPageScss2['default'].friendsList },
+            this.props.friends.map(function (friend) {
+              return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid,
+                friend: friend });
+            })
+          )
+        );
+      }
+    }]);
+  
+    return FriendsList;
+  })(_react.Component);
+  
+  exports['default'] = FriendsList;
+  module.exports = exports['default'];
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamUserPageScss = __webpack_require__(52);
+  
+  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
+  
+  var Friend = (function (_Component) {
+    _inherits(Friend, _Component);
+  
+    function Friend() {
+      _classCallCheck(this, Friend);
+  
+      _get(Object.getPrototypeOf(Friend.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(Friend, [{
+      key: 'render',
+      value: function render() {
+        var domId = 'friend-' + this.props.friend.steamid;
+        return _react2['default'].createElement(
+          'li',
+          { className: _SteamUserPageScss2['default'].friend },
+          _react2['default'].createElement(
+            'label',
+            { htmlFor: domId },
+            _react2['default'].createElement('input', { type: 'checkbox', id: domId }),
+            _react2['default'].createElement('img', { src: this.props.friend.avatar,
+              className: _SteamUserPageScss2['default'].friendAvatar,
+              alt: this.props.friend.steamid }),
+            _react2['default'].createElement(
+              'span',
+              { className: _SteamUserPageScss2['default'].friendName },
+              this.props.friend.personaname
+            )
+          ),
+          _react2['default'].createElement(
+            'a',
+            { href: this.props.friend.profileurl, className: _SteamUserPageScss2['default'].friendLink,
+              target: '_blank', 'data-tt': 'View profile' },
+            _react2['default'].createElement('i', { className: 'fa fa-external-link' })
+          )
+        );
+      }
+    }]);
+  
+    return Friend;
+  })(_react.Component);
+  
+  exports['default'] = Friend;
+  module.exports = exports['default'];
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamGamePageScss = __webpack_require__(61);
   
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
   
@@ -92590,7 +92733,7 @@ module.exports =
   
   var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
   
-  var _AchievementsList = __webpack_require__(74);
+  var _AchievementsList = __webpack_require__(63);
   
   var _AchievementsList2 = _interopRequireDefault(_AchievementsList);
   
@@ -92691,11 +92834,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 59 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(60);
+      var content = __webpack_require__(62);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -92723,7 +92866,7 @@ module.exports =
     
 
 /***/ },
-/* 60 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -92747,7 +92890,122 @@ module.exports =
   };
 
 /***/ },
-/* 61 */
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamGamePageScss = __webpack_require__(61);
+  
+  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
+  
+  var _classnames = __webpack_require__(33);
+  
+  var _classnames2 = _interopRequireDefault(_classnames);
+  
+  var AchievementsList = (function (_Component) {
+    _inherits(AchievementsList, _Component);
+  
+    function AchievementsList() {
+      _classCallCheck(this, AchievementsList);
+  
+      _get(Object.getPrototypeOf(AchievementsList.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(AchievementsList, [{
+      key: 'getUnlockedCount',
+      value: function getUnlockedCount() {
+        var count = 0;
+        for (var i = 0; i < this.props.achievements.length; i++) {
+          if (this.props.achievements[i].isUnlocked) {
+            count++;
+          }
+        }
+        return count;
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        if (this.props.achievements.length < 1) {
+          return _react2['default'].createElement(
+            'p',
+            null,
+            'No achievements'
+          );
+        }
+        var unlockedCount = this.getUnlockedCount();
+        var percentage = Math.round(unlockedCount / this.props.achievements.length * 100);
+        return _react2['default'].createElement(
+          'div',
+          { className: _SteamGamePageScss2['default'].achievements },
+          _react2['default'].createElement(
+            'p',
+            { className: _SteamGamePageScss2['default'].achievementsSummary },
+            'Unlocked ',
+            unlockedCount,
+            ' of ',
+            this.props.achievements.length,
+            ' —',
+            _react2['default'].createElement(
+              'strong',
+              null,
+              ' ',
+              percentage,
+              '%'
+            )
+          ),
+          _react2['default'].createElement(
+            'ul',
+            { className: (0, _classnames2['default'])(_SteamGamePageScss2['default'].achievementsList, _SteamGamePageScss2['default'].clearfix) },
+            this.props.achievements.map(function (achievement) {
+              var title = achievement.isUnlocked ? 'Unlocked' : 'Not yet unlocked';
+              return _react2['default'].createElement(
+                'li',
+                { key: achievement.key, className: _SteamGamePageScss2['default'].achievement },
+                _react2['default'].createElement(
+                  'span',
+                  { 'data-tt': title },
+                  typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
+                    className: _SteamGamePageScss2['default'].achievementIcon, width: '64', height: '64' }) : '',
+                  _react2['default'].createElement(
+                    'span',
+                    { className: _SteamGamePageScss2['default'].achievementName },
+                    achievement.name
+                  )
+                )
+              );
+            })
+          )
+        );
+      }
+    }]);
+  
+    return AchievementsList;
+  })(_react.Component);
+  
+  exports['default'] = AchievementsList;
+  module.exports = exports['default'];
+
+/***/ },
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -92779,7 +93037,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _NotFoundPageScss = __webpack_require__(62);
+  var _NotFoundPageScss = __webpack_require__(65);
   
   var _NotFoundPageScss2 = _interopRequireDefault(_NotFoundPageScss);
   
@@ -92840,11 +93098,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 62 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(63);
+      var content = __webpack_require__(66);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -92872,7 +93130,7 @@ module.exports =
     
 
 /***/ },
-/* 63 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -92886,7 +93144,7 @@ module.exports =
 
 
 /***/ },
-/* 64 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -92918,7 +93176,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ErrorPageScss = __webpack_require__(65);
+  var _ErrorPageScss = __webpack_require__(68);
   
   var _ErrorPageScss2 = _interopRequireDefault(_ErrorPageScss);
   
@@ -92978,11 +93236,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 65 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(66);
+      var content = __webpack_require__(69);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -93010,7 +93268,7 @@ module.exports =
     
 
 /***/ },
-/* 66 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -93024,7 +93282,7 @@ module.exports =
 
 
 /***/ },
-/* 67 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -93092,6 +93350,7 @@ module.exports =
             _react2['default'].createElement('meta', { name: 'description', content: this.props.description }),
             _react2['default'].createElement('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1' }),
             _react2['default'].createElement('link', { rel: 'apple-touch-icon', href: 'apple-touch-icon.png' }),
+            _react2['default'].createElement('link', { rel: 'stylesheet', href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' }),
             _react2['default'].createElement('style', { id: 'css', dangerouslySetInnerHTML: { __html: this.props.css } })
           ),
           _react2['default'].createElement(
@@ -93129,13 +93388,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 68 */
+/* 71 */
 /***/ function(module, exports) {
 
   module.exports = require("./assets");
 
 /***/ },
-/* 69 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -93157,7 +93416,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(70);
+  var _fs = __webpack_require__(73);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -93165,15 +93424,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(71);
+  var _bluebird = __webpack_require__(74);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(72);
+  var _jade = __webpack_require__(75);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(73);
+  var _frontMatter = __webpack_require__(76);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -93270,290 +93529,28 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 70 */
+/* 73 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 71 */
+/* 74 */
 /***/ function(module, exports) {
 
   module.exports = require("bluebird");
 
 /***/ },
-/* 72 */
+/* 75 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 73 */
+/* 76 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
-
-/***/ },
-/* 74 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _SteamGamePageScss = __webpack_require__(59);
-  
-  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
-  var _classnames = __webpack_require__(33);
-  
-  var _classnames2 = _interopRequireDefault(_classnames);
-  
-  var AchievementsList = (function (_Component) {
-    _inherits(AchievementsList, _Component);
-  
-    function AchievementsList() {
-      _classCallCheck(this, AchievementsList);
-  
-      _get(Object.getPrototypeOf(AchievementsList.prototype), 'constructor', this).apply(this, arguments);
-    }
-  
-    _createClass(AchievementsList, [{
-      key: 'getUnlockedCount',
-      value: function getUnlockedCount() {
-        var count = 0;
-        for (var i = 0; i < this.props.achievements.length; i++) {
-          if (this.props.achievements[i].isUnlocked) {
-            count++;
-          }
-        }
-        return count;
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-        if (this.props.achievements.length < 1) {
-          return _react2['default'].createElement(
-            'p',
-            null,
-            'No achievements'
-          );
-        }
-        var unlockedCount = this.getUnlockedCount();
-        var percentage = Math.round(unlockedCount / this.props.achievements.length * 100);
-        return _react2['default'].createElement(
-          'div',
-          { className: _SteamGamePageScss2['default'].achievements },
-          _react2['default'].createElement(
-            'p',
-            { className: _SteamGamePageScss2['default'].achievementsSummary },
-            'Unlocked ',
-            unlockedCount,
-            ' of ',
-            this.props.achievements.length,
-            ' —',
-            _react2['default'].createElement(
-              'strong',
-              null,
-              ' ',
-              percentage,
-              '%'
-            )
-          ),
-          _react2['default'].createElement(
-            'ul',
-            { className: (0, _classnames2['default'])(_SteamGamePageScss2['default'].achievementsList, _SteamGamePageScss2['default'].clearfix) },
-            this.props.achievements.map(function (achievement) {
-              var title = achievement.isUnlocked ? 'Unlocked' : 'Not yet unlocked';
-              return _react2['default'].createElement(
-                'li',
-                { key: achievement.key, className: _SteamGamePageScss2['default'].achievement },
-                _react2['default'].createElement(
-                  'span',
-                  { title: title },
-                  typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
-                    className: _SteamGamePageScss2['default'].achievementIcon, width: '64', height: '64' }) : '',
-                  _react2['default'].createElement(
-                    'span',
-                    { className: _SteamGamePageScss2['default'].achievementName },
-                    achievement.name
-                  )
-                )
-              );
-            })
-          )
-        );
-      }
-    }]);
-  
-    return AchievementsList;
-  })(_react.Component);
-  
-  exports['default'] = AchievementsList;
-  module.exports = exports['default'];
-
-/***/ },
-/* 75 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _SteamUserPageScss = __webpack_require__(52);
-  
-  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
-  
-  var _Friend = __webpack_require__(76);
-  
-  var _Friend2 = _interopRequireDefault(_Friend);
-  
-  var FriendsList = (function (_Component) {
-    _inherits(FriendsList, _Component);
-  
-    function FriendsList() {
-      _classCallCheck(this, FriendsList);
-  
-      _get(Object.getPrototypeOf(FriendsList.prototype), 'constructor', this).apply(this, arguments);
-    }
-  
-    _createClass(FriendsList, [{
-      key: 'render',
-      value: function render() {
-        var index = Math.ceil(this.props.friends.length / 2.0);
-        var column1 = this.props.friends.slice(0, index);
-        var column2 = this.props.friends.slice(index);
-        return _react2['default'].createElement(
-          'div',
-          { className: _SteamUserPageScss2['default'].row },
-          _react2['default'].createElement(
-            'div',
-            { className: _SteamUserPageScss2['default'].leftColumn },
-            _react2['default'].createElement(
-              'ul',
-              null,
-              column1.map(function (friend) {
-                return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid,
-                  friend: friend });
-              })
-            )
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: _SteamUserPageScss2['default'].rightColumn },
-            _react2['default'].createElement(
-              'ul',
-              null,
-              column2.map(function (friend) {
-                return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid,
-                  friend: friend });
-              })
-            )
-          )
-        );
-      }
-    }]);
-  
-    return FriendsList;
-  })(_react.Component);
-  
-  exports['default'] = FriendsList;
-  module.exports = exports['default'];
-
-/***/ },
-/* 76 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _SteamUserPageScss = __webpack_require__(52);
-  
-  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
-  
-  var Friend = (function (_Component) {
-    _inherits(Friend, _Component);
-  
-    function Friend() {
-      _classCallCheck(this, Friend);
-  
-      _get(Object.getPrototypeOf(Friend.prototype), 'constructor', this).apply(this, arguments);
-    }
-  
-    _createClass(Friend, [{
-      key: 'render',
-      value: function render() {
-        return _react2['default'].createElement(
-          'li',
-          { className: _SteamUserPageScss2['default'].friend },
-          _react2['default'].createElement(
-            'a',
-            { href: this.props.friend.profileurl, target: '_blank' },
-            _react2['default'].createElement('img', { src: this.props.friend.avatar, alt: this.props.friend.steamid }),
-            _react2['default'].createElement(
-              'span',
-              { className: _SteamUserPageScss2['default'].friendName },
-              this.props.friend.personaname
-            )
-          )
-        );
-      }
-    }]);
-  
-    return Friend;
-  })(_react.Component);
-  
-  exports['default'] = Friend;
-  module.exports = exports['default'];
 
 /***/ }
 /******/ ]);
