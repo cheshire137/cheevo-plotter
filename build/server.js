@@ -2963,6 +2963,71 @@ module.exports =
         }, null, this);
       }
     }, {
+      key: 'getPlayerSummaries',
+      value: function getPlayerSummaries(steamIds) {
+        var batches, batchSize, index, batch, summaries, i, result;
+        return regeneratorRuntime.async(function getPlayerSummaries$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              batches = [];
+              batchSize = 100;
+              index = 0;
+  
+              while (index < steamIds.length) {
+                batch = [];
+  
+                while (batch.length < batchSize && index < steamIds.length) {
+                  batch.push(steamIds[index]);
+                  index++;
+                }
+                batches.push(batch);
+              }
+              summaries = [];
+              i = 0;
+  
+            case 6:
+              if (!(i < batches.length)) {
+                context$2$0.next = 14;
+                break;
+              }
+  
+              context$2$0.next = 9;
+              return regeneratorRuntime.awrap(this.get('/api/steam?format=json' + '&path=/ISteamUser/GetPlayerSummaries/v0002/' + '&steamids=' + batches[i].join(',')));
+  
+            case 9:
+              result = context$2$0.sent;
+  
+              summaries = summaries.concat(result.response.players);
+  
+            case 11:
+              i++;
+              context$2$0.next = 6;
+              break;
+  
+            case 14:
+              return context$2$0.abrupt('return', summaries);
+  
+            case 15:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }, {
+      key: 'getFriends',
+      value: function getFriends(steamId) {
+        return regeneratorRuntime.async(function getFriends$(context$2$0) {
+          while (1) switch (context$2$0.prev = context$2$0.next) {
+            case 0:
+              return context$2$0.abrupt('return', this.get('/api/steam?format=json' + '&path=/ISteamUser/GetFriendList/v0001/' + '&steamid=' + steamId + '&relationship=friend'));
+  
+            case 1:
+            case 'end':
+              return context$2$0.stop();
+          }
+        }, null, this);
+      }
+    }, {
       key: 'getOwnedGames',
       value: function getOwnedGames(steamId) {
         return regeneratorRuntime.async(function getOwnedGames$(context$2$0) {
@@ -3095,36 +3160,38 @@ module.exports =
             case 0:
               type = type || 'json';
               url = _configJson2['default'][("development")].serverUri + path;
-              context$2$0.next = 4;
+  
+              console.log(url);
+              context$2$0.next = 5;
               return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
   
-            case 4:
+            case 5:
               response = context$2$0.sent;
   
               if (!(type === 'json')) {
-                context$2$0.next = 11;
+                context$2$0.next = 12;
                 break;
               }
   
-              context$2$0.next = 8;
+              context$2$0.next = 9;
               return regeneratorRuntime.awrap(response.json());
   
-            case 8:
+            case 9:
               context$2$0.t0 = context$2$0.sent;
-              context$2$0.next = 14;
+              context$2$0.next = 15;
               break;
   
-            case 11:
-              context$2$0.next = 13;
+            case 12:
+              context$2$0.next = 14;
               return regeneratorRuntime.awrap(response.text());
   
-            case 13:
+            case 14:
               context$2$0.t0 = context$2$0.sent;
   
-            case 14:
+            case 15:
               return context$2$0.abrupt('return', context$2$0.t0);
   
-            case 15:
+            case 16:
             case 'end':
               return context$2$0.stop();
           }
@@ -3137,6 +3204,8 @@ module.exports =
   
   exports['default'] = Steam;
   module.exports = exports['default'];
+
+  // see https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
 
   // TODO: somehow get game iconUri from JSON API
 
@@ -3212,6 +3281,10 @@ module.exports =
   
   var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
   
+  var _FriendsList = __webpack_require__(75);
+  
+  var _FriendsList2 = _interopRequireDefault(_FriendsList);
+  
   var SteamUserPage = (function (_Component) {
     _inherits(SteamUserPage, _Component);
   
@@ -3244,6 +3317,7 @@ module.exports =
           this.fetchSteamId();
           return;
         }
+        this.fetchFriends(steamId);
         this.fetchGames(steamId);
         this.setState({ steamId: steamId });
       }
@@ -3257,8 +3331,27 @@ module.exports =
       value: function onSteamIdFetched(data) {
         var steamId = data.response.steamid;
         _storesLocalStorage2['default'].set('steam-id', steamId);
+        this.fetchFriends(steamId);
         this.fetchGames(steamId);
         this.setState({ steamId: steamId });
+      }
+    }, {
+      key: 'fetchFriends',
+      value: function fetchFriends(steamId) {
+        _actionsSteam2['default'].getFriends(steamId).then(this.onFriendIdsFetched.bind(this));
+      }
+    }, {
+      key: 'onFriendIdsFetched',
+      value: function onFriendIdsFetched(data) {
+        var friendIds = data.friendslist.friends.map(function (f) {
+          return f.steamid;
+        });
+        _actionsSteam2['default'].getPlayerSummaries(friendIds).then(this.onFriendSummariesFetched.bind(this));
+      }
+    }, {
+      key: 'onFriendSummariesFetched',
+      value: function onFriendSummariesFetched(friends) {
+        this.setState({ friends: friends });
       }
     }, {
       key: 'fetchGames',
@@ -3320,6 +3413,7 @@ module.exports =
                 this.props.username
               )
             ),
+            typeof this.state.friends === 'object' ? _react2['default'].createElement(_FriendsList2['default'], { friends: this.state.friends }) : '',
             typeof this.state.steamId === 'undefined' ? _react2['default'].createElement(
               'p',
               null,
@@ -3408,7 +3502,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamUserPage_playedGames_31q {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n.SteamUserPage_playedGames_31q:before, .SteamUserPage_playedGames_31q:after {\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n  display: table;\n  content: \" \";\n}\n.SteamUserPage_playedGames_31q:after {\n  clear: both;\n}\n.SteamUserPage_playedGames_31q .SteamUserPage_leftColumn_3Re, .SteamUserPage_playedGames_31q .SteamUserPage_rightColumn_1qd {\n  position: relative;\n  min-height: 1px;\n  padding-right: 15px;\n  padding-left: 15px;\n  list-style: none;\n}\n\n@media (min-width: 992px) {\n  .SteamUserPage_playedGames_31q .SteamUserPage_leftColumn_3Re, .SteamUserPage_playedGames_31q .SteamUserPage_rightColumn_1qd {\n    width: 47%;\n    float: left;\n  }\n}\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/PlayedGamesList.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;EACE,oBAAoB;EACpB,mBAAmB;EACnB,+BAA+B;EAE/B,uBAAuB;CAqBxB;AAnBC;EACE,+BAA+B;EAE/B,uBAAuB;EACvB,eAAe;EACf,aAAa;CACd;AAED;EACE,YAAY;CACb;AAED;EACE,mBAAmB;EACnB,gBAAgB;EAChB,oBAAoB;EACpB,mBAAmB;EACnB,iBAAiB;CAClB;;AAGH;EAEI;IACE,WAAW;IACX,YAAY;GACb;CAEJ;;AClCD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB","file":"SteamUserPage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.playedGames {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n\n  &:before, &:after {\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    display: table;\n    content: \" \";\n  }\n\n  &:after {\n    clear: both;\n  }\n\n  .leftColumn, .rightColumn {\n    position: relative;\n    min-height: 1px;\n    padding-right: 15px;\n    padding-left: 15px;\n    list-style: none;\n  }\n}\n\n@media (min-width: $screen-md-min) {\n  .playedGames {\n    .leftColumn, .rightColumn {\n      width: 47%;\n      float: left;\n    }\n  }\n}\n","@import '../variables.scss';\n@import './PlayedGamesList.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamUserPage_playedGames_31q {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n.SteamUserPage_playedGames_31q:before, .SteamUserPage_playedGames_31q:after {\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n  display: table;\n  content: \" \";\n}\n.SteamUserPage_playedGames_31q:after {\n  clear: both;\n}\n.SteamUserPage_playedGames_31q .SteamUserPage_leftColumn_3Re, .SteamUserPage_playedGames_31q .SteamUserPage_rightColumn_1qd {\n  position: relative;\n  min-height: 1px;\n  padding-right: 15px;\n  padding-left: 15px;\n  list-style: none;\n}\n\n@media (min-width: 992px) {\n  .SteamUserPage_playedGames_31q .SteamUserPage_leftColumn_3Re, .SteamUserPage_playedGames_31q .SteamUserPage_rightColumn_1qd {\n    width: 47%;\n    float: left;\n  }\n}\n\n.SteamUserPage_root_24_ {\n  width: 100%;\n}\n\n.SteamUserPage_container_3qe {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamUserPage_clearSteamUsername_2G2 {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamUserPage_row_1U1 {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n.SteamUserPage_row_1U1:before, .SteamUserPage_row_1U1:after {\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n  display: table;\n  content: \" \";\n}\n\n.SteamUserPage_row_1U1:after {\n  clear: both;\n}\n\n.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re, .SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd {\n  position: relative;\n  min-height: 1px;\n  padding-right: 15px;\n  padding-left: 15px;\n  list-style: none;\n}\n\n@media (min-width: 992px) {\n  .SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re, .SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd {\n    width: 47%;\n    float: left;\n  }\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamUserPage/PlayedGamesList.scss","/./src/components/SteamUserPage/SteamUserPage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;EACE,oBAAoB;EACpB,mBAAmB;EACnB,+BAA+B;EAE/B,uBAAuB;CAqBxB;AAnBC;EACE,+BAA+B;EAE/B,uBAAuB;EACvB,eAAe;EACf,aAAa;CACd;AAED;EACE,YAAY;CACb;AAED;EACE,mBAAmB;EACnB,gBAAgB;EAChB,oBAAoB;EACpB,mBAAmB;EACnB,iBAAiB;CAClB;;AAGH;EAEI;IACE,WAAW;IACX,YAAY;GACb;CAEJ;;AClCD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,oBAAoB;EACpB,mBAAmB;EACnB,+BAA+B;EAE/B,uBAAuB;CAqBxB;;AAnBC;EACE,+BAA+B;EAE/B,uBAAuB;EACvB,eAAe;EACf,aAAa;CACd;;AAED;EACE,YAAY;CACb;;AAED;EACE,mBAAmB;EACnB,gBAAgB;EAChB,oBAAoB;EACpB,mBAAmB;EACnB,iBAAiB;CAClB;;AAGH;EAEI;IACE,WAAW;IACX,YAAY;GACb;CAEJ","file":"SteamUserPage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.playedGames {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n\n  &:before, &:after {\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    display: table;\n    content: \" \";\n  }\n\n  &:after {\n    clear: both;\n  }\n\n  .leftColumn, .rightColumn {\n    position: relative;\n    min-height: 1px;\n    padding-right: 15px;\n    padding-left: 15px;\n    list-style: none;\n  }\n}\n\n@media (min-width: $screen-md-min) {\n  .playedGames {\n    .leftColumn, .rightColumn {\n      width: 47%;\n      float: left;\n    }\n  }\n}\n","@import '../variables.scss';\n@import './PlayedGamesList.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamUsername {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.row {\n  margin-right: -15px;\n  margin-left: -15px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n\n  &:before, &:after {\n    -webkit-box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    display: table;\n    content: \" \";\n  }\n\n  &:after {\n    clear: both;\n  }\n\n  .leftColumn, .rightColumn {\n    position: relative;\n    min-height: 1px;\n    padding-right: 15px;\n    padding-left: 15px;\n    list-style: none;\n  }\n}\n\n@media (min-width: $screen-md-min) {\n  .row {\n    .leftColumn, .rightColumn {\n      width: 47%;\n      float: left;\n    }\n  }\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
@@ -3417,7 +3511,8 @@ module.exports =
   	"rightColumn": "SteamUserPage_rightColumn_1qd",
   	"root": "SteamUserPage_root_24_",
   	"container": "SteamUserPage_container_3qe",
-  	"clearSteamUsername": "SteamUserPage_clearSteamUsername_2G2"
+  	"clearSteamUsername": "SteamUserPage_clearSteamUsername_2G2",
+  	"row": "SteamUserPage_row_1U1"
   };
 
 /***/ },
@@ -93270,11 +93365,16 @@ module.exports =
             { className: _SteamGamePageScss2['default'].achievementsSummary },
             'Unlocked ',
             unlockedCount,
-            ' / ',
+            ' of ',
             this.props.achievements.length,
-            ' — ',
-            percentage,
-            '%'
+            ' —',
+            _react2['default'].createElement(
+              'strong',
+              null,
+              ' ',
+              percentage,
+              '%'
+            )
           ),
           _react2['default'].createElement(
             'ul',
@@ -93288,7 +93388,7 @@ module.exports =
                   'span',
                   { title: title },
                   typeof achievement.iconUri === 'string' ? _react2['default'].createElement('img', { src: achievement.iconUri, alt: achievement.name,
-                    className: _SteamGamePageScss2['default'].achievementIcon }) : '',
+                    className: _SteamGamePageScss2['default'].achievementIcon, width: '64', height: '64' }) : '',
                   _react2['default'].createElement(
                     'span',
                     { className: _SteamGamePageScss2['default'].achievementName },
@@ -93306,6 +93406,153 @@ module.exports =
   })(_react.Component);
   
   exports['default'] = AchievementsList;
+  module.exports = exports['default'];
+
+/***/ },
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamUserPageScss = __webpack_require__(52);
+  
+  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
+  
+  var _Friend = __webpack_require__(76);
+  
+  var _Friend2 = _interopRequireDefault(_Friend);
+  
+  var FriendsList = (function (_Component) {
+    _inherits(FriendsList, _Component);
+  
+    function FriendsList() {
+      _classCallCheck(this, FriendsList);
+  
+      _get(Object.getPrototypeOf(FriendsList.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(FriendsList, [{
+      key: 'render',
+      value: function render() {
+        var index = Math.ceil(this.props.friends.length / 2.0);
+        var column1 = this.props.friends.slice(0, index);
+        var column2 = this.props.friends.slice(index);
+        return _react2['default'].createElement(
+          'div',
+          { className: _SteamUserPageScss2['default'].row },
+          _react2['default'].createElement(
+            'div',
+            { className: _SteamUserPageScss2['default'].leftColumn },
+            _react2['default'].createElement(
+              'ul',
+              null,
+              column1.map(function (friend) {
+                return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid,
+                  friend: friend });
+              })
+            )
+          ),
+          _react2['default'].createElement(
+            'div',
+            { className: _SteamUserPageScss2['default'].rightColumn },
+            _react2['default'].createElement(
+              'ul',
+              null,
+              column2.map(function (friend) {
+                return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid,
+                  friend: friend });
+              })
+            )
+          )
+        );
+      }
+    }]);
+  
+    return FriendsList;
+  })(_react.Component);
+  
+  exports['default'] = FriendsList;
+  module.exports = exports['default'];
+
+/***/ },
+/* 76 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamUserPageScss = __webpack_require__(52);
+  
+  var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
+  
+  var Friend = (function (_Component) {
+    _inherits(Friend, _Component);
+  
+    function Friend() {
+      _classCallCheck(this, Friend);
+  
+      _get(Object.getPrototypeOf(Friend.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(Friend, [{
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'li',
+          { className: _SteamUserPageScss2['default'].friend },
+          _react2['default'].createElement(
+            'a',
+            { href: this.props.friend.profileurl, target: '_blank' },
+            _react2['default'].createElement('img', { src: this.props.friend.avatar, alt: this.props.friend.steamid }),
+            _react2['default'].createElement(
+              'span',
+              { className: _SteamUserPageScss2['default'].friendName },
+              this.props.friend.personaname
+            )
+          )
+        );
+      }
+    }]);
+  
+    return Friend;
+  })(_react.Component);
+  
+  exports['default'] = Friend;
   module.exports = exports['default'];
 
 /***/ }

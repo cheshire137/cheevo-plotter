@@ -9,6 +9,36 @@ class Steam {
                     '&vanityurl=' + username);
   }
 
+  static async getPlayerSummaries(steamIds) {
+    var batches = [];
+    // see https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
+    var batchSize = 100;
+    var index = 0;
+    while (index < steamIds.length) {
+      var batch = [];
+      while (batch.length < batchSize && index < steamIds.length) {
+        batch.push(steamIds[index]);
+        index++;
+      }
+      batches.push(batch);
+    }
+    var summaries = [];
+    for (var i = 0; i < batches.length; i++) {
+      var result =
+          await this.get('/api/steam?format=json' +
+                         '&path=/ISteamUser/GetPlayerSummaries/v0002/' +
+                         '&steamids=' + batches[i].join(','));
+      summaries = summaries.concat(result.response.players);
+    }
+    return summaries;
+  }
+
+  static async getFriends(steamId) {
+    return this.get('/api/steam?format=json' +
+                    '&path=/ISteamUser/GetFriendList/v0001/' +
+                    '&steamid=' + steamId + '&relationship=friend');
+  }
+
   static async getOwnedGames(steamId) {
     return this.get('/api/steam?format=json' +
                     '&path=/IPlayerService/GetOwnedGames/v0001/' +
@@ -85,6 +115,7 @@ class Steam {
   static async get(path, type) {
     type = type || 'json';
     const url = Config[process.env.NODE_ENV].serverUri + path;
+    console.log(url);
     const response = await fetch(url);
     return type === 'json' ? await response.json() : await response.text();
   }

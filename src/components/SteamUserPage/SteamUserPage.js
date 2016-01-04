@@ -9,6 +9,7 @@ import Location from '../../core/Location';
 import Link from '../Link';
 import PlayedGamesList from './PlayedGamesList';
 import SteamApps from '../../stores/steamApps';
+import FriendsList from './FriendsList';
 
 @withStyles(s)
 class SteamUserPage extends Component {
@@ -32,6 +33,7 @@ class SteamUserPage extends Component {
       this.fetchSteamId();
       return;
     }
+    this.fetchFriends(steamId);
     this.fetchGames(steamId);
     this.setState({steamId: steamId});
   }
@@ -44,8 +46,23 @@ class SteamUserPage extends Component {
   onSteamIdFetched(data) {
     var steamId = data.response.steamid;
     LocalStorage.set('steam-id', steamId);
+    this.fetchFriends(steamId);
     this.fetchGames(steamId);
     this.setState({steamId: steamId});
+  }
+
+  fetchFriends(steamId) {
+    Steam.getFriends(steamId).then(this.onFriendIdsFetched.bind(this));
+  }
+
+  onFriendIdsFetched(data) {
+    const friendIds = data.friendslist.friends.map((f) => f.steamid);
+    Steam.getPlayerSummaries(friendIds).
+          then(this.onFriendSummariesFetched.bind(this));
+  }
+
+  onFriendSummariesFetched(friends) {
+    this.setState({friends: friends});
   }
 
   fetchGames(steamId) {
@@ -95,6 +112,9 @@ class SteamUserPage extends Component {
             Steam /
             <a href={profileUrl} target="_blank"> {this.props.username}</a>
           </h1>
+          {typeof this.state.friends === 'object' ? (
+            <FriendsList friends={this.state.friends} />
+          ) : ''}
           {typeof this.state.steamId === 'undefined' ? (
             <p>Loading...</p>
           ) : typeof this.state.games === 'object' ? (

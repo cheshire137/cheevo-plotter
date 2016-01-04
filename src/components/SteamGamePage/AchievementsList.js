@@ -22,7 +22,8 @@ class AchievementsList extends Component {
     return (
       <div className={s.achievements}>
         <p className={s.achievementsSummary}>
-          Unlocked {unlockedCount} / {this.props.achievements.length} &mdash; {percentage}%
+          Unlocked {unlockedCount} of {this.props.achievements.length} &mdash;
+          <strong> {percentage}%</strong>
         </p>
         <ul className={cx(s.achievementsList, s.clearfix)}>
           {this.props.achievements.map((achievement) => {
@@ -32,7 +33,7 @@ class AchievementsList extends Component {
                 <span title={title}>
                   {typeof achievement.iconUri === 'string' ? (
                     <img src={achievement.iconUri} alt={achievement.name}
-                         className={s.achievementIcon} />
+                         className={s.achievementIcon} width="64" height="64" />
                   ) : ''}
                   <span className={s.achievementName}>
                     {achievement.name}
