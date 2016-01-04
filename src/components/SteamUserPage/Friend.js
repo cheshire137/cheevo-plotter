@@ -11,7 +11,8 @@ class Friend extends Component {
     return (
       <li className={s.friend}>
         <label htmlFor={domId}>
-          <input type="checkbox" id={domId} onChange={this.onToggle.bind(this)} />
+          <input checked={this.props.isSelected} type="checkbox" id={domId}
+                 onChange={this.onToggle.bind(this)} />
           <img src={this.props.friend.avatar}
                className={s.friendAvatar}
                alt={this.props.friend.steamid} />

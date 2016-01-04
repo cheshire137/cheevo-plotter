@@ -27,8 +27,11 @@ class FriendsList extends Component {
         <h2>{this.props.username}'s Friends ({this.props.friends.length})</h2>
         <ul className={s.friendsList}>
           {this.props.friends.map((friend) => {
+            const isSelected = this.props.selectedIds.
+                indexOf(friend.steamid) > -1;
             return (
               <Friend key={friend.steamid} friend={friend}
+                      isSelected={isSelected}
                       onToggle={this.onFriendToggled.bind(this)} />
             );
           }.bind(this))}

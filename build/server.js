@@ -3459,6 +3459,7 @@ module.exports =
     }, {
       key: 'render',
       value: function render() {
+        var selectedSteamIds = Object.keys(this.state.ownedGames);
         var profileUrl = 'https://steamcommunity.com/id/' + this.props.username + '/';
         return _react2['default'].createElement(
           'div',
@@ -3483,7 +3484,13 @@ module.exports =
                 this.props.username
               )
             ),
-            typeof this.state.friends === 'object' ? _react2['default'].createElement(_FriendsList2['default'], { username: this.props.username,
+            _react2['default'].createElement(
+              'p',
+              null,
+              'Choose some other players and a game to compare your achievements!'
+            ),
+            typeof this.state.friends === 'object' ? _react2['default'].createElement(_FriendsList2['default'], { selectedIds: selectedSteamIds,
+              username: this.props.username,
               friends: this.state.friends,
               onSelectionChange: this.onFriendSelectionChanged.bind(this) }) : '',
             typeof this.state.steamId === 'undefined' ? _react2['default'].createElement(
@@ -92670,7 +92677,9 @@ module.exports =
             'ul',
             { className: _SteamUserPageScss2['default'].friendsList },
             this.props.friends.map((function (friend) {
+              var isSelected = _this.props.selectedIds.indexOf(friend.steamid) > -1;
               return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid, friend: friend,
+                isSelected: isSelected,
                 onToggle: _this.onFriendToggled.bind(_this) });
             }).bind(this))
           )
@@ -92736,7 +92745,8 @@ module.exports =
           _react2['default'].createElement(
             'label',
             { htmlFor: domId },
-            _react2['default'].createElement('input', { type: 'checkbox', id: domId, onChange: this.onToggle.bind(this) }),
+            _react2['default'].createElement('input', { checked: this.props.isSelected, type: 'checkbox', id: domId,
+              onChange: this.onToggle.bind(this) }),
             _react2['default'].createElement('img', { src: this.props.friend.avatar,
               className: _SteamUserPageScss2['default'].friendAvatar,
               alt: this.props.friend.steamid }),

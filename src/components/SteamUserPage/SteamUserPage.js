@@ -163,6 +163,7 @@ class SteamUserPage extends Component {
   }
 
   render() {
+    const selectedSteamIds = Object.keys(this.state.ownedGames);
     const profileUrl = 'https://steamcommunity.com/id/' +
                        this.props.username + '/';
     return (
@@ -176,8 +177,12 @@ class SteamUserPage extends Component {
             Steam /
             <a href={profileUrl} target="_blank"> {this.props.username}</a>
           </h1>
+          <p>
+            Choose some other players and a game to compare your achievements!
+          </p>
           {typeof this.state.friends === 'object' ? (
-            <FriendsList username={this.props.username}
+            <FriendsList selectedIds={selectedSteamIds}
+                         username={this.props.username}
                          friends={this.state.friends}
                          onSelectionChange={this.onFriendSelectionChanged.bind(this)} />
           ) : ''}
