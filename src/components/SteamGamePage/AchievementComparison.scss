@@ -7,6 +7,11 @@
   border: 1px solid $mauve;
   border-radius: 4px;
   padding: 8px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 
   &:after {
     visibility: hidden;
@@ -21,18 +26,22 @@
 .achievementIcon {
   border-radius: 4px;
   display: inline-block;
-  margin-right: 8px;
-  float: left;
+  margin-right: 16px;
 }
 
 .achievementName {
-  margin: 0 0 8px 0;
+  margin: 0;
+  font-size: 1.2rem;
+  width: 212px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .playerAchievements {
   list-style: none;
   padding-left: 0;
-  margin: 0 0 0 72px;
+  margin: 0;
 
   .playerAchievement {
     .playerName {
