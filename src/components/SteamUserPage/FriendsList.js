@@ -5,20 +5,20 @@ import Friend from './Friend';
 class FriendsList extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {selectedFriends: []};
+    this.state = {selectedIds: props.selectedIds};
   }
 
   onFriendToggled(steamId, isSelected) {
-    var selectedFriends = this.state.selectedFriends;
-    const index = selectedFriends.indexOf(steamId);
+    var selectedIds = this.state.selectedIds;
+    const index = selectedIds.indexOf(steamId);
     if (isSelected && index < 0) {
-      selectedFriends.push(steamId);
+      selectedIds.push(steamId);
     } else if (!isSelected && index > -1) {
-      selectedFriends = selectedFriends.slice(0, index).
-          concat(selectedFriends.slice(index + 1));
+      selectedIds = selectedIds.slice(0, index).
+          concat(selectedIds.slice(index + 1));
     }
-    this.setState({selectedFriends: selectedFriends});
-    this.props.onSelectionChange(selectedFriends);
+    this.setState({selectedIds: selectedIds});
+    this.props.onSelectionChange(selectedIds);
   }
 
   render() {
@@ -27,7 +27,7 @@ class FriendsList extends Component {
         <h2>{this.props.username}'s Friends ({this.props.friends.length})</h2>
         <ul className={s.friendsList}>
           {this.props.friends.map((friend) => {
-            const isSelected = this.props.selectedIds.
+            const isSelected = this.state.selectedIds.
                 indexOf(friend.steamid) > -1;
             return (
               <Friend key={friend.steamid} friend={friend}

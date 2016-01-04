@@ -3303,7 +3303,14 @@ module.exports =
       _classCallCheck(this, _SteamUserPage);
   
       _get(Object.getPrototypeOf(_SteamUserPage.prototype), 'constructor', this).call(this, props, context);
-      this.state = { ownedGames: {} };
+      var ownedGames = {};
+      var selectedFriends = _storesLocalStorage2['default'].get('steam-selected-friends');
+      if (typeof selectedFriends === 'object') {
+        for (var i = 0; i < selectedFriends.length; i++) {
+          ownedGames[selectedFriends[i]] = [];
+        }
+      }
+      this.state = { ownedGames: ownedGames };
     }
   
     _createClass(SteamUserPage, [{
@@ -3322,7 +3329,17 @@ module.exports =
         }
         this.fetchFriends(steamId);
         this.fetchGames(steamId);
+        this.fetchStoredFriendGames();
         this.setState({ steamId: steamId });
+      }
+    }, {
+      key: 'fetchStoredFriendGames',
+      value: function fetchStoredFriendGames() {
+        var friendIds = _storesLocalStorage2['default'].get('steam-selected-friends');
+        if (typeof friendIds !== 'object') {
+          return;
+        }
+        this.fetchFriendGames(friendIds);
       }
     }, {
       key: 'fetchSteamId',
@@ -3427,12 +3444,13 @@ module.exports =
         _storesLocalStorage2['default']['delete']('steam-id');
         _storesLocalStorage2['default']['delete']('steam-username');
         _storesLocalStorage2['default']['delete']('steam-games');
+        _storesLocalStorage2['default']['delete']('steam-selected-friends');
         _coreLocation2['default'].push(_extends({}, (0, _historyLibParsePath2['default'])('/')));
       }
     }, {
       key: 'onFriendSelectionChanged',
       value: function onFriendSelectionChanged(selectedFriends) {
-        console.log('now selected', selectedFriends);
+        _storesLocalStorage2['default'].set('steam-selected-friends', selectedFriends);
         var ownedGames = this.state.ownedGames;
         if (typeof this.state.steamId !== 'undefined') {
           for (var steamId in ownedGames) {
@@ -3443,11 +3461,21 @@ module.exports =
           this.updateSharedGames(ownedGames);
           this.setState({ ownedGames: ownedGames });
         }
-        var knownFriends = Object.keys(ownedGames);
+        this.fetchFriendGames(selectedFriends, ownedGames);
+      }
+    }, {
+      key: 'fetchFriendGames',
+      value: function fetchFriendGames(selectedFriends, ownedGames) {
+        ownedGames = ownedGames || this.state.ownedGames;
+        var knownFriends = [];
+        for (var steamId in ownedGames) {
+          if (ownedGames[steamId].length > 0) {
+            knownFriends.push(steamId);
+          }
+        }
         for (var i = 0; i < selectedFriends.length; i++) {
           var steamId = selectedFriends[i];
           if (knownFriends.indexOf(steamId) < 0) {
-            console.log('looking up games for', steamId);
             _actionsSteam2['default'].getOwnedGames(steamId).then(this.onFriendGamesFetched.bind(this, steamId));
           }
         }
@@ -3465,6 +3493,7 @@ module.exports =
       key: 'render',
       value: function render() {
         var selectedSteamIds = Object.keys(this.state.ownedGames);
+        console.log('selected ids', selectedSteamIds);
         var profileUrl = 'https://steamcommunity.com/id/' + this.props.username + '/';
         var haveSteamId = typeof this.state.steamId !== 'undefined';
         var haveGamesList = typeof this.state.games === 'object';
@@ -92654,21 +92683,21 @@ module.exports =
       _classCallCheck(this, FriendsList);
   
       _get(Object.getPrototypeOf(FriendsList.prototype), 'constructor', this).call(this, props, context);
-      this.state = { selectedFriends: [] };
+      this.state = { selectedIds: props.selectedIds };
     }
   
     _createClass(FriendsList, [{
       key: 'onFriendToggled',
       value: function onFriendToggled(steamId, isSelected) {
-        var selectedFriends = this.state.selectedFriends;
-        var index = selectedFriends.indexOf(steamId);
+        var selectedIds = this.state.selectedIds;
+        var index = selectedIds.indexOf(steamId);
         if (isSelected && index < 0) {
-          selectedFriends.push(steamId);
+          selectedIds.push(steamId);
         } else if (!isSelected && index > -1) {
-          selectedFriends = selectedFriends.slice(0, index).concat(selectedFriends.slice(index + 1));
+          selectedIds = selectedIds.slice(0, index).concat(selectedIds.slice(index + 1));
         }
-        this.setState({ selectedFriends: selectedFriends });
-        this.props.onSelectionChange(selectedFriends);
+        this.setState({ selectedIds: selectedIds });
+        this.props.onSelectionChange(selectedIds);
       }
     }, {
       key: 'render',
@@ -92690,7 +92719,7 @@ module.exports =
             'ul',
             { className: _SteamUserPageScss2['default'].friendsList },
             this.props.friends.map((function (friend) {
-              var isSelected = _this.props.selectedIds.indexOf(friend.steamid) > -1;
+              var isSelected = _this.state.selectedIds.indexOf(friend.steamid) > -1;
               return _react2['default'].createElement(_Friend2['default'], { key: friend.steamid, friend: friend,
                 isSelected: isSelected,
                 onToggle: _this.onFriendToggled.bind(_this) });
@@ -92986,7 +93015,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.SteamGamePage_achievementsList_3F0 {\n  padding-left: 0;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r {\n  display: inline-block;\n  list-style: none;\n  width: 240px;\n  margin: 0 8px 8px 0;\n  float: left;\n  position: relative;\n  overflow: hidden;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r > span {\n  display: inline-block;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz {\n  display: inline-block;\n  vertical-align: middle;\n  position: absolute;\n  left: 72px;\n}\n\n.SteamGamePage_clearfix_1GN:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;ACdjE;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;;AAED;EACE,gBAAgB;CA4BjB;;AA1BC;EACE,sBAAsB;EACtB,iBAAiB;EACjB,aAAa;EACb,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;EACnB,iBAAiB;CAkBlB;;AAhBC;EACE,sBAAsB;CACvB;;AAED;EACE,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;;AAED;EACE,sBAAsB;EACtB,uBAAuB;EACvB,mBAAmB;EACnB,WAAW;CACZ;;AAIL;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX","file":"SteamGamePage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.achievementsList {\n  padding-left: 0;\n\n  .achievement {\n    display: inline-block;\n    list-style: none;\n    width: 240px;\n    margin: 0 8px 8px 0;\n    float: left;\n    position: relative;\n    overflow: hidden;\n\n    & > span {\n      display: inline-block;\n    }\n\n    .achievementIcon {\n      border-radius: 4px;\n      display: inline-block;\n      vertical-align: middle;\n    }\n\n    .achievementName {\n      display: inline-block;\n      vertical-align: middle;\n      position: absolute;\n      left: 72px;\n    }\n  }\n}\n\n.clearfix:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.SteamGamePage_achievementsList_3F0 {\n  padding-left: 0;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r {\n  display: inline-block;\n  list-style: none;\n  width: 240px;\n  margin: 0 8px 8px 0;\n  float: left;\n  position: relative;\n  overflow: hidden;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r > span {\n  display: inline-block;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz {\n  display: inline-block;\n  vertical-align: middle;\n  position: absolute;\n  left: 72px;\n  width: 168px;\n}\n\n.SteamGamePage_clearfix_1GN:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;ACdjE;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;;AAED;EACE,gBAAgB;CA6BjB;;AA3BC;EACE,sBAAsB;EACtB,iBAAiB;EACjB,aAAa;EACb,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;EACnB,iBAAiB;CAmBlB;;AAjBC;EACE,sBAAsB;CACvB;;AAED;EACE,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;;AAED;EACE,sBAAsB;EACtB,uBAAuB;EACvB,mBAAmB;EACnB,WAAW;EACX,aAAa;CACd;;AAIL;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX","file":"SteamGamePage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n\n.achievementsList {\n  padding-left: 0;\n\n  .achievement {\n    display: inline-block;\n    list-style: none;\n    width: 240px;\n    margin: 0 8px 8px 0;\n    float: left;\n    position: relative;\n    overflow: hidden;\n\n    & > span {\n      display: inline-block;\n    }\n\n    .achievementIcon {\n      border-radius: 4px;\n      display: inline-block;\n      vertical-align: middle;\n    }\n\n    .achievementName {\n      display: inline-block;\n      vertical-align: middle;\n      position: absolute;\n      left: 72px;\n      width: 168px;\n    }\n  }\n}\n\n.clearfix:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {

@@ -19,7 +19,14 @@ class SteamUserPage extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {ownedGames: {}};
+    var ownedGames = {};
+    var selectedFriends = LocalStorage.get('steam-selected-friends');
+    if (typeof selectedFriends === 'object') {
+      for (var i = 0; i < selectedFriends.length; i++) {
+        ownedGames[selectedFriends[i]] = [];
+      }
+    }
+    this.state = {ownedGames: ownedGames};
   }
 
   componentWillMount() {
@@ -35,7 +42,16 @@ class SteamUserPage extends Component {
     }
     this.fetchFriends(steamId);
     this.fetchGames(steamId);
+    this.fetchStoredFriendGames();
     this.setState({steamId: steamId});
+  }
+
+  fetchStoredFriendGames() {
+    const friendIds = LocalStorage.get('steam-selected-friends');
+    if (typeof friendIds !== 'object') {
+      return;
+    }
+    this.fetchFriendGames(friendIds);
   }
 
   fetchSteamId() {
@@ -130,13 +146,14 @@ class SteamUserPage extends Component {
     LocalStorage.delete('steam-id');
     LocalStorage.delete('steam-username');
     LocalStorage.delete('steam-games');
+    LocalStorage.delete('steam-selected-friends');
     Location.push({
       ...(parsePath('/'))
     });
   }
 
   onFriendSelectionChanged(selectedFriends) {
-    console.log('now selected', selectedFriends);
+    LocalStorage.set('steam-selected-friends', selectedFriends);
     var ownedGames = this.state.ownedGames;
     if (typeof this.state.steamId !== 'undefined') {
       for (var steamId in ownedGames) {
@@ -148,11 +165,20 @@ class SteamUserPage extends Component {
       this.updateSharedGames(ownedGames);
       this.setState({ownedGames: ownedGames});
     }
-    const knownFriends = Object.keys(ownedGames);
+    this.fetchFriendGames(selectedFriends, ownedGames);
+  }
+
+  fetchFriendGames(selectedFriends, ownedGames) {
+    ownedGames = ownedGames || this.state.ownedGames;
+    const knownFriends = [];
+    for (var steamId in ownedGames) {
+      if (ownedGames[steamId].length > 0) {
+        knownFriends.push(steamId);
+      }
+    }
     for (var i = 0; i < selectedFriends.length; i++) {
       var steamId = selectedFriends[i];
       if (knownFriends.indexOf(steamId) < 0) {
-        console.log('looking up games for', steamId);
         Steam.getOwnedGames(steamId).
               then(this.onFriendGamesFetched.bind(this, steamId));
       }
@@ -169,6 +195,7 @@ class SteamUserPage extends Component {
 
   render() {
     const selectedSteamIds = Object.keys(this.state.ownedGames);
+    console.log('selected ids', selectedSteamIds);
     const profileUrl = 'https://steamcommunity.com/id/' +
                        this.props.username + '/';
     const haveSteamId = typeof this.state.steamId !== 'undefined';
