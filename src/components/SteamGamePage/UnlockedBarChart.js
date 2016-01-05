@@ -10,7 +10,7 @@ class UnlockedBarChart extends Component {
 
   componentDidMount() {
     const playerCount = Object.keys(this.props.players).length;
-    const margin = {top: 0, right: 0, bottom: 30, left: 40};
+    const margin = {top: 10, right: 0, bottom: 30, left: 40};
     const width = Math.min(960, 150 * playerCount) - margin.left - margin.right;
     const height = 230 - margin.top - margin.bottom;
     const x = d3.scale.ordinal().rangeRoundBands([0, width], .1);
@@ -39,7 +39,7 @@ class UnlockedBarChart extends Component {
         attr('y', (d) => y(d.value)).
         attr('height', (d) => height - y(d.value));
     svg.selectAll('.bar').data(data).enter().append('text').
-        text((d) => d.value).
+        text((d) => d.value > 5 ? d.value : '').
         attr('x', (d, i) => x(d.label) + 8).
         attr('y', (d) => y(d.value) + 21).
         attr('class', s.label);
@@ -48,12 +48,16 @@ class UnlockedBarChart extends Component {
   getUnlockedCounts() {
     var data = [];
     for (var steamId in this.state.countsByPlayer) {
+      var label = this.props.players[steamId].personaname;
+      if (label.length > 17) {
+        label = label.slice(0, 14) + '...';
+      }
       data.push({
-        label: this.props.players[steamId].personaname,
+        label: label,
         value: this.state.countsByPlayer[steamId]
       });
     }
-    data.sort((a, b) => a.label.localeCompare(b.label));
+    data.sort((a, b) => a.value < b.value ? 1 : a.value > b.value ? -1 : 0);
     return data;
   }
 

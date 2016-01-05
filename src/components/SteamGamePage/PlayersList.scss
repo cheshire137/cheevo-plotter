@@ -3,13 +3,26 @@
 .playersList {
   list-style: none;
   padding-left: 0;
+  margin-left: 7em;
 
   li {
     display: inline-block;
-    margin: 0 12px 8px 0;
-
-    &.intro {
-      font-weight: 700;
-    }
+    margin: 0 16px 8px 0;
   }
+}
+
+.intro {
+  display: block;
+  font-weight: 700;
+  float: left;
+  width: 6em;
+}
+
+.playersListWrapper:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
 }
