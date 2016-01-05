@@ -17,7 +17,8 @@ class Player extends Component {
   }
 
   render() {
-    const haveAchievements = typeof this.props.achievements === 'object';
+    const haveAchievements = typeof this.props.achievements === 'object' &&
+        this.props.achievements.length > 0;
     return (
       <li className={s.player}>
         <a href={this.props.player.profileurl} target="_blank"

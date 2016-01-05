@@ -3000,7 +3000,9 @@ module.exports =
             case 9:
               result = context$2$0.sent;
   
-              summaries = summaries.concat(result.response.players);
+              if (result.response) {
+                summaries = summaries.concat(result.response.players || []);
+              }
   
             case 11:
               i++;
@@ -3106,18 +3108,17 @@ module.exports =
               rawResult = context$2$0.sent;
   
               if (!(typeof rawResult.playerstats.error === 'string')) {
-                context$2$0.next = 6;
+                context$2$0.next = 5;
                 break;
               }
   
-              console.error('error getting JSON achievements for user ' + steamId + ', app ' + appId + ': ' + rawResult.playerstats.error);
-              return context$2$0.abrupt('return', { achievements: [] });
+              throw new Error(rawResult.playerstats.error);
   
-            case 6:
-              context$2$0.next = 8;
+            case 5:
+              context$2$0.next = 7;
               return regeneratorRuntime.awrap(this.getGameSchema(appId));
   
-            case 8:
+            case 7:
               schema = context$2$0.sent;
               schemaAchievements = schema.game.availableGameStats.achievements;
               achievementInfo = {};
@@ -3139,7 +3140,7 @@ module.exports =
               });
               return context$2$0.abrupt('return', { achievements: achievements });
   
-            case 14:
+            case 13:
             case 'end':
               return context$2$0.stop();
           }
@@ -92913,14 +92914,19 @@ module.exports =
         this.setState({ gameName: name, steamId: _storesLocalStorage2['default'].get('steam-id') });
         for (var i = 0; i < this.state.selectedIds.length; i++) {
           var steamId = this.state.selectedIds[i];
-          _actionsSteam2['default'].getAchievements(steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this, steamId));
+          _actionsSteam2['default'].getAchievements(steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this, steamId)).then(undefined, this.onAchievementsError.bind(this, steamId));
         }
-        _actionsSteam2['default'].getPlayerSummaries(this.state.selectedIds).then(this.onPlayerSummariesFetched.bind(this));
+        _actionsSteam2['default'].getPlayerSummaries(this.state.selectedIds).then(this.onPlayerSummariesFetched.bind(this)).then(undefined, this.onPlayerSummariesError.bind(this));
       }
     }, {
       key: 'onPlayerSummariesFetched',
       value: function onPlayerSummariesFetched(players) {
         this.setState({ players: players });
+      }
+    }, {
+      key: 'onPlayerSummariesError',
+      value: function onPlayerSummariesError(err) {
+        console.error('failed to load player summaries', err);
       }
     }, {
       key: 'onAchievementsLoaded',
@@ -92933,6 +92939,20 @@ module.exports =
         loadCount++;
         achievements[steamId] = data.achievements;
         this.setState({ iconUri: data.iconUri, achievements: achievements,
+          achievementLoadCount: loadCount });
+      }
+    }, {
+      key: 'onAchievementsError',
+      value: function onAchievementsError(steamId, err) {
+        console.error('failed to load achievements list for ' + steamId, err);
+        var achievements = this.state.achievements || {};
+        var loadCount = this.state.achievementLoadCount;
+        if (typeof loadCount === 'undefined') {
+          loadCount = 0;
+        }
+        loadCount++;
+        achievements[steamId] = [];
+        this.setState({ achievements: achievements,
           achievementLoadCount: loadCount });
       }
     }, {
@@ -92976,7 +92996,7 @@ module.exports =
                 ' ',
                 this.state.gameName
               ),
-              haveAchievements ? _react2['default'].createElement(
+              haveAchievements && achievementCount > 0 ? _react2['default'].createElement(
                 'span',
                 { className: _SteamGamePageScss2['default'].achievementCount },
                 _react2['default'].createElement(
@@ -92991,7 +93011,7 @@ module.exports =
                 )
               ) : ''
             ),
-            havePlayers ? _react2['default'].createElement(_PlayersList2['default'], { players: this.state.players,
+            havePlayers ? onlyOneUser ? '' : _react2['default'].createElement(_PlayersList2['default'], { players: this.state.players,
               achievements: this.state.achievements }) : _react2['default'].createElement(
               'p',
               null,
@@ -94260,7 +94280,7 @@ module.exports =
     }, {
       key: 'render',
       value: function render() {
-        var haveAchievements = typeof this.props.achievements === 'object';
+        var haveAchievements = typeof this.props.achievements === 'object' && this.props.achievements.length > 0;
         return _react2['default'].createElement(
           'li',
           { className: _SteamGamePageScss2['default'].player },

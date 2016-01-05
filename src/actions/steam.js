@@ -28,7 +28,9 @@ class Steam {
           await this.get('/api/steam?format=json' +
                          '&path=/ISteamUser/GetPlayerSummaries/v0002/' +
                          '&steamids=' + batches[i].join(','));
-      summaries = summaries.concat(result.response.players);
+      if (result.response) {
+        summaries = summaries.concat(result.response.players || []);
+      }
     }
     summaries.sort((a, b) => {
       const aName = a.personaname.toLowerCase();
@@ -86,9 +88,7 @@ class Steam {
       '&appid=' + appId + '&steamid=' + steamId + '&format=json'
     );
     if (typeof rawResult.playerstats.error === 'string') {
-      console.error('error getting JSON achievements for user ' + steamId +
-                    ', app ' + appId + ': ' + rawResult.playerstats.error);
-      return {achievements: []};
+      throw new Error(rawResult.playerstats.error);
     }
     // TODO: somehow get game iconUri from JSON API
     const schema = await this.getGameSchema(appId);

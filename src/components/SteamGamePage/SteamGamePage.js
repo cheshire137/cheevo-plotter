@@ -31,14 +31,20 @@ class SteamGamePage extends Component {
     for (var i = 0; i < this.state.selectedIds.length; i++) {
       var steamId = this.state.selectedIds[i];
       Steam.getAchievements(steamId, this.props.appId).
-            then(this.onAchievementsLoaded.bind(this, steamId));
+            then(this.onAchievementsLoaded.bind(this, steamId)).
+            then(undefined, this.onAchievementsError.bind(this, steamId));
     }
     Steam.getPlayerSummaries(this.state.selectedIds).
-          then(this.onPlayerSummariesFetched.bind(this));
+          then(this.onPlayerSummariesFetched.bind(this)).
+          then(undefined, this.onPlayerSummariesError.bind(this));
   }
 
   onPlayerSummariesFetched(players) {
     this.setState({players: players});
+  }
+
+  onPlayerSummariesError(err) {
+    console.error('failed to load player summaries', err);
   }
 
   onAchievementsLoaded(steamId, data) {
@@ -50,6 +56,19 @@ class SteamGamePage extends Component {
     loadCount++;
     achievements[steamId] = data.achievements;
     this.setState({iconUri: data.iconUri, achievements: achievements,
+                   achievementLoadCount: loadCount});
+  }
+
+  onAchievementsError(steamId, err) {
+    console.error('failed to load achievements list for ' + steamId, err);
+    var achievements = this.state.achievements || {};
+    var loadCount = this.state.achievementLoadCount;
+    if (typeof loadCount === 'undefined') {
+      loadCount = 0;
+    }
+    loadCount++;
+    achievements[steamId] = [];
+    this.setState({achievements: achievements,
                    achievementLoadCount: loadCount});
   }
 
@@ -79,7 +98,7 @@ class SteamGamePage extends Component {
             <a href={profileUrl} target="_blank"> {this.props.username} </a>
             /
             <a href={gameUrl} target="_blank"> {this.state.gameName}</a>
-            {haveAchievements ? (
+            {haveAchievements && achievementCount > 0 ? (
               <span className={s.achievementCount}>
                 <span className={s.count}>{achievementCount}</span>
                 <span className={s.units}>
@@ -88,7 +107,7 @@ class SteamGamePage extends Component {
               </span>
             ) : ''}
           </h1>
-          {havePlayers ? (
+          {havePlayers ? onlyOneUser ? '' : (
             <PlayersList players={this.state.players}
                          achievements={this.state.achievements} />
           ) : (
