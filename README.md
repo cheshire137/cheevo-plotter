@@ -1,6 +1,6 @@
 # Cheevo Plotter
 
-View your Steam achievements over time.
+Compare your Steam achievements with your friends'.
 
 ## How to Develop
 
