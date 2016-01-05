@@ -10,7 +10,7 @@ class UnlockedBarChart extends Component {
 
   componentDidMount() {
     const playerCount = Object.keys(this.props.players).length;
-    const margin = {top: 10, right: 0, bottom: 30, left: 40};
+    const margin = {top: 10, right: 0, bottom: 30, left: 43};
     const width = Math.min(960, 150 * playerCount) - margin.left - margin.right;
     const height = 230 - margin.top - margin.bottom;
     const x = d3.scale.ordinal().rangeRoundBands([0, width], .1);
@@ -29,7 +29,7 @@ class UnlockedBarChart extends Component {
     svg.append('g').attr('class', [s.x, s.axis].join(' ')).
         attr('transform', 'translate(0,' + height + ')').call(xAxis);
     svg.append('g').attr('class', [s.y, s.axis].join(' ')).
-        attr('transform', 'translate(-8,0)').call(yAxis).
+        attr('transform', 'translate(-10,0)').call(yAxis).
         append('text').attr('transform', 'rotate(-90)').
         attr('y', 6).attr('dy', '.71em').
         style('text-anchor', 'end').text('# Unlocked');

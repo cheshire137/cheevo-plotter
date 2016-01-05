@@ -4,14 +4,18 @@
   display: inline-block;
   margin: 0 8px 8px 0;
   width: 300px;
-  border: 1px solid $mauve;
-  border-radius: 4px;
+  border: 1px solid color($mauve lightness(+15%));
+  border-radius: 2px;
   padding: 8px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+
+  &.unlocked {
+    background-color: color($mauve lightness(+30%));
+  }
 
   &:after {
     visibility: hidden;

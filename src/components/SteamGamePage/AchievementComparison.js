@@ -7,8 +7,12 @@ class AchievementComparison extends Component {
     const achievement = this.props.achievement;
     const playerIds = Object.keys(achievement.players);
     const players = this.props.players;
+    var liClasses = [s.achievementComparison];
+    if (achievement.isUnlocked) {
+      liClasses.push(s.unlocked);
+    }
     return (
-      <li className={s.achievementComparison}>
+      <li className={liClasses.join(' ')}>
         {typeof achievement.iconUri === 'string' ? (
           <img src={achievement.iconUri} alt={achievement.name}
                className={s.achievementIcon} width="64"

@@ -70,6 +70,7 @@ class AchievementsComparison extends Component {
           lockedUri = achievement.players[steamId].iconUri;
         }
       }
+      achievement.isUnlocked = isUnlocked;
       if (isUnlocked) {
         achievement.iconUri = unlockedUri;
       } else {
