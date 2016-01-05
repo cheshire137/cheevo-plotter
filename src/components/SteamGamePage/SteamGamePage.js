@@ -61,6 +61,8 @@ class SteamGamePage extends Component {
     const haveAchievements = typeof this.state.achievements === 'object' &&
         this.state.achievementLoadCount === this.state.selectedIds.length;
     const havePlayers = typeof this.state.players === 'object';
+    const achievementCount = haveAchievements ?
+        this.state.achievements[this.state.steamId].length : 0;
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -77,6 +79,14 @@ class SteamGamePage extends Component {
             <a href={profileUrl} target="_blank"> {this.props.username} </a>
             /
             <a href={gameUrl} target="_blank"> {this.state.gameName}</a>
+            {haveAchievements ? (
+              <span className={s.achievementCount}>
+                <span className={s.count}>{achievementCount}</span>
+                <span className={s.units}>
+                  {achievementCount === 1 ? 'achievement' : 'achievements'}
+                </span>
+              </span>
+            ) : ''}
           </h1>
           {havePlayers ? (
             <PlayersList players={this.state.players}
