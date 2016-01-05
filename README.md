@@ -2,6 +2,8 @@
 
 Compare your Steam achievements with your friends'.
 
+![Screenshot](https://raw.githubusercontent.com/cheshire137/cheevo-plotter/master/screenshot.png)
+
 ## How to Develop
 
 I'm using the following tool versions:
