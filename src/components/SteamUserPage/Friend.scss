@@ -1,20 +1,108 @@
 @import '../variables.scss';
+$friend-width: 210px;
+$avatar-width: 32px;
+$avatar-height: $avatar-width;
+$avatar-padding: 8px;
+$checkbox-width: 14px;
+$checkbox-height: $checkbox-width;
+$checkbox-padding: 4px;
+$label-padding: 18px;
+$name-width: 140px;
 
 .friend {
-  width: 200px;
+  width: $friend-width;
   float: left;
-  margin: 0 8px 8px 0;
+  margin: 0 30px 8px 0;
+  line-height: $avatar-height;
 }
 
 .friendAvatar {
   border-radius: 4px;
   display: inline-block;
-  margin-right: 8px;
-  margin-left: 8px;
+  margin-right: $avatar-padding;
+  margin-left: $avatar-padding;
+  width: $avatar-width;
+  height: $avatar-height;
 }
 
-.friendLink {
-  font-size: 0.8em;
+.friendName {
   display: inline-block;
-  margin-left: 0.3em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: $name-width;
+  vertical-align: middle;
+}
+
+.friendToggle {
+  position: absolute;
+  left: -9999px;
+  visibility: hidden;
+}
+
+.friendToggle:checked + .label {
+  &:before {
+    top: -4px;
+    left: -1px;
+    width: 6px;
+    height: 10px;
+    border-top: 1px solid transparent;
+    border-left: 1px solid transparent;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    -webkit-transform: rotate(40deg);
+    transform: rotate(40deg);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-origin: 100% 100%;
+    transform-origin: 100% 100%;
+  }
+
+  &:after {
+    width: $checkbox-width;
+    height: $checkbox-height;
+    border: 2px solid $mauve;
+    background-color: $mauve;
+    z-index: 0;
+  }
+
+  &:before, &:after {
+    top: 7px;
+  }
+}
+
+.label {
+  display: inline-block;
+  white-space: nowrap;
+  position: relative;
+  padding-left: $label-padding;
+  cursor: pointer;
+  display: inline-block;
+  height: $avatar-height;
+  line-height: $avatar-height;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -ms-user-select: none;
+
+  &:before {
+    width: $checkbox-width;
+    height: $checkbox-width;
+    border: 2px solid $mauve;
+    border-radius: 1px;
+    margin-top: 2px;
+  }
+
+  &:after {
+    border-radius: 2px;
+  }
+
+  &:before, &:after {
+    content: '';
+    left: 0;
+    top: 7px;
+    position: absolute;
+    transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s;
+    z-index: 1;
+  }
 }

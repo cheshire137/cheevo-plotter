@@ -209,7 +209,6 @@ class SteamUserPage extends Component {
   }
 
   onFriendGamesFetched(steamId, data) {
-    console.log('onFriendGamesFetched', steamId, data);
     var ownedGames = this.state.ownedGames;
     ownedGames[steamId] = this.organizeGamesResponse(data);
     this.setState({ownedGames: ownedGames});

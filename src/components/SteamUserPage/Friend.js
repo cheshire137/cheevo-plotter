@@ -10,18 +10,15 @@ class Friend extends Component {
     const domId = 'friend-' + this.props.friend.steamid;
     return (
       <li className={s.friend}>
-        <label htmlFor={domId}>
-          <input checked={this.props.isSelected} type="checkbox" id={domId}
-                 onChange={this.onToggle.bind(this)} />
+        <input checked={this.props.isSelected} type="checkbox" id={domId}
+               onChange={this.onToggle.bind(this)}
+               className={s.friendToggle} />
+        <label className={s.label} htmlFor={domId}>
           <img src={this.props.friend.avatar}
                className={s.friendAvatar}
                alt={this.props.friend.steamid} />
           <span className={s.friendName}>{this.props.friend.personaname}</span>
         </label>
-        <a href={this.props.friend.profileurl} className={s.friendLink}
-           target="_blank" data-tt="View profile">
-          <i className="fa fa-external-link"></i>
-        </a>
       </li>
     );
   }
