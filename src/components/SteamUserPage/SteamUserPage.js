@@ -65,11 +65,12 @@ class SteamUserPage extends Component {
     LocalStorage.set('steam-id', steamId);
     this.fetchFriends(steamId);
     this.fetchGames(steamId);
-    this.setState({steamId: steamId});
+    this.setState({steamId: steamId, steamIdError: false});
   }
 
   onSteamIdError(err) {
     console.error('failed to fetch Steam ID from username', err);
+    this.setState({steamIdError: true});
   }
 
   fetchFriends(steamId) {
@@ -230,6 +231,8 @@ class SteamUserPage extends Component {
     const haveSteamId = typeof this.state.steamId !== 'undefined';
     const haveGamesList = typeof this.state.games === 'object';
     const haveFriendsList = typeof this.state.friends === 'object';
+    const haveSteamIdError = typeof this.state.steamIdError === 'boolean' &&
+        this.state.steamIdError;
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -241,6 +244,11 @@ class SteamUserPage extends Component {
             Steam /
             <a href={profileUrl} target="_blank"> {this.props.username}</a>
           </h1>
+          {haveSteamIdError ? (
+            <p className={s.steamIdError}>
+              Could not find Steam ID for that username.
+            </p>
+          ) : ''}
           {haveSteamId && haveFriendsList && haveGamesList ? (
             <p>
               Choose some other players and a game to compare your achievements!
@@ -259,7 +267,7 @@ class SteamUserPage extends Component {
                              username={this.props.username} />
           ) : (
             <p>Loading games list...</p>
-          ) : <p>Loading...</p>}
+          ) : haveSteamIdError ? '' : <p>Loading...</p>}
         </div>
       </div>
     );

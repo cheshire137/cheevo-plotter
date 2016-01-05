@@ -4,9 +4,19 @@ import {parseString} from 'xml2js';
 
 class Steam {
   static async getSteamId(username) {
-    return this.get('/api/steam?format=json' +
-                    '&path=/ISteamUser/ResolveVanityURL/v0001/' +
-                    '&vanityurl=' + username);
+    const data = await this.get('/api/steam?format=json' +
+                                '&path=/ISteamUser/ResolveVanityURL/v0001/' +
+                                '&vanityurl=' + encodeURIComponent(username));
+    if (data.response.steamid) {
+      return data;
+    }
+    var message;
+    if (data.response.message) {
+      message = data.response.message;
+    } else {
+      message = 'Failed to get Steam ID.'
+    }
+    throw new Error(message);
   }
 
   static async getPlayerSummaries(steamIds) {
