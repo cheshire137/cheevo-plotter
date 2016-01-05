@@ -3040,12 +3040,27 @@ module.exports =
     }, {
       key: 'getOwnedGames',
       value: function getOwnedGames(steamId) {
+        var data;
         return regeneratorRuntime.async(function getOwnedGames$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
-              return context$2$0.abrupt('return', this.get('/api/steam?format=json' + '&path=/IPlayerService/GetOwnedGames/v0001/' + '&steamid=' + steamId));
+              context$2$0.next = 2;
+              return regeneratorRuntime.awrap(this.get('/api/steam?format=json' + '&path=/IPlayerService/GetOwnedGames/v0001/' + '&steamid=' + steamId));
   
-            case 1:
+            case 2:
+              data = context$2$0.sent;
+  
+              if (!data.response.games) {
+                context$2$0.next = 5;
+                break;
+              }
+  
+              return context$2$0.abrupt('return', data);
+  
+            case 5:
+              throw new Error('Could not get Steam games for ID ' + steamId + '; may not be a public profile.');
+  
+            case 6:
             case 'end':
               return context$2$0.stop();
           }
@@ -3359,7 +3374,7 @@ module.exports =
     }, {
       key: 'fetchSteamId',
       value: function fetchSteamId() {
-        _actionsSteam2['default'].getSteamId(this.props.username).then(this.onSteamIdFetched.bind(this));
+        _actionsSteam2['default'].getSteamId(this.props.username).then(this.onSteamIdFetched.bind(this)).then(undefined, this.onSteamIdError.bind(this));
       }
     }, {
       key: 'onSteamIdFetched',
@@ -3371,9 +3386,14 @@ module.exports =
         this.setState({ steamId: steamId });
       }
     }, {
+      key: 'onSteamIdError',
+      value: function onSteamIdError(err) {
+        console.error('failed to fetch Steam ID from username', err);
+      }
+    }, {
       key: 'fetchFriends',
       value: function fetchFriends(steamId) {
-        _actionsSteam2['default'].getFriends(steamId).then(this.onFriendIdsFetched.bind(this));
+        _actionsSteam2['default'].getFriends(steamId).then(this.onFriendIdsFetched.bind(this)).then(undefined, this.onFriendIdsError.bind(this));
       }
     }, {
       key: 'onFriendIdsFetched',
@@ -3381,12 +3401,28 @@ module.exports =
         var friendIds = data.friendslist.friends.map(function (f) {
           return f.steamid;
         });
-        _actionsSteam2['default'].getPlayerSummaries(friendIds).then(this.onFriendSummariesFetched.bind(this));
+        _actionsSteam2['default'].getPlayerSummaries(friendIds).then(this.onFriendSummariesFetched.bind(this)).then(undefined, this.onFriendSummariesError.bind(this));
+      }
+    }, {
+      key: 'onFriendIdsError',
+      value: function onFriendIdsError(err) {
+        console.error('failed to fetch Steam friends', err);
       }
     }, {
       key: 'onFriendSummariesFetched',
-      value: function onFriendSummariesFetched(friends) {
-        this.setState({ friends: friends });
+      value: function onFriendSummariesFetched(allFriends) {
+        // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
+        // communityvisibilitystate 3 means the profile is public.
+        // Need public profiles to see owned/played games for comparison.
+        var publicFriends = allFriends.filter(function (f) {
+          return f.communityvisibilitystate === 3;
+        });
+        this.setState({ friends: publicFriends });
+      }
+    }, {
+      key: 'onFriendSummariesError',
+      value: function onFriendSummariesError(err) {
+        console.error('failed to fetch friend summaries', err);
       }
     }, {
       key: 'fetchGames',
@@ -3399,7 +3435,7 @@ module.exports =
           this.updateSharedGames();
           return;
         }
-        _actionsSteam2['default'].getOwnedGames(steamId).then(this.onGamesFetched.bind(this, steamId));
+        _actionsSteam2['default'].getOwnedGames(steamId).then(this.onGamesFetched.bind(this, steamId)).then(this.onGamesError.bind(this, steamId));
       }
     }, {
       key: 'organizeGamesResponse',
@@ -3423,6 +3459,11 @@ module.exports =
         ownedGames[steamId] = playedGames;
         this.setState({ ownedGames: ownedGames });
         this.updateSharedGames();
+      }
+    }, {
+      key: 'onGamesError',
+      value: function onGamesError(steamId, err) {
+        console.error('failed to fetch Steam games for ' + steamId, err);
       }
     }, {
       key: 'updateSharedGames',
@@ -3486,16 +3527,25 @@ module.exports =
         for (var i = 0; i < selectedFriends.length; i++) {
           var steamId = selectedFriends[i];
           if (knownFriends.indexOf(steamId) < 0) {
-            _actionsSteam2['default'].getOwnedGames(steamId).then(this.onFriendGamesFetched.bind(this, steamId));
+            _actionsSteam2['default'].getOwnedGames(steamId).then(this.onFriendGamesFetched.bind(this, steamId)).then(undefined, this.onFriendGamesError.bind(this, steamId));
           }
         }
       }
     }, {
       key: 'onFriendGamesFetched',
       value: function onFriendGamesFetched(steamId, data) {
+        console.log('onFriendGamesFetched', steamId, data);
         var ownedGames = this.state.ownedGames;
-        var friendGames = this.organizeGamesResponse(data);
-        ownedGames[steamId] = friendGames;
+        ownedGames[steamId] = this.organizeGamesResponse(data);
+        this.setState({ ownedGames: ownedGames });
+        this.updateSharedGames();
+      }
+    }, {
+      key: 'onFriendGamesError',
+      value: function onFriendGamesError(steamId, err) {
+        console.error('failed to fetch Steam games for friend ' + steamId, err);
+        var ownedGames = this.state.ownedGames;
+        delete ownedGames[steamId];
         this.setState({ ownedGames: ownedGames });
         this.updateSharedGames();
       }

@@ -56,7 +56,8 @@ class SteamUserPage extends Component {
 
   fetchSteamId() {
     Steam.getSteamId(this.props.username).
-          then(this.onSteamIdFetched.bind(this));
+          then(this.onSteamIdFetched.bind(this)).
+          then(undefined, this.onSteamIdError.bind(this));
   }
 
   onSteamIdFetched(data) {
@@ -67,18 +68,38 @@ class SteamUserPage extends Component {
     this.setState({steamId: steamId});
   }
 
+  onSteamIdError(err) {
+    console.error('failed to fetch Steam ID from username', err);
+  }
+
   fetchFriends(steamId) {
-    Steam.getFriends(steamId).then(this.onFriendIdsFetched.bind(this));
+    Steam.getFriends(steamId).
+          then(this.onFriendIdsFetched.bind(this)).
+          then(undefined, this.onFriendIdsError.bind(this));
   }
 
   onFriendIdsFetched(data) {
     const friendIds = data.friendslist.friends.map((f) => f.steamid);
     Steam.getPlayerSummaries(friendIds).
-          then(this.onFriendSummariesFetched.bind(this));
+          then(this.onFriendSummariesFetched.bind(this)).
+          then(undefined, this.onFriendSummariesError.bind(this));
   }
 
-  onFriendSummariesFetched(friends) {
-    this.setState({friends: friends});
+  onFriendIdsError(err) {
+    console.error('failed to fetch Steam friends', err);
+  }
+
+  onFriendSummariesFetched(allFriends) {
+    // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
+    // communityvisibilitystate 3 means the profile is public.
+    // Need public profiles to see owned/played games for comparison.
+    const publicFriends = allFriends.
+        filter((f) => f.communityvisibilitystate === 3);
+    this.setState({friends: publicFriends});
+  }
+
+  onFriendSummariesError(err) {
+    console.error('failed to fetch friend summaries', err);
   }
 
   fetchGames(steamId) {
@@ -90,7 +111,9 @@ class SteamUserPage extends Component {
       this.updateSharedGames();
       return;
     }
-    Steam.getOwnedGames(steamId).then(this.onGamesFetched.bind(this, steamId));
+    Steam.getOwnedGames(steamId).
+          then(this.onGamesFetched.bind(this, steamId)).
+          then(this.onGamesError.bind(this, steamId));
   }
 
   organizeGamesResponse(data) {
@@ -112,6 +135,10 @@ class SteamUserPage extends Component {
     ownedGames[steamId] = playedGames;
     this.setState({ownedGames: ownedGames});
     this.updateSharedGames();
+  }
+
+  onGamesError(steamId, err) {
+    console.error('failed to fetch Steam games for ' + steamId, err);
   }
 
   updateSharedGames(gamesBySteamId) {
@@ -175,15 +202,24 @@ class SteamUserPage extends Component {
       var steamId = selectedFriends[i];
       if (knownFriends.indexOf(steamId) < 0) {
         Steam.getOwnedGames(steamId).
-              then(this.onFriendGamesFetched.bind(this, steamId));
+              then(this.onFriendGamesFetched.bind(this, steamId)).
+              then(undefined, this.onFriendGamesError.bind(this, steamId));
       }
     }
   }
 
   onFriendGamesFetched(steamId, data) {
+    console.log('onFriendGamesFetched', steamId, data);
     var ownedGames = this.state.ownedGames;
-    const friendGames = this.organizeGamesResponse(data);
-    ownedGames[steamId] = friendGames;
+    ownedGames[steamId] = this.organizeGamesResponse(data);
+    this.setState({ownedGames: ownedGames});
+    this.updateSharedGames();
+  }
+
+  onFriendGamesError(steamId, err) {
+    console.error('failed to fetch Steam games for friend ' + steamId, err);
+    var ownedGames = this.state.ownedGames;
+    delete ownedGames[steamId];
     this.setState({ownedGames: ownedGames});
     this.updateSharedGames();
   }

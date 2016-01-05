@@ -47,9 +47,14 @@ class Steam {
   }
 
   static async getOwnedGames(steamId) {
-    return this.get('/api/steam?format=json' +
-                    '&path=/IPlayerService/GetOwnedGames/v0001/' +
-                    '&steamid=' + steamId);
+    const data = await this.get('/api/steam?format=json' +
+                                '&path=/IPlayerService/GetOwnedGames/v0001/' +
+                                '&steamid=' + steamId);
+    if (data.response.games) {
+      return data;
+    }
+    throw new Error('Could not get Steam games for ID ' + steamId +
+                    '; may not be a public profile.');
   }
 
   static async getAchievements(steamId, appId) {
