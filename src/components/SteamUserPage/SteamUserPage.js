@@ -88,6 +88,7 @@ class SteamUserPage extends Component {
 
   onFriendIdsError(err) {
     console.error('failed to fetch Steam friends', err);
+    this.setState({friendsError: true});
   }
 
   onFriendSummariesFetched(allFriends) {
@@ -96,7 +97,7 @@ class SteamUserPage extends Component {
     // Need public profiles to see owned/played games for comparison.
     const publicFriends = allFriends.
         filter((f) => f.communityvisibilitystate === 3);
-    this.setState({friends: publicFriends});
+    this.setState({friends: publicFriends, friendsError: false});
   }
 
   onFriendSummariesError(err) {
@@ -114,7 +115,7 @@ class SteamUserPage extends Component {
     }
     Steam.getOwnedGames(steamId).
           then(this.onGamesFetched.bind(this, steamId)).
-          then(this.onGamesError.bind(this, steamId));
+          then(undefined, this.onGamesError.bind(this, steamId));
   }
 
   organizeGamesResponse(data) {
@@ -134,12 +135,13 @@ class SteamUserPage extends Component {
     LocalStorage.set('steam-games', playedGames);
     var ownedGames = this.state.ownedGames;
     ownedGames[steamId] = playedGames;
-    this.setState({ownedGames: ownedGames});
+    this.setState({ownedGames: ownedGames, gamesError: false});
     this.updateSharedGames();
   }
 
   onGamesError(steamId, err) {
     console.error('failed to fetch Steam games for ' + steamId, err);
+    this.setState({gamesError: true});
   }
 
   updateSharedGames(gamesBySteamId) {
@@ -233,6 +235,10 @@ class SteamUserPage extends Component {
     const haveFriendsList = typeof this.state.friends === 'object';
     const haveSteamIdError = typeof this.state.steamIdError === 'boolean' &&
         this.state.steamIdError;
+    const haveFriendsError = typeof this.state.friendsError === 'boolean' &&
+        this.state.friendsError;
+    const haveGamesError = typeof this.state.gamesError === 'boolean' &&
+        this.state.gamesError;
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -259,12 +265,20 @@ class SteamUserPage extends Component {
                          username={this.props.username}
                          friends={this.state.friends}
                          onSelectionChange={this.onFriendSelectionChanged.bind(this)} />
-          ) : haveSteamId ? <p>Loading friends list...</p> : ''}
+          ) : haveSteamId ? haveFriendsError ? (
+            <p>There was an error loading the friends list.</p>
+          ) : <p>Loading friends list...</p> : ''}
           {haveFriendsList && haveGamesList ? <hr /> : ''}
           {haveSteamId ? haveGamesList ? (
             <PlayedGamesList steamId={this.state.steamId}
                              games={this.state.games}
                              username={this.props.username} />
+          ) : haveGamesError ? (
+            <p>
+              There was an error loading the list of games
+              <strong> {this.props.username} </strong>
+              owns.
+            </p>
           ) : (
             <p>Loading games list...</p>
           ) : haveSteamIdError ? '' : <p>Loading...</p>}

@@ -143,43 +143,41 @@ module.exports =
           } else {
             url = 'http://api.steampowered.com' + url + (url.indexOf('?') > -1 ? '&' : '?') + 'key=' + process.env.STEAM_API_KEY;
           }
-          console.log(url);
-          context$1$0.next = 7;
+          context$1$0.next = 6;
           return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
   
-        case 7:
+        case 6:
           response = context$1$0.sent;
   
           if (!isXml) {
-            context$1$0.next = 14;
+            context$1$0.next = 13;
             break;
           }
   
-          context$1$0.next = 11;
+          context$1$0.next = 10;
           return regeneratorRuntime.awrap(response.text());
   
-        case 11:
+        case 10:
           context$1$0.t0 = context$1$0.sent;
-          context$1$0.next = 17;
+          context$1$0.next = 16;
           break;
   
-        case 14:
-          context$1$0.next = 16;
+        case 13:
+          context$1$0.next = 15;
           return regeneratorRuntime.awrap(response.json());
   
-        case 16:
+        case 15:
           context$1$0.t0 = context$1$0.sent;
   
-        case 17:
+        case 16:
           data = context$1$0.t0;
   
-          console.log(data);
           if (isXml) {
             res.set('Content-Type', 'text/xml');
           }
           res.send(data);
   
-        case 21:
+        case 19:
         case 'end':
           return context$1$0.stop();
       }
@@ -2955,6 +2953,8 @@ module.exports =
   
     _createClass(Steam, null, [{
       key: 'getSteamId',
+  
+      // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
       value: function getSteamId(username) {
         var data, message;
         return regeneratorRuntime.async(function getSteamId$(context$2$0) {
@@ -3048,12 +3048,27 @@ module.exports =
     }, {
       key: 'getFriends',
       value: function getFriends(steamId) {
+        var data;
         return regeneratorRuntime.async(function getFriends$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
-              return context$2$0.abrupt('return', this.get('/api/steam?format=json' + '&path=/ISteamUser/GetFriendList/v0001/' + '&steamid=' + steamId + '&relationship=friend'));
+              context$2$0.next = 2;
+              return regeneratorRuntime.awrap(this.get('/api/steam?format=json' + '&path=/ISteamUser/GetFriendList/v0001/' + '&steamid=' + steamId + '&relationship=friend'));
   
-            case 1:
+            case 2:
+              data = context$2$0.sent;
+  
+              if (!data.friendslist) {
+                context$2$0.next = 5;
+                break;
+              }
+  
+              return context$2$0.abrupt('return', data);
+  
+            case 5:
+              throw new Error('Failed to get friends for ' + steamId + '; may not be a public profile.');
+  
+            case 6:
             case 'end':
               return context$2$0.stop();
           }
@@ -3430,6 +3445,7 @@ module.exports =
       key: 'onFriendIdsError',
       value: function onFriendIdsError(err) {
         console.error('failed to fetch Steam friends', err);
+        this.setState({ friendsError: true });
       }
     }, {
       key: 'onFriendSummariesFetched',
@@ -3440,7 +3456,7 @@ module.exports =
         var publicFriends = allFriends.filter(function (f) {
           return f.communityvisibilitystate === 3;
         });
-        this.setState({ friends: publicFriends });
+        this.setState({ friends: publicFriends, friendsError: false });
       }
     }, {
       key: 'onFriendSummariesError',
@@ -3458,7 +3474,7 @@ module.exports =
           this.updateSharedGames();
           return;
         }
-        _actionsSteam2['default'].getOwnedGames(steamId).then(this.onGamesFetched.bind(this, steamId)).then(this.onGamesError.bind(this, steamId));
+        _actionsSteam2['default'].getOwnedGames(steamId).then(this.onGamesFetched.bind(this, steamId)).then(undefined, this.onGamesError.bind(this, steamId));
       }
     }, {
       key: 'organizeGamesResponse',
@@ -3480,13 +3496,14 @@ module.exports =
         _storesLocalStorage2['default'].set('steam-games', playedGames);
         var ownedGames = this.state.ownedGames;
         ownedGames[steamId] = playedGames;
-        this.setState({ ownedGames: ownedGames });
+        this.setState({ ownedGames: ownedGames, gamesError: false });
         this.updateSharedGames();
       }
     }, {
       key: 'onGamesError',
       value: function onGamesError(steamId, err) {
         console.error('failed to fetch Steam games for ' + steamId, err);
+        this.setState({ gamesError: true });
       }
     }, {
       key: 'updateSharedGames',
@@ -3580,6 +3597,8 @@ module.exports =
         var haveGamesList = typeof this.state.games === 'object';
         var haveFriendsList = typeof this.state.friends === 'object';
         var haveSteamIdError = typeof this.state.steamIdError === 'boolean' && this.state.steamIdError;
+        var haveFriendsError = typeof this.state.friendsError === 'boolean' && this.state.friendsError;
+        var haveGamesError = typeof this.state.gamesError === 'boolean' && this.state.gamesError;
         return _react2['default'].createElement(
           'div',
           { className: _SteamUserPageScss2['default'].root },
@@ -3616,7 +3635,11 @@ module.exports =
             haveSteamId && haveFriendsList ? _react2['default'].createElement(_FriendsList2['default'], { selectedIds: selectedSteamIds,
               username: this.props.username,
               friends: this.state.friends,
-              onSelectionChange: this.onFriendSelectionChanged.bind(this) }) : haveSteamId ? _react2['default'].createElement(
+              onSelectionChange: this.onFriendSelectionChanged.bind(this) }) : haveSteamId ? haveFriendsError ? _react2['default'].createElement(
+              'p',
+              null,
+              'There was an error loading the friends list.'
+            ) : _react2['default'].createElement(
               'p',
               null,
               'Loading friends list...'
@@ -3624,7 +3647,19 @@ module.exports =
             haveFriendsList && haveGamesList ? _react2['default'].createElement('hr', null) : '',
             haveSteamId ? haveGamesList ? _react2['default'].createElement(_PlayedGamesList2['default'], { steamId: this.state.steamId,
               games: this.state.games,
-              username: this.props.username }) : _react2['default'].createElement(
+              username: this.props.username }) : haveGamesError ? _react2['default'].createElement(
+              'p',
+              null,
+              'There was an error loading the list of games',
+              _react2['default'].createElement(
+                'strong',
+                null,
+                ' ',
+                this.props.username,
+                ' '
+              ),
+              'owns.'
+            ) : _react2['default'].createElement(
               'p',
               null,
               'Loading games list...'

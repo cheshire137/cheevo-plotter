@@ -3,6 +3,7 @@ import Config from '../config.json';
 import {parseString} from 'xml2js';
 
 class Steam {
+  // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
   static async getSteamId(username) {
     const data = await this.get('/api/steam?format=json' +
                                 '&path=/ISteamUser/ResolveVanityURL/v0001/' +
@@ -51,9 +52,15 @@ class Steam {
   }
 
   static async getFriends(steamId) {
-    return this.get('/api/steam?format=json' +
-                    '&path=/ISteamUser/GetFriendList/v0001/' +
-                    '&steamid=' + steamId + '&relationship=friend');
+    const data = await this.get('/api/steam?format=json' +
+                                '&path=/ISteamUser/GetFriendList/v0001/' +
+                                '&steamid=' + steamId +
+                                '&relationship=friend');
+    if (data.friendslist) {
+      return data;
+    }
+    throw new Error('Failed to get friends for ' + steamId +
+                    '; may not be a public profile.');
   }
 
   static async getOwnedGames(steamId) {
