@@ -83,11 +83,11 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _componentsHtml = __webpack_require__(70);
+  var _componentsHtml = __webpack_require__(75);
   
   var _componentsHtml2 = _interopRequireDefault(_componentsHtml);
   
-  var _assets = __webpack_require__(71);
+  var _assets = __webpack_require__(76);
   
   var _assets2 = _interopRequireDefault(_assets);
   
@@ -111,7 +111,7 @@ module.exports =
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api/content', __webpack_require__(72));
+  server.use('/api/content', __webpack_require__(77));
   
   server.all('*', function (req, res, next) {
     res.header('Access-Control-Allow-Origin', _configJson2['default'][("development")].clientUri);
@@ -345,11 +345,11 @@ module.exports =
   
   var _componentsSteamGamePage2 = _interopRequireDefault(_componentsSteamGamePage);
   
-  var _componentsNotFoundPage = __webpack_require__(64);
+  var _componentsNotFoundPage = __webpack_require__(69);
   
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
   
-  var _componentsErrorPage = __webpack_require__(67);
+  var _componentsErrorPage = __webpack_require__(72);
   
   var _componentsErrorPage2 = _interopRequireDefault(_componentsErrorPage);
   
@@ -3162,7 +3162,7 @@ module.exports =
     }, {
       key: 'get',
       value: function get(path, type) {
-        var url, response;
+        var url, response, error;
         return regeneratorRuntime.async(function get$(context$2$0) {
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
@@ -3174,30 +3174,41 @@ module.exports =
             case 4:
               response = context$2$0.sent;
   
-              if (!(type === 'json')) {
-                context$2$0.next = 11;
+              if (!(response.status >= 200 && response.status < 300)) {
+                context$2$0.next = 16;
                 break;
               }
   
-              context$2$0.next = 8;
+              if (!(type === 'json')) {
+                context$2$0.next = 12;
+                break;
+              }
+  
+              context$2$0.next = 9;
               return regeneratorRuntime.awrap(response.json());
   
-            case 8:
+            case 9:
               context$2$0.t0 = context$2$0.sent;
-              context$2$0.next = 14;
+              context$2$0.next = 15;
               break;
   
-            case 11:
-              context$2$0.next = 13;
+            case 12:
+              context$2$0.next = 14;
               return regeneratorRuntime.awrap(response.text());
   
-            case 13:
+            case 14:
               context$2$0.t0 = context$2$0.sent;
   
-            case 14:
+            case 15:
               return context$2$0.abrupt('return', context$2$0.t0);
   
-            case 15:
+            case 16:
+              error = new Error(response.statusText);
+  
+              error.response = response;
+              throw error;
+  
+            case 19:
             case 'end':
               return context$2$0.stop();
           }
@@ -92867,11 +92878,11 @@ module.exports =
   
   var _AchievementsList2 = _interopRequireDefault(_AchievementsList);
   
-  var _AchievementsComparison = __webpack_require__(77);
+  var _AchievementsComparison = __webpack_require__(64);
   
   var _AchievementsComparison2 = _interopRequireDefault(_AchievementsComparison);
   
-  var _PlayersList = __webpack_require__(78);
+  var _PlayersList = __webpack_require__(68);
   
   var _PlayersList2 = _interopRequireDefault(_PlayersList);
   
@@ -92965,7 +92976,8 @@ module.exports =
                 this.state.gameName
               )
             ),
-            havePlayers ? _react2['default'].createElement(_PlayersList2['default'], { players: this.state.players }) : _react2['default'].createElement(
+            havePlayers ? _react2['default'].createElement(_PlayersList2['default'], { players: this.state.players,
+              achievements: this.state.achievements }) : _react2['default'].createElement(
               'p',
               null,
               'Loading player data...'
@@ -93032,7 +93044,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamGamePage_achievementsList_3F0 {\n  padding-left: 0;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r {\n  display: inline-block;\n  list-style: none;\n  width: 240px;\n  margin: 0 8px 8px 0;\n  float: left;\n  position: relative;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz {\n  display: inline-block;\n  vertical-align: middle;\n  position: absolute;\n  left: 72px;\n  width: 168px;\n}\n\n.SteamGamePage_clearfix_1GN:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n.SteamGamePage_achievementsComparison_2Ql {\n}\n\n.SteamGamePage_achievementsList_3F0 {\n  list-style: none;\n  padding-left: 0;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n      -ms-flex-direction: row;\n          flex-direction: row;\n  -webkit-flex-wrap: wrap;\n      -ms-flex-wrap: wrap;\n          flex-wrap: wrap;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.SteamGamePage_playersList_3MY {\n  list-style: none;\n  padding-left: 0;\n}\n.SteamGamePage_playersList_3MY li {\n  display: inline-block;\n  margin: 0 12px 8px 0;\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_intro_20n {\n  font-weight: 700;\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_player_2ID .SteamGamePage_playerProfileLink_2Ua {\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_player_2ID .SteamGamePage_playerAvatar_yN0 {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 8px;\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_player_2ID .SteamGamePage_playerName_3Y6 {\n}\n.SteamGamePage_achievementComparison_3ep {\n  display: inline-block;\n  margin: 0 8px 8px 0;\n  width: 300px;\n  border: 1px solid #7C5F70;\n  border-radius: 4px;\n  padding: 8px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n      -ms-flex-direction: row;\n          flex-direction: row;\n  -webkit-flex-wrap: wrap;\n      -ms-flex-wrap: wrap;\n          flex-wrap: wrap;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.SteamGamePage_achievementComparison_3ep:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n\n.SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 16px;\n}\n\n.SteamGamePage_achievementName_3tz {\n  margin: 0;\n  font-size: 1.2rem;\n  width: 212px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.SteamGamePage_playerAchievements_s6k {\n  list-style: none;\n  padding-left: 0;\n  margin: 0;\n}\n\n.SteamGamePage_playerAchievements_s6k .SteamGamePage_playerAchievement_2_2 .SteamGamePage_playerName_3Y6 {\n  padding-left: 8px;\n}\n\n.SteamGamePage_status_w1U {\n\n}\n.SteamGamePage_bar_14s {\n  fill: #94A4CC;\n}\n.SteamGamePage_bar_14s:hover {\n  fill: #647CA4;\n}\n\n.SteamGamePage_axis_1DL {\n  font: 0.9rem 'Segoe UI','HelveticaNeue-Light',sans-serif;\n}\n\n.SteamGamePage_axis_1DL path, .SteamGamePage_axis_1DL line {\n  fill: none;\n  stroke: #000;\n  shape-rendering: crispEdges;\n}\n\n.SteamGamePage_axis_1DL.SteamGamePage_x_11S path {\n  display: none;\n}\n\nsvg {\n  display: block;\n  margin: 0 auto;\n  position: relative;\n}\n\n.SteamGamePage_label_2x6 {\n  font: 0.9rem 'Segoe UI','HelveticaNeue-Light',sans-serif;\n  fill: white;\n}\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/AchievementsList.scss","/./src/components/SteamGamePage/AchievementsComparison.scss","/./src/components/SteamGamePage/PlayersList.scss","/./src/components/SteamGamePage/AchievementComparison.scss","/./src/components/SteamGamePage/UnlockedBarChart.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;EACE,gBAAgB;CAwBjB;AAtBC;EACE,sBAAsB;EACtB,iBAAiB;EACjB,aAAa;EACb,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;CAepB;AAbC;EACE,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;AAED;EACE,sBAAsB;EACtB,uBAAuB;EACvB,mBAAmB;EACnB,WAAW;EACX,aAAa;CACd;;AAIL;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX;AClCD;CACC;;AAED;EACE,iBAAiB;EACjB,gBAAgB;EAChB,qBAAc;EAAd,sBAAc;EAAd,qBAAc;EAAd,cAAc;EACd,+BAAoB;EAApB,8BAAoB;EAApB,4BAAoB;MAApB,wBAAoB;UAApB,oBAAoB;EACpB,wBAAgB;MAAhB,oBAAgB;UAAhB,gBAAgB;EAChB,yBAAwB;EAAxB,gCAAwB;MAAxB,sBAAwB;UAAxB,wBAAwB;EACxB,0BAAoB;EAApB,4BAAoB;MAApB,uBAAoB;UAApB,oBAAoB;CACrB;ACXD;EACE,iBAAiB;EACjB,gBAAgB;CA0BjB;AAxBC;EACE,sBAAsB;EACtB,qBAAqB;CAqBtB;AAnBC;EACE,iBAAiB;CAClB;AAGC;CAEC;AAED;EACE,mBAAmB;EACnB,sBAAsB;EACtB,kBAAkB;CACnB;AAED;CAEC;ACzBP;EACE,sBAAsB;EACtB,oBAAoB;EACpB,aAAa;EACb,0BAAyB;EACzB,mBAAmB;EACnB,aAAa;EACb,qBAAc;EAAd,sBAAc;EAAd,qBAAc;EAAd,cAAc;EACd,+BAAoB;EAApB,8BAAoB;EAApB,4BAAoB;MAApB,wBAAoB;UAApB,oBAAoB;EACpB,wBAAgB;MAAhB,oBAAgB;UAAhB,gBAAgB;EAChB,yBAAwB;EAAxB,gCAAwB;MAAxB,sBAAwB;UAAxB,wBAAwB;EACxB,0BAAoB;EAApB,4BAAoB;MAApB,uBAAoB;UAApB,oBAAoB;CAUrB;AARC;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX;;AAGH;EACE,mBAAmB;EACnB,sBAAsB;EACtB,mBAAmB;CACpB;;AAED;EACE,UAAU;EACV,kBAAkB;EAClB,aAAa;EACb,oBAAoB;EACpB,iBAAiB;EACjB,wBAAwB;CACzB;;AAED;EACE,iBAAiB;EACjB,gBAAgB;EAChB,UAAU;CAOX;;AAJG;EACE,kBAAkB;CACnB;;AAIL;;CAEC;ACpDD;EACE,cAAkB;CAKnB;AAHC;EACE,cAAc;CACf;;AAGH;EACE,yDAA+B;CAahC;;AAXC;EACE,WAAW;EACX,aAAa;EACb,4BAA4B;CAC7B;;AAGC;EACE,cAAc;CACf;;AAIL;EACE,eAAe;EACf,eAAe;EACf,mBAAmB;CACpB;;AAED;EACE,yDAA+B;EAC/B,YAAY;CACb;;AC5BD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB","file":"SteamGamePage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.achievementsList {\n  padding-left: 0;\n\n  .achievement {\n    display: inline-block;\n    list-style: none;\n    width: 240px;\n    margin: 0 8px 8px 0;\n    float: left;\n    position: relative;\n\n    .achievementIcon {\n      border-radius: 4px;\n      display: inline-block;\n      vertical-align: middle;\n    }\n\n    .achievementName {\n      display: inline-block;\n      vertical-align: middle;\n      position: absolute;\n      left: 72px;\n      width: 168px;\n    }\n  }\n}\n\n.clearfix:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n","@import '../variables.scss';\n\n.achievementsComparison {\n}\n\n.achievementsList {\n  list-style: none;\n  padding-left: 0;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n","@import '../variables.scss';\n\n.playersList {\n  list-style: none;\n  padding-left: 0;\n\n  li {\n    display: inline-block;\n    margin: 0 12px 8px 0;\n\n    &.intro {\n      font-weight: 700;\n    }\n\n    &.player {\n      .playerProfileLink {\n\n      }\n\n      .playerAvatar {\n        border-radius: 4px;\n        display: inline-block;\n        margin-right: 8px;\n      }\n\n      .playerName {\n\n      }\n    }\n  }\n}\n","@import '../variables.scss';\n\n.achievementComparison {\n  display: inline-block;\n  margin: 0 8px 8px 0;\n  width: 300px;\n  border: 1px solid $mauve;\n  border-radius: 4px;\n  padding: 8px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n\n  &:after {\n    visibility: hidden;\n    display: block;\n    font-size: 0;\n    content: \" \";\n    clear: both;\n    height: 0;\n  }\n}\n\n.achievementIcon {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 16px;\n}\n\n.achievementName {\n  margin: 0;\n  font-size: 1.2rem;\n  width: 212px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.playerAchievements {\n  list-style: none;\n  padding-left: 0;\n  margin: 0;\n\n  .playerAchievement {\n    .playerName {\n      padding-left: 8px;\n    }\n  }\n}\n\n.status {\n\n}\n","@import '../variables.scss';\n\n.bar {\n  fill: $periwinkle;\n\n  &:hover {\n    fill: $cobalt;\n  }\n}\n\n.axis {\n  font: 0.9rem $font-family-base;\n\n  path, line {\n    fill: none;\n    stroke: #000;\n    shape-rendering: crispEdges;\n  }\n\n  &.x {\n    path {\n      display: none;\n    }\n  }\n}\n\nsvg {\n  display: block;\n  margin: 0 auto;\n  position: relative;\n}\n\n.label {\n  font: 0.9rem $font-family-base;\n  fill: white;\n}\n","@import '../variables.scss';\n@import './AchievementsList.scss';\n@import './AchievementsComparison.scss';\n@import './PlayersList.scss';\n@import './AchievementComparison.scss';\n@import './UnlockedBarChart.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n.SteamGamePage_achievementsList_3F0 {\n  padding-left: 0;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r {\n  display: inline-block;\n  list-style: none;\n  width: 240px;\n  margin: 0 8px 8px 0;\n  float: left;\n  position: relative;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz {\n  display: inline-block;\n  vertical-align: middle;\n  position: absolute;\n  left: 72px;\n  width: 168px;\n}\n\n.SteamGamePage_clearfix_1GN:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n.SteamGamePage_achievementsComparison_2Ql {\n}\n\n.SteamGamePage_achievementsList_3F0 {\n  list-style: none;\n  padding-left: 0;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n      -ms-flex-direction: row;\n          flex-direction: row;\n  -webkit-flex-wrap: wrap;\n      -ms-flex-wrap: wrap;\n          flex-wrap: wrap;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.SteamGamePage_playersList_3MY {\n  list-style: none;\n  padding-left: 0;\n}\n.SteamGamePage_playersList_3MY li {\n  display: inline-block;\n  margin: 0 12px 8px 0;\n}\n.SteamGamePage_playersList_3MY li.SteamGamePage_intro_20n {\n  font-weight: 700;\n}\n.SteamGamePage_player_2ID .SteamGamePage_playerProfileLink_2Ua {\n}\n.SteamGamePage_player_2ID .SteamGamePage_playerAvatar_yN0 {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 8px;\n}\n.SteamGamePage_player_2ID .SteamGamePage_playerName_3Y6 {\n}\n.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz {\n  padding-left: 0.3em;\n  font-weight: 700;\n}\n.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz:before {\n  content: \"(\";\n}\n.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz:after {\n  content: \")\";\n}\n.SteamGamePage_achievementComparison_3ep {\n  display: inline-block;\n  margin: 0 8px 8px 0;\n  width: 300px;\n  border: 1px solid #7C5F70;\n  border-radius: 4px;\n  padding: 8px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n      -ms-flex-direction: row;\n          flex-direction: row;\n  -webkit-flex-wrap: wrap;\n      -ms-flex-wrap: wrap;\n          flex-wrap: wrap;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n      -ms-flex-align: center;\n          align-items: center;\n}\n.SteamGamePage_achievementComparison_3ep:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n\n.SteamGamePage_achievementIcon_O3H {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 16px;\n}\n\n.SteamGamePage_achievementName_3tz {\n  margin: 0;\n  font-size: 1.2rem;\n  width: 212px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.SteamGamePage_playerAchievements_s6k {\n  list-style: none;\n  padding-left: 0;\n  margin: 0;\n}\n\n.SteamGamePage_playerAchievements_s6k .SteamGamePage_playerAchievement_2_2 .SteamGamePage_playerName_3Y6 {\n  padding-left: 8px;\n}\n\n.SteamGamePage_status_w1U {\n\n}\n.SteamGamePage_bar_14s {\n  fill: #94A4CC;\n}\n.SteamGamePage_bar_14s:hover {\n  fill: #647CA4;\n}\n\n.SteamGamePage_axis_1DL {\n  font: 0.9rem 'Segoe UI','HelveticaNeue-Light',sans-serif;\n}\n\n.SteamGamePage_axis_1DL path, .SteamGamePage_axis_1DL line {\n  fill: none;\n  stroke: #000;\n  shape-rendering: crispEdges;\n}\n\n.SteamGamePage_axis_1DL.SteamGamePage_x_11S path {\n  display: none;\n}\n\nsvg {\n  display: block;\n  margin: 0 auto;\n  position: relative;\n}\n\n.SteamGamePage_label_2x6 {\n  font: 0.9rem 'Segoe UI','HelveticaNeue-Light',sans-serif;\n  fill: white;\n}\n\n.SteamGamePage_root_3OO {\n  width: 100%;\n}\n\n.SteamGamePage_container_2h6 {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.SteamGamePage_clearSteamGame_2Cz {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.SteamGamePage_gameIcon_2GW {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n", "", {"version":3,"sources":["/./src/components/variables.scss","/./src/components/SteamGamePage/AchievementsList.scss","/./src/components/SteamGamePage/AchievementsComparison.scss","/./src/components/SteamGamePage/PlayersList.scss","/./src/components/SteamGamePage/Player.scss","/./src/components/SteamGamePage/AchievementComparison.scss","/./src/components/SteamGamePage/UnlockedBarChart.scss","/./src/components/SteamGamePage/SteamGamePage.scss"],"names":[],"mappings":"AAagC,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;ACdjE;EACE,gBAAgB;CAwBjB;AAtBC;EACE,sBAAsB;EACtB,iBAAiB;EACjB,aAAa;EACb,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;CAepB;AAbC;EACE,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB;AAED;EACE,sBAAsB;EACtB,uBAAuB;EACvB,mBAAmB;EACnB,WAAW;EACX,aAAa;CACd;;AAIL;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX;AClCD;CACC;;AAED;EACE,iBAAiB;EACjB,gBAAgB;EAChB,qBAAc;EAAd,sBAAc;EAAd,qBAAc;EAAd,cAAc;EACd,+BAAoB;EAApB,8BAAoB;EAApB,4BAAoB;MAApB,wBAAoB;UAApB,oBAAoB;EACpB,wBAAgB;MAAhB,oBAAgB;UAAhB,gBAAgB;EAChB,yBAAwB;EAAxB,gCAAwB;MAAxB,sBAAwB;UAAxB,wBAAwB;EACxB,0BAAoB;EAApB,4BAAoB;MAApB,uBAAoB;UAApB,oBAAoB;CACrB;ACXD;EACE,iBAAiB;EACjB,gBAAgB;CAUjB;AARC;EACE,sBAAsB;EACtB,qBAAqB;CAKtB;AAHC;EACE,iBAAiB;CAClB;ACTH;CAEC;AAED;EACE,mBAAmB;EACnB,sBAAsB;EACtB,kBAAkB;CACnB;AAED;CAEC;AAED;EACE,oBAAoB;EACpB,iBAAiB;CASlB;AAPC;EACE,aAAa;CACd;AAED;EACE,aAAa;CACd;ACzBL;EACE,sBAAsB;EACtB,oBAAoB;EACpB,aAAa;EACb,0BAAyB;EACzB,mBAAmB;EACnB,aAAa;EACb,qBAAc;EAAd,sBAAc;EAAd,qBAAc;EAAd,cAAc;EACd,+BAAoB;EAApB,8BAAoB;EAApB,4BAAoB;MAApB,wBAAoB;UAApB,oBAAoB;EACpB,wBAAgB;MAAhB,oBAAgB;UAAhB,gBAAgB;EAChB,yBAAwB;EAAxB,gCAAwB;MAAxB,sBAAwB;UAAxB,wBAAwB;EACxB,0BAAoB;EAApB,4BAAoB;MAApB,uBAAoB;UAApB,oBAAoB;CAUrB;AARC;EACE,mBAAmB;EACnB,eAAe;EACf,aAAa;EACb,aAAa;EACb,YAAY;EACZ,UAAU;CACX;;AAGH;EACE,mBAAmB;EACnB,sBAAsB;EACtB,mBAAmB;CACpB;;AAED;EACE,UAAU;EACV,kBAAkB;EAClB,aAAa;EACb,oBAAoB;EACpB,iBAAiB;EACjB,wBAAwB;CACzB;;AAED;EACE,iBAAiB;EACjB,gBAAgB;EAChB,UAAU;CAOX;;AAJG;EACE,kBAAkB;CACnB;;AAIL;;CAEC;ACpDD;EACE,cAAkB;CAKnB;AAHC;EACE,cAAc;CACf;;AAGH;EACE,yDAA+B;CAahC;;AAXC;EACE,WAAW;EACX,aAAa;EACb,4BAA4B;CAC7B;;AAGC;EACE,cAAc;CACf;;AAIL;EACE,eAAe;EACf,eAAe;EACf,mBAAmB;CACpB;;AAED;EACE,yDAA+B;EAC/B,YAAY;CACb;;AC3BD;EACE,YAAY;CACb;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B;;AAED;EACE,qBAAqB;EACrB,sBAAsB;EACtB,oBAAoB;EACpB,YAAY;EACZ,aAAa;CACd;;AAED;EACE,oBAAoB;CACrB;;AAED;EACE,kBAAkB;EAClB,mBAAmB;EACnB,sBAAsB;EACtB,uBAAuB;CACxB","file":"SteamGamePage.scss","sourcesContent":["$periwinkle: #94A4CC;\r\n$cobalt: #647CA4;\r\n$maroon: #562437;\r\n$mauve: #7C5F70;\r\n$white: #F0E9F9;\r\n\r\n$background-color: color($periwinkle lightness(+20%));\r\n$link-color: $maroon;\r\n$link-hover-color: $cobalt;\r\n$text-color: color($maroon lightness(-50%));\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n$max-content-width:     1000px;\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n","@import '../variables.scss';\n\n.achievementsList {\n  padding-left: 0;\n\n  .achievement {\n    display: inline-block;\n    list-style: none;\n    width: 240px;\n    margin: 0 8px 8px 0;\n    float: left;\n    position: relative;\n\n    .achievementIcon {\n      border-radius: 4px;\n      display: inline-block;\n      vertical-align: middle;\n    }\n\n    .achievementName {\n      display: inline-block;\n      vertical-align: middle;\n      position: absolute;\n      left: 72px;\n      width: 168px;\n    }\n  }\n}\n\n.clearfix:after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0;\n}\n","@import '../variables.scss';\n\n.achievementsComparison {\n}\n\n.achievementsList {\n  list-style: none;\n  padding-left: 0;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n","@import '../variables.scss';\n\n.playersList {\n  list-style: none;\n  padding-left: 0;\n\n  li {\n    display: inline-block;\n    margin: 0 12px 8px 0;\n\n    &.intro {\n      font-weight: 700;\n    }\n  }\n}\n","@import '../variables.scss';\n\n.player {\n  .playerProfileLink {\n\n  }\n\n  .playerAvatar {\n    border-radius: 4px;\n    display: inline-block;\n    margin-right: 8px;\n  }\n\n  .playerName {\n\n  }\n\n  .unlockPct {\n    padding-left: 0.3em;\n    font-weight: 700;\n\n    &:before {\n      content: \"(\";\n    }\n\n    &:after {\n      content: \")\";\n    }\n  }\n}\n","@import '../variables.scss';\n\n.achievementComparison {\n  display: inline-block;\n  margin: 0 8px 8px 0;\n  width: 300px;\n  border: 1px solid $mauve;\n  border-radius: 4px;\n  padding: 8px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n\n  &:after {\n    visibility: hidden;\n    display: block;\n    font-size: 0;\n    content: \" \";\n    clear: both;\n    height: 0;\n  }\n}\n\n.achievementIcon {\n  border-radius: 4px;\n  display: inline-block;\n  margin-right: 16px;\n}\n\n.achievementName {\n  margin: 0;\n  font-size: 1.2rem;\n  width: 212px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.playerAchievements {\n  list-style: none;\n  padding-left: 0;\n  margin: 0;\n\n  .playerAchievement {\n    .playerName {\n      padding-left: 8px;\n    }\n  }\n}\n\n.status {\n\n}\n","@import '../variables.scss';\n\n.bar {\n  fill: $periwinkle;\n\n  &:hover {\n    fill: $cobalt;\n  }\n}\n\n.axis {\n  font: 0.9rem $font-family-base;\n\n  path, line {\n    fill: none;\n    stroke: #000;\n    shape-rendering: crispEdges;\n  }\n\n  &.x {\n    path {\n      display: none;\n    }\n  }\n}\n\nsvg {\n  display: block;\n  margin: 0 auto;\n  position: relative;\n}\n\n.label {\n  font: 0.9rem $font-family-base;\n  fill: white;\n}\n","@import '../variables.scss';\n@import './AchievementsList.scss';\n@import './AchievementsComparison.scss';\n@import './PlayersList.scss';\n@import './Player.scss';\n@import './AchievementComparison.scss';\n@import './UnlockedBarChart.scss';\n\n.root {\n  width: 100%;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n\n.clearSteamGame {\n  padding-right: 0.3em;\n  display: inline-block;\n  vertical-align: top;\n  color: #999;\n  width: 0.5em;\n}\n\nh1 {\n  margin-left: -0.8em;\n}\n\n.gameIcon {\n  margin-right: 8px;\n  border-radius: 4px;\n  display: inline-block;\n  vertical-align: middle;\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
@@ -93048,6 +93060,7 @@ module.exports =
   	"playerProfileLink": "SteamGamePage_playerProfileLink_2Ua",
   	"playerAvatar": "SteamGamePage_playerAvatar_yN0",
   	"playerName": "SteamGamePage_playerName_3Y6",
+  	"unlockPct": "SteamGamePage_unlockPct_2Mz",
   	"achievementComparison": "SteamGamePage_achievementComparison_3ep",
   	"playerAchievements": "SteamGamePage_playerAchievements_s6k",
   	"playerAchievement": "SteamGamePage_playerAchievement_2_2",
@@ -93177,554 +93190,6 @@ module.exports =
 /* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
-  
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _NotFoundPageScss = __webpack_require__(65);
-  
-  var _NotFoundPageScss2 = _interopRequireDefault(_NotFoundPageScss);
-  
-  var _decoratorsWithStyles = __webpack_require__(24);
-  
-  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
-  var title = 'Page Not Found';
-  
-  var NotFoundPage = (function (_Component) {
-    _inherits(NotFoundPage, _Component);
-  
-    function NotFoundPage() {
-      _classCallCheck(this, _NotFoundPage);
-  
-      _get(Object.getPrototypeOf(_NotFoundPage.prototype), 'constructor', this).apply(this, arguments);
-    }
-  
-    _createClass(NotFoundPage, [{
-      key: 'componentWillMount',
-      value: function componentWillMount() {
-        this.context.onSetTitle(title);
-        this.context.onPageNotFound();
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-        return _react2['default'].createElement(
-          'div',
-          null,
-          _react2['default'].createElement(
-            'h1',
-            null,
-            title
-          ),
-          _react2['default'].createElement(
-            'p',
-            null,
-            'Sorry, but the page you were trying to view does not exist.'
-          )
-        );
-      }
-    }], [{
-      key: 'contextTypes',
-      value: {
-        onSetTitle: _react.PropTypes.func.isRequired,
-        onPageNotFound: _react.PropTypes.func.isRequired
-      },
-      enumerable: true
-    }]);
-  
-    var _NotFoundPage = NotFoundPage;
-    NotFoundPage = (0, _decoratorsWithStyles2['default'])(_NotFoundPageScss2['default'])(NotFoundPage) || NotFoundPage;
-    return NotFoundPage;
-  })(_react.Component);
-  
-  exports['default'] = NotFoundPage;
-  module.exports = exports['default'];
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-  
-      var content = __webpack_require__(66);
-      var insertCss = __webpack_require__(20);
-  
-      if (typeof content === 'string') {
-        content = [[module.id, content, '']];
-      }
-  
-      module.exports = content.locals || {};
-      module.exports._getCss = function() { return content.toString(); };
-      module.exports._insertCss = insertCss.bind(null, content);
-    
-      var removeCss = function() {};
-  
-      // Hot Module Replacement
-      // https://webpack.github.io/docs/hot-module-replacement
-      if (false) {
-        module.hot.accept("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./NotFoundPage.scss", function() {
-          var newContent = require("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./NotFoundPage.scss");
-          if (typeof newContent === 'string') {
-            newContent = [[module.id, content, '']];
-          }
-          removeCss = insertCss(newContent, { replace: true });
-        });
-        module.hot.dispose(function() { removeCss(); });
-      }
-    
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-  exports = module.exports = __webpack_require__(19)();
-  // imports
-  
-  
-  // module
-  exports.push([module.id, "/**\r\n * React Starter Kit (https://www.reactstarterkit.com/)\r\n *\r\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\r\n *\r\n * This source code is licensed under the MIT license found in the\r\n * LICENSE.txt file in the root directory of this source tree.\r\n */\r\n\r\n* {\r\n  margin: 0;\r\n  line-height: 1.2;\r\n}\r\n\r\nhtml {\r\n  display: table;\r\n  width: 100%;\r\n  height: 100%;\r\n  color: #888;\r\n  text-align: center;\r\n  font-family: sans-serif;\r\n}\r\n\r\nbody {\r\n  display: table-cell;\r\n  margin: 2em auto;\r\n  vertical-align: middle;\r\n}\r\n\r\nh1 {\r\n  color: #555;\r\n  font-weight: 400;\r\n  font-size: 2em;\r\n}\r\n\r\np {\r\n  margin: 0 auto;\r\n  width: 280px;\r\n}\r\n\r\n@media only screen and (max-width: 280px) {\r\n\r\n  body, p {\r\n    width: 95%;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 1.5em;\r\n    margin: 0 0 0.3em;\r\n  }\r\n\r\n}\r\n", "", {"version":3,"sources":["/./src/components/NotFoundPage/NotFoundPage.scss"],"names":[],"mappings":"AAAA;;;;;;;GAOG;;AAEH;EACE,UAAU;EACV,iBAAiB;CAClB;;AAED;EACE,eAAe;EACf,YAAY;EACZ,aAAa;EACb,YAAY;EACZ,mBAAmB;EACnB,wBAAwB;CACzB;;AAED;EACE,oBAAoB;EACpB,iBAAiB;EACjB,uBAAuB;CACxB;;AAED;EACE,YAAY;EACZ,iBAAiB;EACjB,eAAe;CAChB;;AAED;EACE,eAAe;EACf,aAAa;CACd;;AAED;;EAEE;IACE,WAAW;GACZ;;EAED;IACE,iBAAiB;IACjB,kBAAkB;GACnB;;CAEF","file":"NotFoundPage.scss","sourcesContent":["/**\r\n * React Starter Kit (https://www.reactstarterkit.com/)\r\n *\r\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\r\n *\r\n * This source code is licensed under the MIT license found in the\r\n * LICENSE.txt file in the root directory of this source tree.\r\n */\r\n\r\n* {\r\n  margin: 0;\r\n  line-height: 1.2;\r\n}\r\n\r\nhtml {\r\n  display: table;\r\n  width: 100%;\r\n  height: 100%;\r\n  color: #888;\r\n  text-align: center;\r\n  font-family: sans-serif;\r\n}\r\n\r\nbody {\r\n  display: table-cell;\r\n  margin: 2em auto;\r\n  vertical-align: middle;\r\n}\r\n\r\nh1 {\r\n  color: #555;\r\n  font-weight: 400;\r\n  font-size: 2em;\r\n}\r\n\r\np {\r\n  margin: 0 auto;\r\n  width: 280px;\r\n}\r\n\r\n@media only screen and (max-width: 280px) {\r\n\r\n  body, p {\r\n    width: 95%;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 1.5em;\r\n    margin: 0 0 0.3em;\r\n  }\r\n\r\n}\r\n"],"sourceRoot":"webpack://"}]);
-  
-  // exports
-
-
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
-  
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _ErrorPageScss = __webpack_require__(68);
-  
-  var _ErrorPageScss2 = _interopRequireDefault(_ErrorPageScss);
-  
-  var _decoratorsWithStyles = __webpack_require__(24);
-  
-  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
-  var title = 'Error';
-  
-  var ErrorPage = (function (_Component) {
-    _inherits(ErrorPage, _Component);
-  
-    function ErrorPage() {
-      _classCallCheck(this, _ErrorPage);
-  
-      _get(Object.getPrototypeOf(_ErrorPage.prototype), 'constructor', this).apply(this, arguments);
-    }
-  
-    _createClass(ErrorPage, [{
-      key: 'componentWillMount',
-      value: function componentWillMount() {
-        this.context.onSetTitle(title);
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-        return _react2['default'].createElement(
-          'div',
-          null,
-          _react2['default'].createElement(
-            'h1',
-            null,
-            title
-          ),
-          _react2['default'].createElement(
-            'p',
-            null,
-            'Sorry, an critical error occurred on this page.'
-          )
-        );
-      }
-    }], [{
-      key: 'contextTypes',
-      value: {
-        onSetTitle: _react.PropTypes.func.isRequired,
-        onPageNotFound: _react.PropTypes.func.isRequired
-      },
-      enumerable: true
-    }]);
-  
-    var _ErrorPage = ErrorPage;
-    ErrorPage = (0, _decoratorsWithStyles2['default'])(_ErrorPageScss2['default'])(ErrorPage) || ErrorPage;
-    return ErrorPage;
-  })(_react.Component);
-  
-  exports['default'] = ErrorPage;
-  module.exports = exports['default'];
-
-/***/ },
-/* 68 */
-/***/ function(module, exports, __webpack_require__) {
-
-  
-      var content = __webpack_require__(69);
-      var insertCss = __webpack_require__(20);
-  
-      if (typeof content === 'string') {
-        content = [[module.id, content, '']];
-      }
-  
-      module.exports = content.locals || {};
-      module.exports._getCss = function() { return content.toString(); };
-      module.exports._insertCss = insertCss.bind(null, content);
-    
-      var removeCss = function() {};
-  
-      // Hot Module Replacement
-      // https://webpack.github.io/docs/hot-module-replacement
-      if (false) {
-        module.hot.accept("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./ErrorPage.scss", function() {
-          var newContent = require("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./ErrorPage.scss");
-          if (typeof newContent === 'string') {
-            newContent = [[module.id, content, '']];
-          }
-          removeCss = insertCss(newContent, { replace: true });
-        });
-        module.hot.dispose(function() { removeCss(); });
-      }
-    
-
-/***/ },
-/* 69 */
-/***/ function(module, exports, __webpack_require__) {
-
-  exports = module.exports = __webpack_require__(19)();
-  // imports
-  
-  
-  // module
-  exports.push([module.id, "/**\r\n * React Starter Kit (https://www.reactstarterkit.com/)\r\n *\r\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\r\n *\r\n * This source code is licensed under the MIT license found in the\r\n * LICENSE.txt file in the root directory of this source tree.\r\n */\r\n\r\n* {\r\n  margin: 0;\r\n  line-height: 1.2;\r\n}\r\n\r\nhtml {\r\n  display: table;\r\n  width: 100%;\r\n  height: 100%;\r\n  color: #888;\r\n  text-align: center;\r\n  font-family: sans-serif;\r\n}\r\n\r\nbody {\r\n  display: table-cell;\r\n  margin: 2em auto;\r\n  vertical-align: middle;\r\n}\r\n\r\nh1 {\r\n  color: #555;\r\n  font-weight: 400;\r\n  font-size: 2em;\r\n}\r\n\r\np {\r\n  margin: 0 auto;\r\n  width: 280px;\r\n}\r\n\r\n@media only screen and (max-width: 280px) {\r\n\r\n  body, p {\r\n    width: 95%;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 1.5em;\r\n    margin: 0 0 0.3em;\r\n\r\n  }\r\n\r\n}\r\n", "", {"version":3,"sources":["/./src/components/ErrorPage/ErrorPage.scss"],"names":[],"mappings":"AAAA;;;;;;;GAOG;;AAEH;EACE,UAAU;EACV,iBAAiB;CAClB;;AAED;EACE,eAAe;EACf,YAAY;EACZ,aAAa;EACb,YAAY;EACZ,mBAAmB;EACnB,wBAAwB;CACzB;;AAED;EACE,oBAAoB;EACpB,iBAAiB;EACjB,uBAAuB;CACxB;;AAED;EACE,YAAY;EACZ,iBAAiB;EACjB,eAAe;CAChB;;AAED;EACE,eAAe;EACf,aAAa;CACd;;AAED;;EAEE;IACE,WAAW;GACZ;;EAED;IACE,iBAAiB;IACjB,kBAAkB;;GAEnB;;CAEF","file":"ErrorPage.scss","sourcesContent":["/**\r\n * React Starter Kit (https://www.reactstarterkit.com/)\r\n *\r\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\r\n *\r\n * This source code is licensed under the MIT license found in the\r\n * LICENSE.txt file in the root directory of this source tree.\r\n */\r\n\r\n* {\r\n  margin: 0;\r\n  line-height: 1.2;\r\n}\r\n\r\nhtml {\r\n  display: table;\r\n  width: 100%;\r\n  height: 100%;\r\n  color: #888;\r\n  text-align: center;\r\n  font-family: sans-serif;\r\n}\r\n\r\nbody {\r\n  display: table-cell;\r\n  margin: 2em auto;\r\n  vertical-align: middle;\r\n}\r\n\r\nh1 {\r\n  color: #555;\r\n  font-weight: 400;\r\n  font-size: 2em;\r\n}\r\n\r\np {\r\n  margin: 0 auto;\r\n  width: 280px;\r\n}\r\n\r\n@media only screen and (max-width: 280px) {\r\n\r\n  body, p {\r\n    width: 95%;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 1.5em;\r\n    margin: 0 0 0.3em;\r\n\r\n  }\r\n\r\n}\r\n"],"sourceRoot":"webpack://"}]);
-  
-  // exports
-
-
-/***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
-
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
-  
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _config = __webpack_require__(14);
-  
-  var Html = (function (_Component) {
-    _inherits(Html, _Component);
-  
-    function Html() {
-      _classCallCheck(this, Html);
-  
-      _get(Object.getPrototypeOf(Html.prototype), 'constructor', this).apply(this, arguments);
-    }
-  
-    _createClass(Html, [{
-      key: 'trackingCode',
-      value: function trackingCode() {
-        return { __html: '(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=' + 'function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;' + 'e=o.createElement(i);r=o.getElementsByTagName(i)[0];' + 'e.src=\'https://www.google-analytics.com/analytics.js\';' + 'r.parentNode.insertBefore(e,r)}(window,document,\'script\',\'ga\'));' + ('ga(\'create\',\'' + _config.googleAnalyticsId + '\',\'auto\');ga(\'send\',\'pageview\');')
-        };
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-        return _react2['default'].createElement(
-          'html',
-          { className: 'no-js', lang: '' },
-          _react2['default'].createElement(
-            'head',
-            null,
-            _react2['default'].createElement('meta', { charSet: 'utf-8' }),
-            _react2['default'].createElement('meta', { httpEquiv: 'X-UA-Compatible', content: 'IE=edge' }),
-            _react2['default'].createElement(
-              'title',
-              null,
-              this.props.title
-            ),
-            _react2['default'].createElement('meta', { name: 'description', content: this.props.description }),
-            _react2['default'].createElement('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1' }),
-            _react2['default'].createElement('link', { rel: 'apple-touch-icon', href: 'apple-touch-icon.png' }),
-            _react2['default'].createElement('link', { rel: 'stylesheet', href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' }),
-            _react2['default'].createElement('style', { id: 'css', dangerouslySetInnerHTML: { __html: this.props.css } })
-          ),
-          _react2['default'].createElement(
-            'body',
-            null,
-            _react2['default'].createElement('div', { id: 'app', dangerouslySetInnerHTML: { __html: this.props.body } }),
-            _react2['default'].createElement('script', { src: this.props.entry }),
-            _react2['default'].createElement('script', { dangerouslySetInnerHTML: this.trackingCode() })
-          )
-        );
-      }
-    }], [{
-      key: 'propTypes',
-      value: {
-        title: _react.PropTypes.string,
-        description: _react.PropTypes.string,
-        css: _react.PropTypes.string,
-        body: _react.PropTypes.string.isRequired,
-        entry: _react.PropTypes.string.isRequired
-      },
-      enumerable: true
-    }, {
-      key: 'defaultProps',
-      value: {
-        title: '',
-        description: ''
-      },
-      enumerable: true
-    }]);
-  
-    return Html;
-  })(_react.Component);
-  
-  exports['default'] = Html;
-  module.exports = exports['default'];
-
-/***/ },
-/* 71 */
-/***/ function(module, exports) {
-
-  module.exports = require("./assets");
-
-/***/ },
-/* 72 */
-/***/ function(module, exports, __webpack_require__) {
-
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
-  
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _this = this;
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _fs = __webpack_require__(73);
-  
-  var _fs2 = _interopRequireDefault(_fs);
-  
-  var _path = __webpack_require__(2);
-  
-  var _express = __webpack_require__(3);
-  
-  var _bluebird = __webpack_require__(74);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
-  var _jade = __webpack_require__(75);
-  
-  var _jade2 = _interopRequireDefault(_jade);
-  
-  var _frontMatter = __webpack_require__(76);
-  
-  var _frontMatter2 = _interopRequireDefault(_frontMatter);
-  
-  // A folder with Jade/Markdown/HTML content pages
-  var CONTENT_DIR = (0, _path.join)(__dirname, './content');
-  
-  // Extract 'front matter' metadata and generate HTML
-  var parseJade = function parseJade(path, jadeContent) {
-    var fmContent = (0, _frontMatter2['default'])(jadeContent);
-    var htmlContent = _jade2['default'].render(fmContent.body);
-    return Object.assign({ path: path, content: htmlContent }, fmContent.attributes);
-  };
-  
-  var readFile = _bluebird2['default'].promisify(_fs2['default'].readFile);
-  var fileExists = function fileExists(filename) {
-    return new _bluebird2['default'](function (resolve) {
-      _fs2['default'].exists(filename, resolve);
-    });
-  };
-  
-  var router = new _express.Router();
-  
-  router.get('/', function callee$0$0(req, res, next) {
-    var path, fileName, source, content;
-    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
-      while (1) switch (context$1$0.prev = context$1$0.next) {
-        case 0:
-          context$1$0.prev = 0;
-          path = req.query.path;
-  
-          if (!(!path || path === 'undefined')) {
-            context$1$0.next = 5;
-            break;
-          }
-  
-          res.status(400).send({ error: 'The \'path\' query parameter cannot be empty.' });
-          return context$1$0.abrupt('return');
-  
-        case 5:
-          fileName = (0, _path.join)(CONTENT_DIR, (path === '/' ? '/index' : path) + '.jade');
-          context$1$0.next = 8;
-          return regeneratorRuntime.awrap(fileExists(fileName));
-  
-        case 8:
-          if (context$1$0.sent) {
-            context$1$0.next = 10;
-            break;
-          }
-  
-          fileName = (0, _path.join)(CONTENT_DIR, path + '/index.jade');
-  
-        case 10:
-          context$1$0.next = 12;
-          return regeneratorRuntime.awrap(fileExists(fileName));
-  
-        case 12:
-          if (context$1$0.sent) {
-            context$1$0.next = 16;
-            break;
-          }
-  
-          res.status(404).send({ error: 'The page \'' + path + '\' is not found.' });
-          context$1$0.next = 21;
-          break;
-  
-        case 16:
-          context$1$0.next = 18;
-          return regeneratorRuntime.awrap(readFile(fileName, { encoding: 'utf8' }));
-  
-        case 18:
-          source = context$1$0.sent;
-          content = parseJade(path, source);
-  
-          res.status(200).send(content);
-  
-        case 21:
-          context$1$0.next = 26;
-          break;
-  
-        case 23:
-          context$1$0.prev = 23;
-          context$1$0.t0 = context$1$0['catch'](0);
-  
-          next(context$1$0.t0);
-  
-        case 26:
-        case 'end':
-          return context$1$0.stop();
-      }
-    }, null, _this, [[0, 23]]);
-  });
-  
-  exports['default'] = router;
-  module.exports = exports['default'];
-
-/***/ },
-/* 73 */
-/***/ function(module, exports) {
-
-  module.exports = require("fs");
-
-/***/ },
-/* 74 */
-/***/ function(module, exports) {
-
-  module.exports = require("bluebird");
-
-/***/ },
-/* 75 */
-/***/ function(module, exports) {
-
-  module.exports = require("jade");
-
-/***/ },
-/* 76 */
-/***/ function(module, exports) {
-
-  module.exports = require("front-matter");
-
-/***/ },
-/* 77 */
-/***/ function(module, exports, __webpack_require__) {
-
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -93749,11 +93214,11 @@ module.exports =
   
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
   
-  var _AchievementComparison = __webpack_require__(79);
+  var _AchievementComparison = __webpack_require__(65);
   
   var _AchievementComparison2 = _interopRequireDefault(_AchievementComparison);
   
-  var _UnlockedBarChart = __webpack_require__(80);
+  var _UnlockedBarChart = __webpack_require__(66);
   
   var _UnlockedBarChart2 = _interopRequireDefault(_UnlockedBarChart);
   
@@ -93876,83 +93341,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 78 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _SteamGamePageScss = __webpack_require__(61);
-  
-  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
-  var PlayersList = (function (_Component) {
-    _inherits(PlayersList, _Component);
-  
-    function PlayersList() {
-      _classCallCheck(this, PlayersList);
-  
-      _get(Object.getPrototypeOf(PlayersList.prototype), 'constructor', this).apply(this, arguments);
-    }
-  
-    _createClass(PlayersList, [{
-      key: 'render',
-      value: function render() {
-        return _react2['default'].createElement(
-          'ul',
-          { className: _SteamGamePageScss2['default'].playersList },
-          _react2['default'].createElement(
-            'li',
-            { className: _SteamGamePageScss2['default'].intro },
-            'Comparing:'
-          ),
-          this.props.players.map(function (player) {
-            return _react2['default'].createElement(
-              'li',
-              { key: player.steamid, className: _SteamGamePageScss2['default'].player },
-              _react2['default'].createElement(
-                'a',
-                { href: player.profileurl, target: '_blank',
-                  className: _SteamGamePageScss2['default'].playerProfileLink },
-                _react2['default'].createElement('img', { src: player.avatar, className: _SteamGamePageScss2['default'].playerAvatar,
-                  alt: player.steamid }),
-                _react2['default'].createElement(
-                  'span',
-                  { className: _SteamGamePageScss2['default'].playerName },
-                  player.personaname
-                )
-              )
-            );
-          })
-        );
-      }
-    }]);
-  
-    return PlayersList;
-  })(_react.Component);
-  
-  exports['default'] = PlayersList;
-  module.exports = exports['default'];
-
-/***/ },
-/* 79 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -94044,7 +93433,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 80 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -94071,7 +93460,7 @@ module.exports =
   
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
   
-  var _d3 = __webpack_require__(81);
+  var _d3 = __webpack_require__(67);
   
   var _d32 = _interopRequireDefault(_d3);
   
@@ -94090,8 +93479,7 @@ module.exports =
       value: function componentDidMount() {
         var playerCount = Object.keys(this.props.players).length;
         var margin = { top: 0, right: 0, bottom: 30, left: 40 };
-        var widthPerBar = 190;
-        var width = widthPerBar * playerCount - margin.left - margin.right;
+        var width = Math.min(960, 150 * playerCount) - margin.left - margin.right;
         var height = 230 - margin.top - margin.bottom;
         var x = _d32['default'].scale.ordinal().rangeRoundBands([0, width], .1);
         var y = _d32['default'].scale.linear().range([height, 0]);
@@ -94169,10 +93557,716 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 81 */
+/* 67 */
 /***/ function(module, exports) {
 
   module.exports = require("d3");
+
+/***/ },
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamGamePageScss = __webpack_require__(61);
+  
+  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
+  
+  var _Player = __webpack_require__(82);
+  
+  var _Player2 = _interopRequireDefault(_Player);
+  
+  var PlayersList = (function (_Component) {
+    _inherits(PlayersList, _Component);
+  
+    function PlayersList() {
+      _classCallCheck(this, PlayersList);
+  
+      _get(Object.getPrototypeOf(PlayersList.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(PlayersList, [{
+      key: 'render',
+      value: function render() {
+        var achievements = this.props.achievements || {};
+        return _react2['default'].createElement(
+          'ul',
+          { className: _SteamGamePageScss2['default'].playersList },
+          _react2['default'].createElement(
+            'li',
+            { className: _SteamGamePageScss2['default'].intro },
+            'Comparing:'
+          ),
+          this.props.players.map(function (player) {
+            var playerAchievements = achievements[player.steamid];
+            return _react2['default'].createElement(_Player2['default'], { key: player.steamid, player: player,
+              achievements: playerAchievements });
+          })
+        );
+      }
+    }]);
+  
+    return PlayersList;
+  })(_react.Component);
+  
+  exports['default'] = PlayersList;
+  module.exports = exports['default'];
+
+/***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
+  
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _NotFoundPageScss = __webpack_require__(70);
+  
+  var _NotFoundPageScss2 = _interopRequireDefault(_NotFoundPageScss);
+  
+  var _decoratorsWithStyles = __webpack_require__(24);
+  
+  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
+  
+  var title = 'Page Not Found';
+  
+  var NotFoundPage = (function (_Component) {
+    _inherits(NotFoundPage, _Component);
+  
+    function NotFoundPage() {
+      _classCallCheck(this, _NotFoundPage);
+  
+      _get(Object.getPrototypeOf(_NotFoundPage.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(NotFoundPage, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.context.onSetTitle(title);
+        this.context.onPageNotFound();
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(
+            'h1',
+            null,
+            title
+          ),
+          _react2['default'].createElement(
+            'p',
+            null,
+            'Sorry, but the page you were trying to view does not exist.'
+          )
+        );
+      }
+    }], [{
+      key: 'contextTypes',
+      value: {
+        onSetTitle: _react.PropTypes.func.isRequired,
+        onPageNotFound: _react.PropTypes.func.isRequired
+      },
+      enumerable: true
+    }]);
+  
+    var _NotFoundPage = NotFoundPage;
+    NotFoundPage = (0, _decoratorsWithStyles2['default'])(_NotFoundPageScss2['default'])(NotFoundPage) || NotFoundPage;
+    return NotFoundPage;
+  })(_react.Component);
+  
+  exports['default'] = NotFoundPage;
+  module.exports = exports['default'];
+
+/***/ },
+/* 70 */
+/***/ function(module, exports, __webpack_require__) {
+
+  
+      var content = __webpack_require__(71);
+      var insertCss = __webpack_require__(20);
+  
+      if (typeof content === 'string') {
+        content = [[module.id, content, '']];
+      }
+  
+      module.exports = content.locals || {};
+      module.exports._getCss = function() { return content.toString(); };
+      module.exports._insertCss = insertCss.bind(null, content);
+    
+      var removeCss = function() {};
+  
+      // Hot Module Replacement
+      // https://webpack.github.io/docs/hot-module-replacement
+      if (false) {
+        module.hot.accept("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./NotFoundPage.scss", function() {
+          var newContent = require("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./NotFoundPage.scss");
+          if (typeof newContent === 'string') {
+            newContent = [[module.id, content, '']];
+          }
+          removeCss = insertCss(newContent, { replace: true });
+        });
+        module.hot.dispose(function() { removeCss(); });
+      }
+    
+
+/***/ },
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+  exports = module.exports = __webpack_require__(19)();
+  // imports
+  
+  
+  // module
+  exports.push([module.id, "/**\r\n * React Starter Kit (https://www.reactstarterkit.com/)\r\n *\r\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\r\n *\r\n * This source code is licensed under the MIT license found in the\r\n * LICENSE.txt file in the root directory of this source tree.\r\n */\r\n\r\n* {\r\n  margin: 0;\r\n  line-height: 1.2;\r\n}\r\n\r\nhtml {\r\n  display: table;\r\n  width: 100%;\r\n  height: 100%;\r\n  color: #888;\r\n  text-align: center;\r\n  font-family: sans-serif;\r\n}\r\n\r\nbody {\r\n  display: table-cell;\r\n  margin: 2em auto;\r\n  vertical-align: middle;\r\n}\r\n\r\nh1 {\r\n  color: #555;\r\n  font-weight: 400;\r\n  font-size: 2em;\r\n}\r\n\r\np {\r\n  margin: 0 auto;\r\n  width: 280px;\r\n}\r\n\r\n@media only screen and (max-width: 280px) {\r\n\r\n  body, p {\r\n    width: 95%;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 1.5em;\r\n    margin: 0 0 0.3em;\r\n  }\r\n\r\n}\r\n", "", {"version":3,"sources":["/./src/components/NotFoundPage/NotFoundPage.scss"],"names":[],"mappings":"AAAA;;;;;;;GAOG;;AAEH;EACE,UAAU;EACV,iBAAiB;CAClB;;AAED;EACE,eAAe;EACf,YAAY;EACZ,aAAa;EACb,YAAY;EACZ,mBAAmB;EACnB,wBAAwB;CACzB;;AAED;EACE,oBAAoB;EACpB,iBAAiB;EACjB,uBAAuB;CACxB;;AAED;EACE,YAAY;EACZ,iBAAiB;EACjB,eAAe;CAChB;;AAED;EACE,eAAe;EACf,aAAa;CACd;;AAED;;EAEE;IACE,WAAW;GACZ;;EAED;IACE,iBAAiB;IACjB,kBAAkB;GACnB;;CAEF","file":"NotFoundPage.scss","sourcesContent":["/**\r\n * React Starter Kit (https://www.reactstarterkit.com/)\r\n *\r\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\r\n *\r\n * This source code is licensed under the MIT license found in the\r\n * LICENSE.txt file in the root directory of this source tree.\r\n */\r\n\r\n* {\r\n  margin: 0;\r\n  line-height: 1.2;\r\n}\r\n\r\nhtml {\r\n  display: table;\r\n  width: 100%;\r\n  height: 100%;\r\n  color: #888;\r\n  text-align: center;\r\n  font-family: sans-serif;\r\n}\r\n\r\nbody {\r\n  display: table-cell;\r\n  margin: 2em auto;\r\n  vertical-align: middle;\r\n}\r\n\r\nh1 {\r\n  color: #555;\r\n  font-weight: 400;\r\n  font-size: 2em;\r\n}\r\n\r\np {\r\n  margin: 0 auto;\r\n  width: 280px;\r\n}\r\n\r\n@media only screen and (max-width: 280px) {\r\n\r\n  body, p {\r\n    width: 95%;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 1.5em;\r\n    margin: 0 0 0.3em;\r\n  }\r\n\r\n}\r\n"],"sourceRoot":"webpack://"}]);
+  
+  // exports
+
+
+/***/ },
+/* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
+  
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _ErrorPageScss = __webpack_require__(73);
+  
+  var _ErrorPageScss2 = _interopRequireDefault(_ErrorPageScss);
+  
+  var _decoratorsWithStyles = __webpack_require__(24);
+  
+  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
+  
+  var title = 'Error';
+  
+  var ErrorPage = (function (_Component) {
+    _inherits(ErrorPage, _Component);
+  
+    function ErrorPage() {
+      _classCallCheck(this, _ErrorPage);
+  
+      _get(Object.getPrototypeOf(_ErrorPage.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(ErrorPage, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.context.onSetTitle(title);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(
+            'h1',
+            null,
+            title
+          ),
+          _react2['default'].createElement(
+            'p',
+            null,
+            'Sorry, an critical error occurred on this page.'
+          )
+        );
+      }
+    }], [{
+      key: 'contextTypes',
+      value: {
+        onSetTitle: _react.PropTypes.func.isRequired,
+        onPageNotFound: _react.PropTypes.func.isRequired
+      },
+      enumerable: true
+    }]);
+  
+    var _ErrorPage = ErrorPage;
+    ErrorPage = (0, _decoratorsWithStyles2['default'])(_ErrorPageScss2['default'])(ErrorPage) || ErrorPage;
+    return ErrorPage;
+  })(_react.Component);
+  
+  exports['default'] = ErrorPage;
+  module.exports = exports['default'];
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+  
+      var content = __webpack_require__(74);
+      var insertCss = __webpack_require__(20);
+  
+      if (typeof content === 'string') {
+        content = [[module.id, content, '']];
+      }
+  
+      module.exports = content.locals || {};
+      module.exports._getCss = function() { return content.toString(); };
+      module.exports._insertCss = insertCss.bind(null, content);
+    
+      var removeCss = function() {};
+  
+      // Hot Module Replacement
+      // https://webpack.github.io/docs/hot-module-replacement
+      if (false) {
+        module.hot.accept("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./ErrorPage.scss", function() {
+          var newContent = require("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./ErrorPage.scss");
+          if (typeof newContent === 'string') {
+            newContent = [[module.id, content, '']];
+          }
+          removeCss = insertCss(newContent, { replace: true });
+        });
+        module.hot.dispose(function() { removeCss(); });
+      }
+    
+
+/***/ },
+/* 74 */
+/***/ function(module, exports, __webpack_require__) {
+
+  exports = module.exports = __webpack_require__(19)();
+  // imports
+  
+  
+  // module
+  exports.push([module.id, "/**\r\n * React Starter Kit (https://www.reactstarterkit.com/)\r\n *\r\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\r\n *\r\n * This source code is licensed under the MIT license found in the\r\n * LICENSE.txt file in the root directory of this source tree.\r\n */\r\n\r\n* {\r\n  margin: 0;\r\n  line-height: 1.2;\r\n}\r\n\r\nhtml {\r\n  display: table;\r\n  width: 100%;\r\n  height: 100%;\r\n  color: #888;\r\n  text-align: center;\r\n  font-family: sans-serif;\r\n}\r\n\r\nbody {\r\n  display: table-cell;\r\n  margin: 2em auto;\r\n  vertical-align: middle;\r\n}\r\n\r\nh1 {\r\n  color: #555;\r\n  font-weight: 400;\r\n  font-size: 2em;\r\n}\r\n\r\np {\r\n  margin: 0 auto;\r\n  width: 280px;\r\n}\r\n\r\n@media only screen and (max-width: 280px) {\r\n\r\n  body, p {\r\n    width: 95%;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 1.5em;\r\n    margin: 0 0 0.3em;\r\n\r\n  }\r\n\r\n}\r\n", "", {"version":3,"sources":["/./src/components/ErrorPage/ErrorPage.scss"],"names":[],"mappings":"AAAA;;;;;;;GAOG;;AAEH;EACE,UAAU;EACV,iBAAiB;CAClB;;AAED;EACE,eAAe;EACf,YAAY;EACZ,aAAa;EACb,YAAY;EACZ,mBAAmB;EACnB,wBAAwB;CACzB;;AAED;EACE,oBAAoB;EACpB,iBAAiB;EACjB,uBAAuB;CACxB;;AAED;EACE,YAAY;EACZ,iBAAiB;EACjB,eAAe;CAChB;;AAED;EACE,eAAe;EACf,aAAa;CACd;;AAED;;EAEE;IACE,WAAW;GACZ;;EAED;IACE,iBAAiB;IACjB,kBAAkB;;GAEnB;;CAEF","file":"ErrorPage.scss","sourcesContent":["/**\r\n * React Starter Kit (https://www.reactstarterkit.com/)\r\n *\r\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\r\n *\r\n * This source code is licensed under the MIT license found in the\r\n * LICENSE.txt file in the root directory of this source tree.\r\n */\r\n\r\n* {\r\n  margin: 0;\r\n  line-height: 1.2;\r\n}\r\n\r\nhtml {\r\n  display: table;\r\n  width: 100%;\r\n  height: 100%;\r\n  color: #888;\r\n  text-align: center;\r\n  font-family: sans-serif;\r\n}\r\n\r\nbody {\r\n  display: table-cell;\r\n  margin: 2em auto;\r\n  vertical-align: middle;\r\n}\r\n\r\nh1 {\r\n  color: #555;\r\n  font-weight: 400;\r\n  font-size: 2em;\r\n}\r\n\r\np {\r\n  margin: 0 auto;\r\n  width: 280px;\r\n}\r\n\r\n@media only screen and (max-width: 280px) {\r\n\r\n  body, p {\r\n    width: 95%;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 1.5em;\r\n    margin: 0 0 0.3em;\r\n\r\n  }\r\n\r\n}\r\n"],"sourceRoot":"webpack://"}]);
+  
+  // exports
+
+
+/***/ },
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
+
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
+  
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _config = __webpack_require__(14);
+  
+  var Html = (function (_Component) {
+    _inherits(Html, _Component);
+  
+    function Html() {
+      _classCallCheck(this, Html);
+  
+      _get(Object.getPrototypeOf(Html.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(Html, [{
+      key: 'trackingCode',
+      value: function trackingCode() {
+        return { __html: '(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=' + 'function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;' + 'e=o.createElement(i);r=o.getElementsByTagName(i)[0];' + 'e.src=\'https://www.google-analytics.com/analytics.js\';' + 'r.parentNode.insertBefore(e,r)}(window,document,\'script\',\'ga\'));' + ('ga(\'create\',\'' + _config.googleAnalyticsId + '\',\'auto\');ga(\'send\',\'pageview\');')
+        };
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'html',
+          { className: 'no-js', lang: '' },
+          _react2['default'].createElement(
+            'head',
+            null,
+            _react2['default'].createElement('meta', { charSet: 'utf-8' }),
+            _react2['default'].createElement('meta', { httpEquiv: 'X-UA-Compatible', content: 'IE=edge' }),
+            _react2['default'].createElement(
+              'title',
+              null,
+              this.props.title
+            ),
+            _react2['default'].createElement('meta', { name: 'description', content: this.props.description }),
+            _react2['default'].createElement('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1' }),
+            _react2['default'].createElement('link', { rel: 'apple-touch-icon', href: 'apple-touch-icon.png' }),
+            _react2['default'].createElement('link', { rel: 'stylesheet', href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' }),
+            _react2['default'].createElement('style', { id: 'css', dangerouslySetInnerHTML: { __html: this.props.css } })
+          ),
+          _react2['default'].createElement(
+            'body',
+            null,
+            _react2['default'].createElement('div', { id: 'app', dangerouslySetInnerHTML: { __html: this.props.body } }),
+            _react2['default'].createElement('script', { src: this.props.entry }),
+            _react2['default'].createElement('script', { dangerouslySetInnerHTML: this.trackingCode() })
+          )
+        );
+      }
+    }], [{
+      key: 'propTypes',
+      value: {
+        title: _react.PropTypes.string,
+        description: _react.PropTypes.string,
+        css: _react.PropTypes.string,
+        body: _react.PropTypes.string.isRequired,
+        entry: _react.PropTypes.string.isRequired
+      },
+      enumerable: true
+    }, {
+      key: 'defaultProps',
+      value: {
+        title: '',
+        description: ''
+      },
+      enumerable: true
+    }]);
+  
+    return Html;
+  })(_react.Component);
+  
+  exports['default'] = Html;
+  module.exports = exports['default'];
+
+/***/ },
+/* 76 */
+/***/ function(module, exports) {
+
+  module.exports = require("./assets");
+
+/***/ },
+/* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
+  
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _this = this;
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _fs = __webpack_require__(78);
+  
+  var _fs2 = _interopRequireDefault(_fs);
+  
+  var _path = __webpack_require__(2);
+  
+  var _express = __webpack_require__(3);
+  
+  var _bluebird = __webpack_require__(79);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _jade = __webpack_require__(80);
+  
+  var _jade2 = _interopRequireDefault(_jade);
+  
+  var _frontMatter = __webpack_require__(81);
+  
+  var _frontMatter2 = _interopRequireDefault(_frontMatter);
+  
+  // A folder with Jade/Markdown/HTML content pages
+  var CONTENT_DIR = (0, _path.join)(__dirname, './content');
+  
+  // Extract 'front matter' metadata and generate HTML
+  var parseJade = function parseJade(path, jadeContent) {
+    var fmContent = (0, _frontMatter2['default'])(jadeContent);
+    var htmlContent = _jade2['default'].render(fmContent.body);
+    return Object.assign({ path: path, content: htmlContent }, fmContent.attributes);
+  };
+  
+  var readFile = _bluebird2['default'].promisify(_fs2['default'].readFile);
+  var fileExists = function fileExists(filename) {
+    return new _bluebird2['default'](function (resolve) {
+      _fs2['default'].exists(filename, resolve);
+    });
+  };
+  
+  var router = new _express.Router();
+  
+  router.get('/', function callee$0$0(req, res, next) {
+    var path, fileName, source, content;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          context$1$0.prev = 0;
+          path = req.query.path;
+  
+          if (!(!path || path === 'undefined')) {
+            context$1$0.next = 5;
+            break;
+          }
+  
+          res.status(400).send({ error: 'The \'path\' query parameter cannot be empty.' });
+          return context$1$0.abrupt('return');
+  
+        case 5:
+          fileName = (0, _path.join)(CONTENT_DIR, (path === '/' ? '/index' : path) + '.jade');
+          context$1$0.next = 8;
+          return regeneratorRuntime.awrap(fileExists(fileName));
+  
+        case 8:
+          if (context$1$0.sent) {
+            context$1$0.next = 10;
+            break;
+          }
+  
+          fileName = (0, _path.join)(CONTENT_DIR, path + '/index.jade');
+  
+        case 10:
+          context$1$0.next = 12;
+          return regeneratorRuntime.awrap(fileExists(fileName));
+  
+        case 12:
+          if (context$1$0.sent) {
+            context$1$0.next = 16;
+            break;
+          }
+  
+          res.status(404).send({ error: 'The page \'' + path + '\' is not found.' });
+          context$1$0.next = 21;
+          break;
+  
+        case 16:
+          context$1$0.next = 18;
+          return regeneratorRuntime.awrap(readFile(fileName, { encoding: 'utf8' }));
+  
+        case 18:
+          source = context$1$0.sent;
+          content = parseJade(path, source);
+  
+          res.status(200).send(content);
+  
+        case 21:
+          context$1$0.next = 26;
+          break;
+  
+        case 23:
+          context$1$0.prev = 23;
+          context$1$0.t0 = context$1$0['catch'](0);
+  
+          next(context$1$0.t0);
+  
+        case 26:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this, [[0, 23]]);
+  });
+  
+  exports['default'] = router;
+  module.exports = exports['default'];
+
+/***/ },
+/* 78 */
+/***/ function(module, exports) {
+
+  module.exports = require("fs");
+
+/***/ },
+/* 79 */
+/***/ function(module, exports) {
+
+  module.exports = require("bluebird");
+
+/***/ },
+/* 80 */
+/***/ function(module, exports) {
+
+  module.exports = require("jade");
+
+/***/ },
+/* 81 */
+/***/ function(module, exports) {
+
+  module.exports = require("front-matter");
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _SteamGamePageScss = __webpack_require__(61);
+  
+  var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
+  
+  var Player = (function (_Component) {
+    _inherits(Player, _Component);
+  
+    function Player() {
+      _classCallCheck(this, Player);
+  
+      _get(Object.getPrototypeOf(Player.prototype), 'constructor', this).apply(this, arguments);
+    }
+  
+    _createClass(Player, [{
+      key: 'getUnlockPercentageText',
+      value: function getUnlockPercentageText() {
+        if (typeof this.props.achievements !== 'object') {
+          return '--';
+        }
+        var unlockCount = 0;
+        var total = this.props.achievements.length;
+        for (var i = 0; i < total; i++) {
+          if (this.props.achievements[i].isUnlocked) {
+            unlockCount++;
+          }
+        }
+        return Math.round(unlockCount / total * 100) + '%';
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var haveAchievements = typeof this.props.achievements === 'object';
+        return _react2['default'].createElement(
+          'li',
+          { className: _SteamGamePageScss2['default'].player },
+          _react2['default'].createElement(
+            'a',
+            { href: this.props.player.profileurl, target: '_blank',
+              className: _SteamGamePageScss2['default'].playerProfileLink },
+            _react2['default'].createElement('img', { src: this.props.player.avatar, className: _SteamGamePageScss2['default'].playerAvatar,
+              alt: this.props.player.steamid }),
+            _react2['default'].createElement(
+              'span',
+              { className: _SteamGamePageScss2['default'].playerName },
+              this.props.player.personaname
+            )
+          ),
+          haveAchievements ? _react2['default'].createElement(
+            'span',
+            { className: _SteamGamePageScss2['default'].unlockPct },
+            _react2['default'].createElement(
+              'span',
+              { 'data-tt': '% unlocked' },
+              this.getUnlockPercentageText()
+            )
+          ) : ''
+        );
+      }
+    }]);
+  
+    return Player;
+  })(_react.Component);
+  
+  exports['default'] = Player;
+  module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

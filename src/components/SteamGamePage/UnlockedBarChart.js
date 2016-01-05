@@ -11,8 +11,7 @@ class UnlockedBarChart extends Component {
   componentDidMount() {
     const playerCount = Object.keys(this.props.players).length;
     const margin = {top: 0, right: 0, bottom: 30, left: 40};
-    const widthPerBar = 190;
-    const width = (widthPerBar * playerCount) - margin.left - margin.right;
+    const width = Math.min(960, 150 * playerCount) - margin.left - margin.right;
     const height = 230 - margin.top - margin.bottom;
     const x = d3.scale.ordinal().rangeRoundBands([0, width], .1);
     const y = d3.scale.linear().range([height, 0]);

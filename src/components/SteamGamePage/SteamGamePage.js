@@ -79,7 +79,8 @@ class SteamGamePage extends Component {
             <a href={gameUrl} target="_blank"> {this.state.gameName}</a>
           </h1>
           {havePlayers ? (
-            <PlayersList players={this.state.players} />
+            <PlayersList players={this.state.players}
+                         achievements={this.state.achievements} />
           ) : (
             <p>Loading player data...</p>
           )}
