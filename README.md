@@ -4,6 +4,13 @@ View your Steam achievements over time.
 
 ## How to Develop
 
+I'm using the following tool versions:
+
+    % node --version
+    v5.3.0
+    % npm --version
+    3.3.12
+
 Get a [Steam Web API Key](http://steamcommunity.com/dev/apikey).
 
     cp src/env.sh.example src/env.sh
@@ -15,7 +22,7 @@ Customize src/env.sh.
 
 Visit [localhost:3000](http://localhost:3000/).
 
-You can update the list of Steam apps/games with:
+You can update the cached list of Steam apps/games with:
 
     npm run update-steam-apps
 
@@ -24,5 +31,4 @@ You can update the list of Steam apps/games with:
 1. [Add an app on heroku.com.](https://dashboard.heroku.com/new)
 1. `heroku git:remote -a your_heroku_app_name`
 1. `heroku config:set STEAM_API_KEY="your Steam Web API Key"`
-1. `npm run build`
-1. `git subtree push --prefix build heroku master`
+1. `./deploy.sh`
