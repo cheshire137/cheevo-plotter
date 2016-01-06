@@ -53,6 +53,34 @@ h1 {
   }
 }
 
+.alert {
+  padding: 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  &.alertError {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+  }
+}
+
+.steamIdErrorWrapper {
+  .instructions {
+    margin: 0;
+  }
+
+  .steamProfileWrapper {
+    margin: 1em 0;
+
+    img {
+      border: 1px solid #333;
+      padding: 5px;
+      background-color: #fff;
+    }
+  }
+}
+
 @media (min-width: $screen-md-min) {
   .row {
     .leftColumn, .rightColumn {

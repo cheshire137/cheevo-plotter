@@ -251,9 +251,21 @@ class SteamUserPage extends Component {
             <a href={profileUrl} target="_blank"> {this.props.username}</a>
           </h1>
           {haveSteamIdError ? (
-            <p className={s.steamIdError}>
-              Could not find Steam ID for that username.
-            </p>
+            <div className={s.steamIdErrorWrapper}>
+              <p className={[s.alert, s.alertError].join(' ')}>
+                Could not find Steam ID for that username.
+              </p>
+              <p className={s.instructions}>
+                Try setting your custom URL in Steam:
+              </p>
+              <p className={s.steamProfileWrapper}>
+                <img src={require('./steam-edit-profile.jpg')} width="640"
+                     height="321" alt="Edit Steam profile" />
+              </p>
+              <p className={s.instructions}>
+                Then, search here for the name you set in that custom URL.
+              </p>
+            </div>
           ) : ''}
           {haveSteamId && haveFriendsList && haveGamesList ? (
             <p>
