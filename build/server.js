@@ -93512,7 +93512,9 @@ module.exports =
             'No achievements'
           ),
           haveAchievements ? _react2['default'].createElement('hr', null) : '',
-          haveAchievements ? _react2['default'].createElement(_Filters2['default'], { onChange: this.onFilterChange.bind(this) }) : '',
+          haveAchievements ?
+          //<Filters onChange={this.onFilterChange.bind(this)} />
+          '' : '',
           _react2['default'].createElement(
             'ul',
             { className: _SteamGamePageScss2['default'].achievementsList },

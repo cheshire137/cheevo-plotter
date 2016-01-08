@@ -96,7 +96,8 @@ class AchievementsComparison extends Component {
         )}
         {haveAchievements ? <hr /> : ''}
         {haveAchievements ? (
-          <Filters onChange={this.onFilterChange.bind(this)} />
+          //<Filters onChange={this.onFilterChange.bind(this)} />
+          ''
         ) : ''}
         <ul className={s.achievementsList}>
           {this.state.achievements.map((achievement) => {
