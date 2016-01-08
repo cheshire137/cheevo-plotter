@@ -1,43 +1,31 @@
 @import '../variables.scss';
-$friend-width: 210px;
-$avatar-width: 32px;
-$avatar-height: $avatar-width;
-$avatar-padding: 8px;
-$name-width: 140px;
-$label-padding: 18px;
 
-.friend {
-  width: $friend-width;
-  float: left;
-  margin: 0 30px 8px 0;
-  line-height: $avatar-height;
+.filtersWrapper {
+  margin-bottom: 1em;
 }
 
-.friendAvatar {
-  border-radius: 4px;
-  display: inline-block;
-  margin-right: $avatar-padding;
-  margin-left: $avatar-padding;
-  width: $avatar-width;
-  height: $avatar-height;
+.filters {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+
+  li {
+    display: inline-block;
+    margin: 0 1em 0 0;
+  }
 }
 
-.friendName {
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: $name-width;
-  vertical-align: middle;
+.header {
+  font-weight: 700;
 }
 
-.friendToggle {
+.filterToggle {
   position: absolute;
   left: -9999px;
   visibility: hidden;
 }
 
-.friendToggle:checked + .label {
+.filterToggle:checked + .label {
   &:before {
     top: -4px;
     left: -1px;
@@ -64,7 +52,7 @@ $label-padding: 18px;
   }
 
   &:before, &:after {
-    top: 7px;
+    top: 0;
   }
 }
 
@@ -72,14 +60,13 @@ $label-padding: 18px;
   display: inline-block;
   white-space: nowrap;
   position: relative;
-  padding-left: $label-padding;
+  padding-left: 26px;
   cursor: pointer;
-  height: $avatar-height;
-  line-height: $avatar-height;
   -webkit-user-select: none;
   -moz-user-select: none;
   -khtml-user-select: none;
   -ms-user-select: none;
+  vertical-align: middle;
 
   &:before {
     width: $checkbox-width;
@@ -96,7 +83,7 @@ $label-padding: 18px;
   &:before, &:after {
     content: '';
     left: 0;
-    top: 7px;
+    top: -2px;
     position: absolute;
     transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s;
     z-index: 1;

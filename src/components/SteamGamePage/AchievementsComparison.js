@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import s from './SteamGamePage.scss';
 import AchievementComparison from './AchievementComparison';
 import UnlockedBarChart from './UnlockedBarChart';
+import Filters from './Filters';
 
 class AchievementsComparison extends Component {
   constructor(props, context) {
@@ -79,15 +80,24 @@ class AchievementsComparison extends Component {
     }
   }
 
+  onFilterChange(activeFilters) {
+    console.log('active', activeFilters);
+  }
+
   render() {
+    const haveAchievements = this.state.achievements.length > 0;
     return (
       <div className={s.achievementsComparison}>
-        {this.state.achievements.length > 0 ? (
+        {haveAchievements ? (
           <UnlockedBarChart achievements={this.state.achievements}
                             players={this.state.players} />
         ) : (
           <p>No achievements</p>
         )}
+        {haveAchievements ? <hr /> : ''}
+        {haveAchievements ? (
+          <Filters onChange={this.onFilterChange.bind(this)} />
+        ) : ''}
         <ul className={s.achievementsList}>
           {this.state.achievements.map((achievement) => {
             return <AchievementComparison players={this.state.players}
