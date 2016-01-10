@@ -32,7 +32,6 @@ class Filters extends Component {
         activeFilters = activeFilters.concat([id]);
       }
     } else if (index > -1) {
-      console.log('before', activeFilters);
       activeFilters = activeFilters.slice(0, index).
                                     concat(activeFilters.slice(index + 1));
     }

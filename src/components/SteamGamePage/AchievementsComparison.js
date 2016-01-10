@@ -81,11 +81,38 @@ class AchievementsComparison extends Component {
   }
 
   onFilterChange(activeFilters) {
-    console.log('active', activeFilters);
+    this.setState({filters: activeFilters});
+  }
+
+  includeAchievement(achievement) {
+    const filters = this.state.filters;
+    if (typeof filters === 'undefined') {
+      return true;
+    }
+    var allUnlocked = true, noneUnlocked = true;
+    for (var steamId in achievement.players) {
+      if (achievement.players[steamId].isUnlocked) {
+        noneUnlocked = false;
+      } else {
+        allUnlocked = false;
+      }
+      if (!allUnlocked && !noneUnlocked) {
+        break;
+      }
+    }
+    if (filters.indexOf('allUnlocked') > -1 && !allUnlocked) {
+      return false;
+    }
+    if (filters.indexOf('noneUnlocked') > -1 && !noneUnlocked) {
+      return false;
+    }
+    return true;
   }
 
   render() {
     const haveAchievements = this.state.achievements.length > 0;
+    const filteredAchievements = this.state.achievements.
+        filter(this.includeAchievement.bind(this));
     return (
       <div className={s.achievementsComparison}>
         {haveAchievements ? (
@@ -96,11 +123,10 @@ class AchievementsComparison extends Component {
         )}
         {haveAchievements ? <hr /> : ''}
         {haveAchievements ? (
-          //<Filters onChange={this.onFilterChange.bind(this)} />
-          ''
+          <Filters onChange={this.onFilterChange.bind(this)} />
         ) : ''}
         <ul className={s.achievementsList}>
-          {this.state.achievements.map((achievement) => {
+          {filteredAchievements.map((achievement) => {
             return <AchievementComparison players={this.state.players}
                                           achievement={achievement}
                                           key={achievement.key} />;
