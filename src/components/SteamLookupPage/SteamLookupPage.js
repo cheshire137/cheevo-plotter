@@ -40,6 +40,8 @@ class SteamLookupPage extends Component {
       username = username.trim();
     }
     LocalStorage.delete('steam-id');
+    LocalStorage.delete('steam-games');
+    LocalStorage.delete('steam-selected-friends');
     if (typeof username === 'undefined' || username.length < 1) {
       LocalStorage.delete('steam-username');
       return;
@@ -49,10 +51,10 @@ class SteamLookupPage extends Component {
 
   componentWillMount() {
     this.context.onSetTitle(title);
-    var username = LocalStorage.get('steam-username');
-    if (typeof username === 'string') {
-      this.goToUserPage(username);
-    }
+    LocalStorage.delete('steam-id');
+    LocalStorage.delete('steam-username');
+    LocalStorage.delete('steam-games');
+    LocalStorage.delete('steam-selected-friends');
   }
 
   goToUserPage(username) {
