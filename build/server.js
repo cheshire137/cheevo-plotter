@@ -3343,15 +3343,15 @@ module.exports =
     }, {
       key: 'fetchFriends',
       value: function fetchFriends(steamId) {
-        _actionsSteam2['default'].getFriends(steamId).then(this.onFriendIdsFetched.bind(this)).then(undefined, this.onFriendIdsError.bind(this));
+        _actionsSteam2['default'].getFriends(steamId).then(this.onFriendIdsFetched.bind(this, steamId)).then(undefined, this.onFriendIdsError.bind(this));
       }
     }, {
       key: 'onFriendIdsFetched',
-      value: function onFriendIdsFetched(data) {
+      value: function onFriendIdsFetched(steamId, data) {
         var friendIds = data.friendslist.friends.map(function (f) {
           return f.steamid;
-        });
-        _actionsSteam2['default'].getPlayerSummaries(friendIds).then(this.onFriendSummariesFetched.bind(this)).then(undefined, this.onFriendSummariesError.bind(this));
+        }).concat([steamId]);
+        _actionsSteam2['default'].getPlayerSummaries(friendIds).then(this.onFriendSummariesFetched.bind(this, steamId)).then(undefined, this.onFriendSummariesError.bind(this));
       }
     }, {
       key: 'onFriendIdsError',
@@ -3361,14 +3361,18 @@ module.exports =
       }
     }, {
       key: 'onFriendSummariesFetched',
-      value: function onFriendSummariesFetched(allFriends) {
+      value: function onFriendSummariesFetched(steamId, summaries) {
         // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
         // communityvisibilitystate 3 means the profile is public.
         // Need public profiles to see owned/played games for comparison.
-        var publicFriends = allFriends.filter(function (f) {
-          return f.communityvisibilitystate === 3;
+        var publicFriends = summaries.filter(function (p) {
+          return p.communityvisibilitystate === 3 && p.steamid !== steamId;
         });
-        this.setState({ friends: publicFriends, friendsError: false });
+        var playerSummary = summaries.filter(function (p) {
+          return p.steamid === steamId;
+        })[0];
+        this.setState({ friends: publicFriends, friendsError: false,
+          playerSummary: playerSummary });
       }
     }, {
       key: 'onFriendSummariesError',
@@ -3504,13 +3508,15 @@ module.exports =
       key: 'render',
       value: function render() {
         var selectedSteamIds = Object.keys(this.state.ownedGames);
-        var profileUrl = 'https://steamcommunity.com/id/' + this.props.username + '/';
         var haveSteamId = typeof this.state.steamId !== 'undefined';
         var haveGamesList = typeof this.state.games === 'object';
         var haveFriendsList = typeof this.state.friends === 'object';
         var haveSteamIdError = typeof this.state.steamIdError === 'boolean' && this.state.steamIdError;
         var haveFriendsError = typeof this.state.friendsError === 'boolean' && this.state.friendsError;
         var haveGamesError = typeof this.state.gamesError === 'boolean' && this.state.gamesError;
+        var havePlayerSummary = typeof this.state.playerSummary === 'object';
+        var haveRealName = havePlayerSummary && typeof this.state.playerSummary.realname === 'string' && this.state.playerSummary.realname.length > 0;
+        var profileUrl = havePlayerSummary ? this.state.playerSummary.profileurl : 'https://steamcommunity.com/id/' + encodeURIComponent(this.props.username) + '/';
         return _react2['default'].createElement(
           'div',
           { className: _SteamUserPageScss2['default'].root },
@@ -3526,11 +3532,35 @@ module.exports =
                   onClick: this.clearSteamUsername },
                 '«'
               ),
-              'Steam /',
+              'Steam',
               _react2['default'].createElement(
+                'span',
+                { className: _SteamUserPageScss2['default'].spacer },
+                ' / '
+              ),
+              havePlayerSummary ? _react2['default'].createElement(
                 'a',
-                { href: profileUrl, target: '_blank' },
-                ' ',
+                { href: profileUrl, target: '_blank',
+                  'data-tt': 'View Steam Community profile' },
+                _react2['default'].createElement('img', { src: this.state.playerSummary.avatarmedium,
+                  className: _SteamUserPageScss2['default'].playerAvatar,
+                  alt: this.state.playerSummary.steamid }),
+                _react2['default'].createElement(
+                  'span',
+                  { className: _SteamUserPageScss2['default'].playerUsername },
+                  ' ',
+                  this.props.username,
+                  ' '
+                ),
+                haveRealName ? _react2['default'].createElement(
+                  'span',
+                  { className: _SteamUserPageScss2['default'].playerRealName },
+                  this.state.playerSummary.realname
+                ) : ''
+              ) : _react2['default'].createElement(
+                'a',
+                { href: profileUrl, target: '_blank',
+                  'data-tt': 'View Steam Community profile' },
                 this.props.username
               )
             ),
@@ -3639,7 +3669,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "h2{margin-bottom:0}.SteamUserPage_friendsList_2ru{list-style:none;padding-left:0}.SteamUserPage_friendsList_2ru:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamUserPage_friend_2B-{width:210px;float:left;margin:0 30px 8px 0;line-height:32px}.SteamUserPage_friendAvatar_ghP{border-radius:4px;display:inline-block;margin-right:8px;margin-left:8px;width:32px;height:32px}.SteamUserPage_friendName_2gl{display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:140px;vertical-align:middle}.SteamUserPage_friendToggle_1vj{position:absolute;left:-9999px;visibility:hidden}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:before{top:6px;left:0;width:5px;height:10px;border-top:1px solid transparent;border-left:1px solid transparent;border-right:2px solid #fff;border-bottom:2px solid #fff;-webkit-transform:rotate(40deg);transform:rotate(40deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:after{width:14px;height:14px;border:2px solid #7c5f70;background-color:#7c5f70;z-index:0;top:7px}.SteamUserPage_label_1yi{display:inline-block;white-space:nowrap;position:relative;padding-left:18px;cursor:pointer;height:32px;line-height:32px;-webkit-user-select:none;-moz-user-select:none;-khtml-user-select:none;-ms-user-select:none}.SteamUserPage_label_1yi:before{width:14px;height:14px;border:2px solid #7c5f70;border-radius:1px;margin-top:2px}.SteamUserPage_label_1yi:after{border-radius:2px}.SteamUserPage_label_1yi:after,.SteamUserPage_label_1yi:before{content:'';left:0;top:7px;position:absolute;-webkit-transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;z-index:1}.SteamUserPage_root_24_{width:100%}.SteamUserPage_container_3qe{margin:0 auto;padding:0 0 40px;max-width:1000px}.SteamUserPage_clearSteamUsername_2G2{padding-right:.3em;display:inline-block;vertical-align:top;color:#999;width:.5em}h1{margin-left:-.8em}.SteamUserPage_row_1U1{margin-right:-15px;margin-left:-15px;box-sizing:border-box}.SteamUserPage_row_1U1:after,.SteamUserPage_row_1U1:before{box-sizing:border-box;display:table;content:\" \"}.SteamUserPage_row_1U1:after{clear:both}.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{position:relative;min-height:1px;padding-right:15px;padding-left:15px;list-style:none}.SteamUserPage_alert_3vI{padding:15px;border:1px solid transparent;border-radius:4px}.SteamUserPage_alert_3vI.SteamUserPage_alertError_3l5{color:#a94442;background-color:#f2dede;border-color:#ebccd1}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_instructions_3Gm{margin:0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b{margin:1em 0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b img{border:1px solid #333;padding:5px;background-color:#fff}@media (min-width:992px){.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{width:47%;float:left}}", ""]);
+  exports.push([module.id, "h2{margin-bottom:0}.SteamUserPage_friendsList_2ru{list-style:none;padding-left:0}.SteamUserPage_friendsList_2ru:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamUserPage_friend_2B-{width:210px;float:left;margin:0 30px 8px 0;line-height:32px}.SteamUserPage_friendAvatar_ghP{border-radius:4px;display:inline-block;margin-right:8px;margin-left:8px;width:32px;height:32px}.SteamUserPage_friendName_2gl{display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:140px;vertical-align:middle}.SteamUserPage_friendToggle_1vj{position:absolute;left:-9999px;visibility:hidden}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:before{top:6px;left:0;width:5px;height:10px;border-top:1px solid transparent;border-left:1px solid transparent;border-right:2px solid #fff;border-bottom:2px solid #fff;-webkit-transform:rotate(40deg);transform:rotate(40deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:after{width:14px;height:14px;border:2px solid #7c5f70;background-color:#7c5f70;z-index:0;top:7px}.SteamUserPage_label_1yi{display:inline-block;white-space:nowrap;position:relative;padding-left:18px;cursor:pointer;height:32px;line-height:32px;-webkit-user-select:none;-moz-user-select:none;-khtml-user-select:none;-ms-user-select:none}.SteamUserPage_label_1yi:before{width:14px;height:14px;border:2px solid #7c5f70;border-radius:1px;margin-top:2px}.SteamUserPage_label_1yi:after{border-radius:2px}.SteamUserPage_label_1yi:after,.SteamUserPage_label_1yi:before{content:'';left:0;top:7px;position:absolute;-webkit-transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;z-index:1}.SteamUserPage_root_24_{width:100%}.SteamUserPage_container_3qe{margin:0 auto;padding:0 0 40px;max-width:1000px}.SteamUserPage_clearSteamUsername_2G2{padding-right:.3em;display:inline-block;vertical-align:top;color:#999;width:.5em}h1{margin-left:-.8em}.SteamUserPage_row_1U1{margin-right:-15px;margin-left:-15px;box-sizing:border-box}.SteamUserPage_row_1U1:after,.SteamUserPage_row_1U1:before{box-sizing:border-box;display:table;content:\" \"}.SteamUserPage_row_1U1:after{clear:both}.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{position:relative;min-height:1px;padding-right:15px;padding-left:15px;list-style:none}.SteamUserPage_alert_3vI{padding:15px;border:1px solid transparent;border-radius:4px}.SteamUserPage_alert_3vI.SteamUserPage_alertError_3l5{color:#a94442;background-color:#f2dede;border-color:#ebccd1}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_instructions_3Gm{margin:0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b{margin:1em 0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b img{border:1px solid #333;padding:5px;background-color:#fff}.SteamUserPage_playerRealName_2XE{opacity:.8}.SteamUserPage_playerRealName_2XE:before{content:\"(\"}.SteamUserPage_playerRealName_2XE:after{content:\")\"}.SteamUserPage_playerAvatar_isD{height:38px;display:inline-block;border-radius:4px;vertical-align:middle;margin-top:-.2em}@media (min-width:992px){.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{width:47%;float:left}}", ""]);
   
   // exports
   exports.locals = {
@@ -3661,7 +3691,11 @@ module.exports =
   	"alertError": "SteamUserPage_alertError_3l5",
   	"steamIdErrorWrapper": "SteamUserPage_steamIdErrorWrapper_2gl",
   	"instructions": "SteamUserPage_instructions_3Gm",
-  	"steamProfileWrapper": "SteamUserPage_steamProfileWrapper_32b"
+  	"steamProfileWrapper": "SteamUserPage_steamProfileWrapper_32b",
+  	"playerUsername": "SteamUserPage_playerUsername_3kr",
+  	"playerRealName": "SteamUserPage_playerRealName_2XE",
+  	"playerAvatar": "SteamUserPage_playerAvatar_isD",
+  	"spacer": "SteamUserPage_spacer_sB7"
   };
 
 /***/ },
@@ -92871,6 +92905,8 @@ module.exports =
     value: true
   });
   
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
   
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -92925,6 +92961,14 @@ module.exports =
   
   var _PlayersList2 = _interopRequireDefault(_PlayersList);
   
+  var _historyLibParsePath = __webpack_require__(26);
+  
+  var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
+  
+  var _coreLocation = __webpack_require__(27);
+  
+  var _coreLocation2 = _interopRequireDefault(_coreLocation);
+  
   var SteamGamePage = (function (_Component) {
     _inherits(SteamGamePage, _Component);
   
@@ -92947,9 +92991,17 @@ module.exports =
     _createClass(SteamGamePage, [{
       key: 'componentDidMount',
       value: function componentDidMount() {
+        var playerSteamId = _storesLocalStorage2['default'].get('steam-id');
+        if (typeof playerSteamId === 'undefined') {
+          _storesLocalStorage2['default']['delete']('steam-games');
+          _storesLocalStorage2['default']['delete']('steam-selected-friends');
+          var path = '/steam/' + encodeURIComponent(this.props.username);
+          _coreLocation2['default'].push(_extends({}, (0, _historyLibParsePath2['default'])(path)));
+          return;
+        }
         var name = _storesSteamApps2['default'].getName(this.props.appId);
         this.context.onSetTitle('Steam / ' + this.props.username + ' / ' + name);
-        this.setState({ gameName: name, steamId: _storesLocalStorage2['default'].get('steam-id') });
+        this.setState({ gameName: name, steamId: playerSteamId });
         for (var i = 0; i < this.state.selectedIds.length; i++) {
           var steamId = this.state.selectedIds[i];
           _actionsSteam2['default'].getAchievements(steamId, this.props.appId).then(this.onAchievementsLoaded.bind(this, steamId)).then(undefined, this.onAchievementsError.bind(this, steamId));
