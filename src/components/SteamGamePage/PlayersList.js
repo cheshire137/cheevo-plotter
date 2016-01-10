@@ -11,9 +11,11 @@ class PlayersList extends Component {
         <ul className={s.playersList}>
           {this.props.players.map((player) => {
             const playerAchievements = achievements[player.steamid];
+            const isCurrent = this.props.currentSteamId === player.steamid;
             return <Player key={player.steamid} player={player}
+                           isCurrent={isCurrent}
                            achievements={playerAchievements} />;
-          })}
+          }.bind(this))}
         </ul>
       </div>
     );
