@@ -3637,7 +3637,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "h2{margin-bottom:0}.SteamUserPage_friendsList_2ru{list-style:none;padding-left:0}.SteamUserPage_friendsList_2ru:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamUserPage_friend_2B-{width:210px;float:left;margin:0 30px 8px 0;line-height:32px}.SteamUserPage_friendAvatar_ghP{border-radius:4px;display:inline-block;margin-right:8px;margin-left:8px;width:32px;height:32px}.SteamUserPage_friendName_2gl{display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:140px;vertical-align:middle}.SteamUserPage_friendToggle_1vj{position:absolute;left:-9999px;visibility:hidden}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:before{top:-4px;left:-1px;width:6px;height:10px;border-top:1px solid transparent;border-left:1px solid transparent;border-right:2px solid #fff;border-bottom:2px solid #fff;-webkit-transform:rotate(40deg);transform:rotate(40deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:after{width:14px;height:14px;border:2px solid #7c5f70;background-color:#7c5f70;z-index:0}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:after,.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:before{top:7px}.SteamUserPage_label_1yi{display:inline-block;white-space:nowrap;position:relative;padding-left:18px;cursor:pointer;height:32px;line-height:32px;-webkit-user-select:none;-moz-user-select:none;-khtml-user-select:none;-ms-user-select:none}.SteamUserPage_label_1yi:before{width:14px;height:14px;border:2px solid #7c5f70;border-radius:1px;margin-top:2px}.SteamUserPage_label_1yi:after{border-radius:2px}.SteamUserPage_label_1yi:after,.SteamUserPage_label_1yi:before{content:'';left:0;top:7px;position:absolute;-webkit-transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;z-index:1}.SteamUserPage_root_24_{width:100%}.SteamUserPage_container_3qe{margin:0 auto;padding:0 0 40px;max-width:1000px}.SteamUserPage_clearSteamUsername_2G2{padding-right:.3em;display:inline-block;vertical-align:top;color:#999;width:.5em}h1{margin-left:-.8em}.SteamUserPage_row_1U1{margin-right:-15px;margin-left:-15px;box-sizing:border-box}.SteamUserPage_row_1U1:after,.SteamUserPage_row_1U1:before{box-sizing:border-box;display:table;content:\" \"}.SteamUserPage_row_1U1:after{clear:both}.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{position:relative;min-height:1px;padding-right:15px;padding-left:15px;list-style:none}.SteamUserPage_alert_3vI{padding:15px;border:1px solid transparent;border-radius:4px}.SteamUserPage_alert_3vI.SteamUserPage_alertError_3l5{color:#a94442;background-color:#f2dede;border-color:#ebccd1}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_instructions_3Gm{margin:0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b{margin:1em 0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b img{border:1px solid #333;padding:5px;background-color:#fff}@media (min-width:992px){.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{width:47%;float:left}}", ""]);
+  exports.push([module.id, "h2{margin-bottom:0}.SteamUserPage_friendsList_2ru{list-style:none;padding-left:0}.SteamUserPage_friendsList_2ru:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamUserPage_friend_2B-{width:210px;float:left;margin:0 30px 8px 0;line-height:32px}.SteamUserPage_friendAvatar_ghP{border-radius:4px;display:inline-block;margin-right:8px;margin-left:8px;width:32px;height:32px}.SteamUserPage_friendName_2gl{display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:140px;vertical-align:middle}.SteamUserPage_friendToggle_1vj{position:absolute;left:-9999px;visibility:hidden}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:before{top:6px;left:0;width:5px;height:10px;border-top:1px solid transparent;border-left:1px solid transparent;border-right:2px solid #fff;border-bottom:2px solid #fff;-webkit-transform:rotate(40deg);transform:rotate(40deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:after{width:14px;height:14px;border:2px solid #7c5f70;background-color:#7c5f70;z-index:0;top:7px}.SteamUserPage_label_1yi{display:inline-block;white-space:nowrap;position:relative;padding-left:18px;cursor:pointer;height:32px;line-height:32px;-webkit-user-select:none;-moz-user-select:none;-khtml-user-select:none;-ms-user-select:none}.SteamUserPage_label_1yi:before{width:14px;height:14px;border:2px solid #7c5f70;border-radius:1px;margin-top:2px}.SteamUserPage_label_1yi:after{border-radius:2px}.SteamUserPage_label_1yi:after,.SteamUserPage_label_1yi:before{content:'';left:0;top:7px;position:absolute;-webkit-transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;z-index:1}.SteamUserPage_root_24_{width:100%}.SteamUserPage_container_3qe{margin:0 auto;padding:0 0 40px;max-width:1000px}.SteamUserPage_clearSteamUsername_2G2{padding-right:.3em;display:inline-block;vertical-align:top;color:#999;width:.5em}h1{margin-left:-.8em}.SteamUserPage_row_1U1{margin-right:-15px;margin-left:-15px;box-sizing:border-box}.SteamUserPage_row_1U1:after,.SteamUserPage_row_1U1:before{box-sizing:border-box;display:table;content:\" \"}.SteamUserPage_row_1U1:after{clear:both}.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{position:relative;min-height:1px;padding-right:15px;padding-left:15px;list-style:none}.SteamUserPage_alert_3vI{padding:15px;border:1px solid transparent;border-radius:4px}.SteamUserPage_alert_3vI.SteamUserPage_alertError_3l5{color:#a94442;background-color:#f2dede;border-color:#ebccd1}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_instructions_3Gm{margin:0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b{margin:1em 0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b img{border:1px solid #333;padding:5px;background-color:#fff}@media (min-width:992px){.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{width:47%;float:left}}", ""]);
   
   // exports
   exports.locals = {
@@ -93100,7 +93100,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, ".SteamGamePage_achievementsList_3F0{padding-left:0}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r{display:inline-block;list-style:none;width:240px;margin:0 8px 8px 0;float:left;position:relative}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H{border-radius:4px;display:inline-block;vertical-align:middle}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz{display:inline-block;vertical-align:middle;position:absolute;left:72px;width:168px}.SteamGamePage_clearfix_1GN:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_achievementsList_3F0{list-style:none;padding-left:0;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center}.SteamGamePage_playersList_3MY{list-style:none;padding-left:0;margin-left:7em}.SteamGamePage_playersList_3MY li{display:inline-block;margin:0 16px 8px 0}.SteamGamePage_intro_20n{display:block;font-weight:700;float:left;width:6em}.SteamGamePage_playersListWrapper_34u:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_player_2ID .SteamGamePage_playerAvatar_yN0{border-radius:4px;display:inline-block;margin-right:8px}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz{padding-left:.3em;font-weight:700}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz:before{content:\"(\"}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz:after{content:\")\"}.SteamGamePage_achievementComparison_3ep{display:inline-block;margin:0 8px 8px 0;width:300px;border:1px solid #a28696;border-radius:2px;padding:8px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center}.SteamGamePage_achievementComparison_3ep.SteamGamePage_unlocked_oDR{background-color:#c3b1bc}.SteamGamePage_achievementComparison_3ep:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_achievementIcon_O3H{border-radius:4px;display:inline-block;margin-right:16px}.SteamGamePage_achievementName_3tz{margin:0;font-size:1.2rem;width:212px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.SteamGamePage_playerAchievements_s6k{list-style:none;padding-left:0;margin:0}.SteamGamePage_playerAchievements_s6k .SteamGamePage_playerAchievement_2_2 .SteamGamePage_playerName_3Y6{padding-left:8px}.SteamGamePage_bar_14s{fill:#94a4cc}.SteamGamePage_bar_14s:hover{fill:#647ca4}.SteamGamePage_axis_1DL{font:.9rem Segoe UI,HelveticaNeue-Light,sans-serif}.SteamGamePage_axis_1DL line,.SteamGamePage_axis_1DL path{fill:none;stroke:#000;shape-rendering:crispEdges}.SteamGamePage_axis_1DL.SteamGamePage_x_11S path{display:none}svg{display:block;margin:0 auto;position:relative}.SteamGamePage_label_2x6{font:.9rem Segoe UI,HelveticaNeue-Light,sans-serif;fill:#fff}.SteamGamePage_filtersWrapper_Fk1{margin-bottom:1em}.SteamGamePage_filters_10S{margin:0;padding-left:0;list-style:none}.SteamGamePage_filters_10S li{display:inline-block;margin:0 1em 0 0}.SteamGamePage_header_1ym{font-weight:700}.SteamGamePage_filterToggle_1pk{position:absolute;left:-9999px;visibility:hidden}.SteamGamePage_filterToggle_1pk:checked+.SteamGamePage_label_2x6:before{top:-4px;left:-1px;width:6px;height:10px;border-top:1px solid transparent;border-left:1px solid transparent;border-right:2px solid #fff;border-bottom:2px solid #fff;-webkit-transform:rotate(40deg);transform:rotate(40deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.SteamGamePage_filterToggle_1pk:checked+.SteamGamePage_label_2x6:after{width:14px;height:14px;border:2px solid #7c5f70;background-color:#7c5f70;z-index:0}.SteamGamePage_filterToggle_1pk:checked+.SteamGamePage_label_2x6:after,.SteamGamePage_filterToggle_1pk:checked+.SteamGamePage_label_2x6:before{top:0}.SteamGamePage_label_2x6{display:inline-block;white-space:nowrap;position:relative;padding-left:26px;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-khtml-user-select:none;-ms-user-select:none;vertical-align:middle}.SteamGamePage_label_2x6:before{width:14px;height:14px;border:2px solid #7c5f70;border-radius:1px;margin-top:2px}.SteamGamePage_label_2x6:after{border-radius:2px}.SteamGamePage_label_2x6:after,.SteamGamePage_label_2x6:before{content:'';left:0;top:-2px;position:absolute;-webkit-transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;z-index:1}.SteamGamePage_root_3OO{width:100%}.SteamGamePage_container_2h6{margin:0 auto;padding:0 0 40px;max-width:1000px}.SteamGamePage_clearSteamGame_2Cz{padding-right:.3em;display:inline-block;vertical-align:top;color:#999;width:.5em}h1{margin-left:-.8em}.SteamGamePage_gameIcon_2GW{margin-right:8px;border-radius:4px;display:inline-block;vertical-align:middle}.SteamGamePage_achievementCount_32B{font-size:1.1rem;margin-left:.8em;display:inline-block;color:#4f6487}.SteamGamePage_achievementCount_32B .SteamGamePage_units_Wat{padding-left:.3em}", ""]);
+  exports.push([module.id, ".SteamGamePage_achievementsList_3F0{padding-left:0}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r{display:inline-block;list-style:none;width:240px;margin:0 8px 8px 0;float:left;position:relative}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H{border-radius:4px;display:inline-block;vertical-align:middle}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz{display:inline-block;vertical-align:middle;position:absolute;left:72px;width:168px}.SteamGamePage_clearfix_1GN:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_achievementsList_3F0{list-style:none;padding-left:0;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center}.SteamGamePage_playersList_3MY{list-style:none;padding-left:0;margin-left:7em}.SteamGamePage_playersList_3MY li{display:inline-block;margin:0 16px 8px 0}.SteamGamePage_intro_20n{display:block;font-weight:700;float:left;width:6em}.SteamGamePage_playersListWrapper_34u:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_player_2ID .SteamGamePage_playerAvatar_yN0{border-radius:4px;display:inline-block;margin-right:8px}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz{padding-left:.3em;font-weight:700}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz:before{content:\"(\"}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz:after{content:\")\"}.SteamGamePage_achievementComparison_3ep{display:inline-block;margin:0 8px 8px 0;width:300px;border:1px solid #a28696;border-radius:2px;padding:8px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center}.SteamGamePage_achievementComparison_3ep.SteamGamePage_unlocked_oDR{background-color:#c3b1bc}.SteamGamePage_achievementComparison_3ep:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_achievementIcon_O3H{border-radius:4px;display:inline-block;margin-right:16px}.SteamGamePage_achievementName_3tz{margin:0;font-size:1.2rem;width:212px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.SteamGamePage_playerAchievements_s6k{list-style:none;padding-left:0;margin:0}.SteamGamePage_playerAchievements_s6k .SteamGamePage_playerAchievement_2_2 .SteamGamePage_playerName_3Y6{padding-left:8px}.SteamGamePage_bar_14s{fill:#94a4cc}.SteamGamePage_bar_14s:hover{fill:#647ca4}.SteamGamePage_axis_1DL{font:.9rem Segoe UI,HelveticaNeue-Light,sans-serif}.SteamGamePage_axis_1DL line,.SteamGamePage_axis_1DL path{fill:none;stroke:#000;shape-rendering:crispEdges}.SteamGamePage_axis_1DL.SteamGamePage_x_11S path{display:none}svg{display:block;margin:0 auto;position:relative}.SteamGamePage_label_2x6{font:.9rem Segoe UI,HelveticaNeue-Light,sans-serif;fill:#fff}.SteamGamePage_filtersWrapper_Fk1{margin-bottom:1em}.SteamGamePage_filters_10S{margin:0;padding-left:0;list-style:none}.SteamGamePage_filters_10S li{display:inline-block;margin:0 1em 0 0}.SteamGamePage_header_1ym{font-weight:700}.SteamGamePage_footer_V1N:before{content:\"\\2014\";padding-right:1em}.SteamGamePage_filterToggle_1pk{position:absolute;left:-9999px;visibility:hidden}.SteamGamePage_filterToggle_1pk:checked+.SteamGamePage_label_2x6:before{top:1px;left:0;width:5px;height:10px;border-top:1px solid transparent;border-left:1px solid transparent;border-right:2px solid #fff;border-bottom:2px solid #fff;-webkit-transform:rotate(40deg);transform:rotate(40deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.SteamGamePage_filterToggle_1pk:checked+.SteamGamePage_label_2x6:after{width:14px;height:14px;border:2px solid #7c5f70;background-color:#7c5f70;z-index:0;top:0}.SteamGamePage_label_2x6{display:inline-block;white-space:nowrap;position:relative;padding-left:26px;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-khtml-user-select:none;-ms-user-select:none;vertical-align:middle}.SteamGamePage_label_2x6:before{width:14px;height:14px;border:2px solid #7c5f70;border-radius:1px}.SteamGamePage_label_2x6:after{border-radius:2px}.SteamGamePage_label_2x6:after,.SteamGamePage_label_2x6:before{content:'';left:0;top:0;position:absolute;-webkit-transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;z-index:1}.SteamGamePage_root_3OO{width:100%}.SteamGamePage_container_2h6{margin:0 auto;padding:0 0 40px;max-width:1000px}.SteamGamePage_clearSteamGame_2Cz{padding-right:.3em;display:inline-block;vertical-align:top;color:#999;width:.5em}h1{margin-left:-.8em}.SteamGamePage_gameIcon_2GW{margin-right:8px;border-radius:4px;display:inline-block;vertical-align:middle}.SteamGamePage_achievementCount_32B{font-size:1.1rem;margin-left:.8em;display:inline-block;color:#4f6487}.SteamGamePage_achievementCount_32B .SteamGamePage_units_Wat{padding-left:.3em}", ""]);
   
   // exports
   exports.locals = {
@@ -93130,6 +93130,7 @@ module.exports =
   	"filtersWrapper": "SteamGamePage_filtersWrapper_Fk1",
   	"filters": "SteamGamePage_filters_10S",
   	"header": "SteamGamePage_header_1ym",
+  	"footer": "SteamGamePage_footer_V1N",
   	"filterToggle": "SteamGamePage_filterToggle_1pk",
   	"root": "SteamGamePage_root_3OO",
   	"container": "SteamGamePage_container_2h6",
@@ -93380,7 +93381,34 @@ module.exports =
     }, {
       key: 'onFilterChange',
       value: function onFilterChange(activeFilters) {
-        console.log('active', activeFilters);
+        this.setState({ filters: activeFilters });
+      }
+    }, {
+      key: 'includeAchievement',
+      value: function includeAchievement(achievement) {
+        var filters = this.state.filters;
+        if (typeof filters === 'undefined') {
+          return true;
+        }
+        var allUnlocked = true,
+            noneUnlocked = true;
+        for (var steamId in achievement.players) {
+          if (achievement.players[steamId].isUnlocked) {
+            noneUnlocked = false;
+          } else {
+            allUnlocked = false;
+          }
+          if (!allUnlocked && !noneUnlocked) {
+            break;
+          }
+        }
+        if (filters.indexOf('allUnlocked') > -1 && !allUnlocked) {
+          return false;
+        }
+        if (filters.indexOf('noneUnlocked') > -1 && !noneUnlocked) {
+          return false;
+        }
+        return true;
       }
     }, {
       key: 'render',
@@ -93388,6 +93416,7 @@ module.exports =
         var _this = this;
   
         var haveAchievements = this.state.achievements.length > 0;
+        var filteredAchievements = this.state.achievements.filter(this.includeAchievement.bind(this));
         return _react2['default'].createElement(
           'div',
           { className: _SteamGamePageScss2['default'].achievementsComparison },
@@ -93398,13 +93427,12 @@ module.exports =
             'No achievements'
           ),
           haveAchievements ? _react2['default'].createElement('hr', null) : '',
-          haveAchievements ?
-          //<Filters onChange={this.onFilterChange.bind(this)} />
-          '' : '',
+          haveAchievements ? _react2['default'].createElement(_Filters2['default'], { onChange: this.onFilterChange.bind(this),
+            filteredCount: filteredAchievements.length }) : '',
           _react2['default'].createElement(
             'ul',
             { className: _SteamGamePageScss2['default'].achievementsList },
-            this.state.achievements.map((function (achievement) {
+            filteredAchievements.map((function (achievement) {
               return _react2['default'].createElement(_AchievementComparison2['default'], { players: _this.state.players,
                 achievement: achievement,
                 key: achievement.key });
@@ -93716,7 +93744,6 @@ module.exports =
             activeFilters = activeFilters.concat([id]);
           }
         } else if (index > -1) {
-          console.log('before', activeFilters);
           activeFilters = activeFilters.slice(0, index).concat(activeFilters.slice(index + 1));
         }
         this.setState({ activeFilters: activeFilters });
@@ -93758,6 +93785,26 @@ module.exports =
                 'label',
                 { className: _SteamGamePageScss2['default'].label, htmlFor: 'noneUnlocked' },
                 'No one has unlocked'
+              )
+            ),
+            _react2['default'].createElement(
+              'li',
+              { className: _SteamGamePageScss2['default'].footer },
+              _react2['default'].createElement(
+                'span',
+                { className: _SteamGamePageScss2['default'].count },
+                this.props.filteredCount,
+                ' '
+              ),
+              _react2['default'].createElement(
+                'span',
+                { className: _SteamGamePageScss2['default'].units },
+                this.props.filteredCount === 1 ? 'achievement' : 'achievements'
+              ),
+              _react2['default'].createElement(
+                'span',
+                { className: _SteamGamePageScss2['default'].suffix },
+                ' shown'
               )
             )
           )
