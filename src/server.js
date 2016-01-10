@@ -39,12 +39,12 @@ server.all('*', (req, res, next) => {
   next();
 });
 
-server.get('/api/steam', async (req, res, next) => {
-  var url = req.query.path;
-  var isXml = false;
-  for (var key in req.query) {
+server.get('/api/steam', async (req, res) => {
+  let url = req.query.path;
+  let isXml = false;
+  for (const key in req.query) {
     if (key !== 'path') {
-      var joiner = url.indexOf('?') > -1 ? '&' : '?';
+      const joiner = url.indexOf('?') > -1 ? '&' : '?';
       url = url + joiner + key + '=' + encodeURIComponent(req.query[key]);
     }
     if (key === 'xml') {

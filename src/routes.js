@@ -31,8 +31,9 @@ const router = new Router(on => {
   });
 
   on('/steam/:username/game/:appId', async (req) => {
-    return <SteamGamePage username={req.params.username}
-                          appId={req.params.appId} />;
+    return (
+      <SteamGamePage username={req.params.username} appId={req.params.appId} />
+    );
   });
 
   on('*', async (state) => {

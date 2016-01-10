@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import s from './SteamUserPage.scss';
 import withStyles from '../../decorators/withStyles';
-import _ from 'underscore';
 import LocalStorage from '../../stores/localStorage';
 import Steam from '../../actions/steam';
 import parsePath from 'history/lib/parsePath';
@@ -17,16 +16,21 @@ class SteamUserPage extends Component {
     onSetTitle: PropTypes.func.isRequired,
   };
 
+  static propTypes = {
+    username: PropTypes.string.isRequired
+  };
+
   constructor(props, context) {
     super(props, context);
-    var ownedGames = {};
-    var selectedFriends = LocalStorage.get('steam-selected-friends');
+    const ownedGames = {};
+    const selectedFriends = LocalStorage.get('steam-selected-friends');
     if (typeof selectedFriends === 'object') {
-      for (var i = 0; i < selectedFriends.length; i++) {
+      for (let i = 0; i < selectedFriends.length; i++) {
         ownedGames[selectedFriends[i]] = [];
       }
     }
-    this.state = {ownedGames: ownedGames};
+    const steamId = LocalStorage.get('steam-id');
+    this.state = {ownedGames, steamId};
   }
 
   componentWillMount() {
@@ -35,7 +39,7 @@ class SteamUserPage extends Component {
   }
 
   componentDidMount() {
-    var steamId = LocalStorage.get('steam-id');
+    const steamId = this.state.steamId;
     if (typeof steamId === 'undefined') {
       this.fetchSteamId();
       return;
@@ -43,15 +47,6 @@ class SteamUserPage extends Component {
     this.fetchFriends(steamId);
     this.fetchGames(steamId);
     this.fetchStoredFriendGames();
-    this.setState({steamId: steamId});
-  }
-
-  fetchStoredFriendGames() {
-    const friendIds = LocalStorage.get('steam-selected-friends');
-    if (typeof friendIds !== 'object') {
-      return;
-    }
-    this.fetchFriendGames(friendIds);
   }
 
   fetchSteamId() {
@@ -61,7 +56,7 @@ class SteamUserPage extends Component {
   }
 
   onSteamIdFetched(data) {
-    var steamId = data.response.steamid;
+    const steamId = data.response.steamid;
     LocalStorage.set('steam-id', steamId);
     this.fetchFriends(steamId);
     this.fetchGames(steamId);
@@ -110,11 +105,11 @@ class SteamUserPage extends Component {
   }
 
   fetchGames(steamId) {
-    var games = LocalStorage.get('steam-games');
+    const games = LocalStorage.get('steam-games');
     if (typeof games === 'object') {
       var ownedGames = this.state.ownedGames;
       ownedGames[steamId] = games;
-      this.setState({ownedGames: ownedGames});
+      this.setState({ownedGames});
       this.updateSharedGames();
       return;
     }
@@ -124,10 +119,10 @@ class SteamUserPage extends Component {
   }
 
   organizeGamesResponse(data) {
-    var games = data.response.games;
-    var playedGames = [];
-    for (var i = 0; i < games.length; i++) {
-      var game = games[i];
+    const games = data.response.games;
+    let playedGames = [];
+    for (let i = 0; i < games.length; i++) {
+      let game = games[i];
       if (game.playtime_forever > 0) {
         playedGames.push(game.appid);
       }
@@ -138,7 +133,7 @@ class SteamUserPage extends Component {
   onGamesFetched(steamId, data) {
     const playedGames = this.organizeGamesResponse(data);
     LocalStorage.set('steam-games', playedGames);
-    var ownedGames = this.state.ownedGames;
+    let ownedGames = this.state.ownedGames;
     ownedGames[steamId] = playedGames;
     this.setState({ownedGames: ownedGames, gamesError: false});
     this.updateSharedGames();
@@ -151,14 +146,14 @@ class SteamUserPage extends Component {
 
   updateSharedGames(gamesBySteamId) {
     gamesBySteamId = gamesBySteamId || this.state.ownedGames;
-    var ownedGames = [];
-    for (var steamId in gamesBySteamId) {
+    let ownedGames = [];
+    for (let steamId in gamesBySteamId) {
       ownedGames.push(this.state.ownedGames[steamId]);
     }
     ownedGames.sort((a, b) => {
       return a.length - b.length;
     });
-    var sharedGames;
+    let sharedGames;
     if (ownedGames.length < 2) {
       sharedGames = ownedGames[0];
     } else {
@@ -184,9 +179,9 @@ class SteamUserPage extends Component {
 
   onFriendSelectionChanged(selectedFriends) {
     LocalStorage.set('steam-selected-friends', selectedFriends);
-    var ownedGames = this.state.ownedGames;
+    let ownedGames = this.state.ownedGames;
     if (typeof this.state.steamId !== 'undefined') {
-      for (var steamId in ownedGames) {
+      for (let steamId in ownedGames) {
         if (selectedFriends.indexOf(steamId) < 0 &&
             steamId !== this.state.steamId) {
           delete ownedGames[steamId];
@@ -201,13 +196,13 @@ class SteamUserPage extends Component {
   fetchFriendGames(selectedFriends, ownedGames) {
     ownedGames = ownedGames || this.state.ownedGames;
     const knownFriends = [];
-    for (var steamId in ownedGames) {
+    for (let steamId in ownedGames) {
       if (ownedGames[steamId].length > 0) {
         knownFriends.push(steamId);
       }
     }
-    for (var i = 0; i < selectedFriends.length; i++) {
-      var steamId = selectedFriends[i];
+    for (let i = 0; i < selectedFriends.length; i++) {
+      let steamId = selectedFriends[i];
       if (knownFriends.indexOf(steamId) < 0) {
         Steam.getOwnedGames(steamId).
               then(this.onFriendGamesFetched.bind(this, steamId)).
@@ -217,7 +212,7 @@ class SteamUserPage extends Component {
   }
 
   onFriendGamesFetched(steamId, data) {
-    var ownedGames = this.state.ownedGames;
+    let ownedGames = this.state.ownedGames;
     ownedGames[steamId] = this.organizeGamesResponse(data);
     this.setState({ownedGames: ownedGames});
     this.updateSharedGames();
@@ -225,10 +220,18 @@ class SteamUserPage extends Component {
 
   onFriendGamesError(steamId, err) {
     console.error('failed to fetch Steam games for friend ' + steamId, err);
-    var ownedGames = this.state.ownedGames;
+    let ownedGames = this.state.ownedGames;
     delete ownedGames[steamId];
     this.setState({ownedGames: ownedGames});
     this.updateSharedGames();
+  }
+
+  fetchStoredFriendGames() {
+    const friendIds = LocalStorage.get('steam-selected-friends');
+    if (typeof friendIds !== 'object') {
+      return;
+    }
+    this.fetchFriendGames(friendIds);
   }
 
   render() {
@@ -266,12 +269,12 @@ class SteamUserPage extends Component {
                 <img src={this.state.playerSummary.avatarmedium}
                      className={s.playerAvatar}
                      alt={this.state.playerSummary.steamid} />
-                <span className={s.playerUsername}> {this.props.username} </span>
+                <span className={s.playerUsername}> {this.state.playerSummary.personaname} </span>
                 {haveRealName ? (
                   <span className={s.playerRealName}>
                     {this.state.playerSummary.realname}
                   </span>
-                ) : ''}
+                ) : <span></span>}
               </a>
             ) : (
               <a href={profileUrl} target="_blank"
@@ -307,23 +310,35 @@ class SteamUserPage extends Component {
                          username={this.props.username}
                          friends={this.state.friends}
                          onSelectionChange={this.onFriendSelectionChanged.bind(this)} />
-          ) : haveSteamId ? haveFriendsError ? (
-            <p>There was an error loading the friends list.</p>
-          ) : <p>Loading friends list...</p> : ''}
+          ) : ''}
           {haveFriendsList && haveGamesList ? <hr /> : ''}
-          {haveSteamId ? haveGamesList ? (
+          {!haveSteamId && !haveSteamIdError ? (
+            <p className={s.loadingMessage}>Loading...</p>
+          ) : ''}
+          {haveSteamId && haveGamesList ? (
             <PlayedGamesList steamId={this.state.steamId}
                              games={this.state.games}
                              username={this.props.username} />
-          ) : haveGamesError ? (
-            <p>
+          ) : ''}
+          {haveSteamId && haveFriendsError ? (
+            <p className={s.friendsErrorMessage}>
+              There was an error loading the friends list for
+              <strong> {this.props.username}. </strong>
+            </p>
+          ) : ''}
+          {haveSteamId && haveGamesError ? (
+            <p className={s.gamesErrorMessage}>
               There was an error loading the list of games
               <strong> {this.props.username} </strong>
               owns.
             </p>
-          ) : (
+          ) : ''}
+          {haveSteamId && !haveFriendsError && !haveFriendsList ? (
+            <p>Loading friends list...</p>
+          ) : ''}
+          {haveSteamId && !haveGamesError && !haveGamesList ? (
             <p>Loading games list...</p>
-          ) : haveSteamIdError ? '' : <p>Loading...</p>}
+          ) : ''}
         </div>
       </div>
     );
