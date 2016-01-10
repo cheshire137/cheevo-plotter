@@ -2634,6 +2634,8 @@ module.exports =
           username = username.trim();
         }
         _storesLocalStorage2['default']['delete']('steam-id');
+        _storesLocalStorage2['default']['delete']('steam-games');
+        _storesLocalStorage2['default']['delete']('steam-selected-friends');
         if (typeof username === 'undefined' || username.length < 1) {
           _storesLocalStorage2['default']['delete']('steam-username');
           return;
@@ -2644,10 +2646,10 @@ module.exports =
       key: 'componentWillMount',
       value: function componentWillMount() {
         this.context.onSetTitle(title);
-        var username = _storesLocalStorage2['default'].get('steam-username');
-        if (typeof username === 'string') {
-          this.goToUserPage(username);
-        }
+        _storesLocalStorage2['default']['delete']('steam-id');
+        _storesLocalStorage2['default']['delete']('steam-username');
+        _storesLocalStorage2['default']['delete']('steam-games');
+        _storesLocalStorage2['default']['delete']('steam-selected-friends');
       }
     }, {
       key: 'goToUserPage',
@@ -93048,6 +93050,7 @@ module.exports =
               ) : ''
             ),
             havePlayers ? onlyOneUser ? '' : _react2['default'].createElement(_PlayersList2['default'], { players: this.state.players,
+              currentSteamId: this.state.steamId,
               achievements: this.state.achievements }) : _react2['default'].createElement(
               'p',
               null,
@@ -93115,6 +93118,7 @@ module.exports =
   	"playersListWrapper": "SteamGamePage_playersListWrapper_34u",
   	"player": "SteamGamePage_player_2ID",
   	"playerProfileLink": "SteamGamePage_playerProfileLink_2Ua",
+  	"playerProfileText": "SteamGamePage_playerProfileText_3z7",
   	"playerAvatar": "SteamGamePage_playerAvatar_yN0",
   	"playerName": "SteamGamePage_playerName_3Y6",
   	"unlockPct": "SteamGamePage_unlockPct_2Mz",
@@ -93862,6 +93866,8 @@ module.exports =
     _createClass(PlayersList, [{
       key: 'render',
       value: function render() {
+        var _this = this;
+  
         var achievements = this.props.achievements || {};
         return _react2['default'].createElement(
           'div',
@@ -93874,11 +93880,13 @@ module.exports =
           _react2['default'].createElement(
             'ul',
             { className: _SteamGamePageScss2['default'].playersList },
-            this.props.players.map(function (player) {
+            this.props.players.map((function (player) {
               var playerAchievements = achievements[player.steamid];
+              var isCurrent = _this.props.currentSteamId === player.steamid;
               return _react2['default'].createElement(_Player2['default'], { key: player.steamid, player: player,
+                isCurrent: isCurrent,
                 achievements: playerAchievements });
-            })
+            }).bind(this))
           )
         );
       }
@@ -93900,6 +93908,8 @@ module.exports =
     value: true
   });
   
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+  
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
   
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -93918,13 +93928,28 @@ module.exports =
   
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
   
+  var _storesLocalStorage = __webpack_require__(47);
+  
+  var _storesLocalStorage2 = _interopRequireDefault(_storesLocalStorage);
+  
+  var _historyLibParsePath = __webpack_require__(26);
+  
+  var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
+  
+  var _coreLocation = __webpack_require__(27);
+  
+  var _coreLocation2 = _interopRequireDefault(_coreLocation);
+  
   var Player = (function (_Component) {
     _inherits(Player, _Component);
   
-    function Player() {
+    function Player(props, context) {
       _classCallCheck(this, Player);
   
-      _get(Object.getPrototypeOf(Player.prototype), 'constructor', this).apply(this, arguments);
+      _get(Object.getPrototypeOf(Player.prototype), 'constructor', this).call(this, props, context);
+      this.state = {
+        userPagePath: '/steam/' + encodeURIComponent(props.player.personaname)
+      };
     }
   
     _createClass(Player, [{
@@ -93943,16 +93968,38 @@ module.exports =
         return Math.round(unlockCount / total * 100) + '%';
       }
     }, {
+      key: 'goToSteamUserPage',
+      value: function goToSteamUserPage(event) {
+        event.preventDefault();
+        _storesLocalStorage2['default'].set('steam-id', this.props.player.steamid);
+        _storesLocalStorage2['default']['delete']('steam-username');
+        _storesLocalStorage2['default']['delete']('steam-games');
+        _storesLocalStorage2['default']['delete']('steam-selected-friends');
+        _coreLocation2['default'].push(_extends({}, (0, _historyLibParsePath2['default'])(this.state.userPagePath)));
+      }
+    }, {
       key: 'render',
       value: function render() {
         var haveAchievements = typeof this.props.achievements === 'object' && this.props.achievements.length > 0;
         return _react2['default'].createElement(
           'li',
           { className: _SteamGamePageScss2['default'].player },
-          _react2['default'].createElement(
+          this.props.isCurrent ? _react2['default'].createElement(
+            'span',
+            { className: _SteamGamePageScss2['default'].playerProfileText },
+            _react2['default'].createElement('img', { src: this.props.player.avatar, className: _SteamGamePageScss2['default'].playerAvatar,
+              alt: this.props.player.steamid }),
+            _react2['default'].createElement(
+              'span',
+              { className: _SteamGamePageScss2['default'].playerName },
+              this.props.player.personaname
+            )
+          ) : _react2['default'].createElement(
             'a',
-            { href: this.props.player.profileurl, target: '_blank',
-              className: _SteamGamePageScss2['default'].playerProfileLink },
+            { href: this.state.userPagePath,
+              onClick: this.goToSteamUserPage.bind(this),
+              className: _SteamGamePageScss2['default'].playerProfileLink,
+              'data-tt': 'View games and friends' },
             _react2['default'].createElement('img', { src: this.props.player.avatar, className: _SteamGamePageScss2['default'].playerAvatar,
               alt: this.props.player.steamid }),
             _react2['default'].createElement(
