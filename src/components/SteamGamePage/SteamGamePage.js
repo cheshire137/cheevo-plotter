@@ -9,6 +9,8 @@ import SteamApps from '../../stores/steamApps';
 import AchievementsList from './AchievementsList';
 import AchievementsComparison from './AchievementsComparison';
 import PlayersList from './PlayersList';
+import parsePath from 'history/lib/parsePath';
+import Location from '../../core/Location';
 
 @withStyles(s)
 class SteamGamePage extends Component {
@@ -25,9 +27,19 @@ class SteamGamePage extends Component {
   }
 
   componentDidMount() {
+    var playerSteamId = LocalStorage.get('steam-id');
+    if (typeof playerSteamId === 'undefined') {
+      LocalStorage.delete('steam-games');
+      LocalStorage.delete('steam-selected-friends');
+      const path = '/steam/' + encodeURIComponent(this.props.username);
+      Location.push({
+        ...(parsePath(path))
+      });
+      return;
+    }
     const name = SteamApps.getName(this.props.appId);
     this.context.onSetTitle('Steam / ' + this.props.username + ' / ' + name);
-    this.setState({gameName: name, steamId: LocalStorage.get('steam-id')});
+    this.setState({gameName: name, steamId: playerSteamId});
     for (var i = 0; i < this.state.selectedIds.length; i++) {
       var steamId = this.state.selectedIds[i];
       Steam.getAchievements(steamId, this.props.appId).
