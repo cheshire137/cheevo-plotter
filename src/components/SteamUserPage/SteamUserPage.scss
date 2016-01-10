@@ -81,6 +81,34 @@ h1 {
   }
 }
 
+.playerUsername {
+
+}
+
+.playerRealName {
+  opacity: 0.8;
+
+  &:before {
+    content: "(";
+  }
+
+  &:after {
+    content: ")";
+  }
+}
+
+.playerAvatar {
+  height: 38px;
+  display: inline-block;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-top: -0.2em;
+}
+
+.spacer {
+
+}
+
 @media (min-width: $screen-md-min) {
   .row {
     .leftColumn, .rightColumn {

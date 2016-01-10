@@ -75,14 +75,15 @@ class SteamUserPage extends Component {
 
   fetchFriends(steamId) {
     Steam.getFriends(steamId).
-          then(this.onFriendIdsFetched.bind(this)).
+          then(this.onFriendIdsFetched.bind(this, steamId)).
           then(undefined, this.onFriendIdsError.bind(this));
   }
 
-  onFriendIdsFetched(data) {
-    const friendIds = data.friendslist.friends.map((f) => f.steamid);
+  onFriendIdsFetched(steamId, data) {
+    const friendIds = data.friendslist.friends.map((f) => f.steamid).
+        concat([steamId]);
     Steam.getPlayerSummaries(friendIds).
-          then(this.onFriendSummariesFetched.bind(this)).
+          then(this.onFriendSummariesFetched.bind(this, steamId)).
           then(undefined, this.onFriendSummariesError.bind(this));
   }
 
@@ -91,13 +92,17 @@ class SteamUserPage extends Component {
     this.setState({friendsError: true});
   }
 
-  onFriendSummariesFetched(allFriends) {
+  onFriendSummariesFetched(steamId, summaries) {
     // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
     // communityvisibilitystate 3 means the profile is public.
     // Need public profiles to see owned/played games for comparison.
-    const publicFriends = allFriends.
-        filter((f) => f.communityvisibilitystate === 3);
-    this.setState({friends: publicFriends, friendsError: false});
+    const publicFriends = summaries.
+        filter((p) => {
+          return p.communityvisibilitystate === 3 && p.steamid !== steamId;
+        });
+    const playerSummary = summaries.filter((p) => p.steamid === steamId)[0];
+    this.setState({friends: publicFriends, friendsError: false,
+                   playerSummary: playerSummary});
   }
 
   onFriendSummariesError(err) {
@@ -228,8 +233,6 @@ class SteamUserPage extends Component {
 
   render() {
     const selectedSteamIds = Object.keys(this.state.ownedGames);
-    const profileUrl = 'https://steamcommunity.com/id/' +
-                       this.props.username + '/';
     const haveSteamId = typeof this.state.steamId !== 'undefined';
     const haveGamesList = typeof this.state.games === 'object';
     const haveFriendsList = typeof this.state.friends === 'object';
@@ -239,6 +242,14 @@ class SteamUserPage extends Component {
         this.state.friendsError;
     const haveGamesError = typeof this.state.gamesError === 'boolean' &&
         this.state.gamesError;
+    const havePlayerSummary = typeof this.state.playerSummary === 'object';
+    const haveRealName = havePlayerSummary &&
+        typeof this.state.playerSummary.realname === 'string' &&
+        this.state.playerSummary.realname.length > 0;
+    const profileUrl = havePlayerSummary ?
+        this.state.playerSummary.profileurl :
+        'https://steamcommunity.com/id/' +
+        encodeURIComponent(this.props.username) + '/';
     return (
       <div className={s.root}>
         <div className={s.container}>
@@ -247,8 +258,27 @@ class SteamUserPage extends Component {
                   onClick={this.clearSteamUsername}>
               &laquo;
             </Link>
-            Steam /
-            <a href={profileUrl} target="_blank"> {this.props.username}</a>
+            Steam
+            <span className={s.spacer}> / </span>
+            {havePlayerSummary ? (
+              <a href={profileUrl} target="_blank"
+                 data-tt="View Steam Community profile">
+                <img src={this.state.playerSummary.avatarmedium}
+                     className={s.playerAvatar}
+                     alt={this.state.playerSummary.steamid} />
+                <span className={s.playerUsername}> {this.props.username} </span>
+                {haveRealName ? (
+                  <span className={s.playerRealName}>
+                    {this.state.playerSummary.realname}
+                  </span>
+                ) : ''}
+              </a>
+            ) : (
+              <a href={profileUrl} target="_blank"
+                 data-tt="View Steam Community profile">
+                {this.props.username}
+              </a>
+            )}
           </h1>
           {haveSteamIdError ? (
             <div className={s.steamIdErrorWrapper}>
