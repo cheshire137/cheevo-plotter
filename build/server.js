@@ -3360,6 +3360,15 @@ module.exports =
         this.setState({ friendsError: true });
       }
     }, {
+      key: 'getUsernameFromProfileUrl',
+      value: function getUsernameFromProfileUrl(profileUrl) {
+        var needle = '/id/';
+        var index = profileUrl.toLowerCase().indexOf(needle);
+        if (index > -1) {
+          return profileUrl.slice(index + needle.length).replace(/\/+$/, '');
+        }
+      }
+    }, {
       key: 'onFriendSummariesFetched',
       value: function onFriendSummariesFetched(steamId, summaries) {
         // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
@@ -3371,8 +3380,13 @@ module.exports =
         var playerSummary = summaries.filter(function (p) {
           return p.steamid === steamId;
         })[0];
+        playerSummary.username = this.getUsernameFromProfileUrl(playerSummary.profileurl) || this.props.username;
         this.setState({ friends: publicFriends, friendsError: false,
           playerSummary: playerSummary });
+        if (playerSummary.username !== this.props.username) {
+          var path = '/steam/' + encodeURIComponent(playerSummary.username);
+          _coreLocation2['default'].push(_extends({}, (0, _historyLibParsePath2['default'])(path)));
+        }
       }
     }, {
       key: 'onFriendSummariesError',
@@ -3549,7 +3563,7 @@ module.exports =
                   'span',
                   { className: _SteamUserPageScss2['default'].playerUsername },
                   ' ',
-                  this.props.username,
+                  this.state.playerSummary.personaname,
                   ' '
                 ),
                 haveRealName ? _react2['default'].createElement(
