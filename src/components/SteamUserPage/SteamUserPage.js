@@ -92,6 +92,14 @@ class SteamUserPage extends Component {
     this.setState({friendsError: true});
   }
 
+  getUsernameFromProfileUrl(profileUrl) {
+    const needle = '/id/';
+    const index = profileUrl.toLowerCase().indexOf(needle);
+    if (index > -1) {
+      return profileUrl.slice(index + needle.length).replace(/\/+$/, '');
+    }
+  }
+
   onFriendSummariesFetched(steamId, summaries) {
     // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
     // communityvisibilitystate 3 means the profile is public.
@@ -101,8 +109,17 @@ class SteamUserPage extends Component {
           return p.communityvisibilitystate === 3 && p.steamid !== steamId;
         });
     const playerSummary = summaries.filter((p) => p.steamid === steamId)[0];
+    playerSummary.username =
+        this.getUsernameFromProfileUrl(playerSummary.profileurl) ||
+        this.props.username;
     this.setState({friends: publicFriends, friendsError: false,
                    playerSummary: playerSummary});
+    if (playerSummary.username !== this.props.username) {
+      const path = '/steam/' + encodeURIComponent(playerSummary.username);
+      Location.push({
+        ...(parsePath(path))
+      });
+    }
   }
 
   onFriendSummariesError(err) {
@@ -266,7 +283,7 @@ class SteamUserPage extends Component {
                 <img src={this.state.playerSummary.avatarmedium}
                      className={s.playerAvatar}
                      alt={this.state.playerSummary.steamid} />
-                <span className={s.playerUsername}> {this.props.username} </span>
+                <span className={s.playerUsername}> {this.state.playerSummary.personaname} </span>
                 {haveRealName ? (
                   <span className={s.playerRealName}>
                     {this.state.playerSummary.realname}
