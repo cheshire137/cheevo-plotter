@@ -19,6 +19,13 @@
   font-weight: 700;
 }
 
+.footer {
+  &:before {
+    content: "\2014";
+    padding-right: 1em;
+  }
+}
+
 .filterToggle {
   position: absolute;
   left: -9999px;
@@ -27,9 +34,9 @@
 
 .filterToggle:checked + .label {
   &:before {
-    top: -4px;
-    left: -1px;
-    width: 6px;
+    top: 1px;
+    left: 0;
+    width: 5px;
     height: 10px;
     border-top: 1px solid transparent;
     border-left: 1px solid transparent;
@@ -49,9 +56,6 @@
     border: 2px solid $mauve;
     background-color: $mauve;
     z-index: 0;
-  }
-
-  &:before, &:after {
     top: 0;
   }
 }
@@ -73,7 +77,6 @@
     height: $checkbox-width;
     border: 2px solid $mauve;
     border-radius: 1px;
-    margin-top: 2px;
   }
 
   &:after {
@@ -83,7 +86,7 @@
   &:before, &:after {
     content: '';
     left: 0;
-    top: -2px;
+    top: 0;
     position: absolute;
     transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s;
     z-index: 1;

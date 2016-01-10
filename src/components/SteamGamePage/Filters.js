@@ -62,6 +62,13 @@ class Filters extends Component {
               No one has unlocked
             </label>
           </li>
+          <li className={s.footer}>
+            <span className={s.count}>{this.props.filteredCount} </span>
+            <span className={s.units}>
+              {this.props.filteredCount === 1 ? 'achievement' : 'achievements'}
+            </span>
+            <span className={s.suffix}> shown</span>
+          </li>
         </ul>
       </div>
     );
