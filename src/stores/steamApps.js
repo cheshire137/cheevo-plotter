@@ -7,14 +7,14 @@ class SteamApps {
     }
     const apps = SteamAppsList.applist.apps;
     apps.sort((a, b) => {
-      var aName = a.name.toLowerCase();
+      let aName = a.name.toLowerCase();
       if (aName.indexOf('the ') === 0) {
         aName = aName.substring(4);
       }
       if (aName.indexOf('a ') === 0) {
         aName = aName.substring(2);
       }
-      var bName = b.name.toLowerCase();
+      let bName = b.name.toLowerCase();
       if (bName.indexOf('the ') === 0) {
         bName = bName.substring(4);
       }
@@ -29,7 +29,6 @@ class SteamApps {
   }
 
   static getName(appId) {
-    const ids = this.sortedIds();
     const index = this.sortedIds().indexOf(String(appId));
     return this._sortedNames[index];
   }
@@ -39,7 +38,10 @@ class SteamApps {
     appIds.sort((a, b) => {
       const indexA = sortedIds.indexOf(String(a));
       const indexB = sortedIds.indexOf(String(b));
-      return indexA < indexB ? -1 : indexA > indexB ? 1 : 0;
+      if (indexA < indexB) {
+        return -1;
+      }
+      return indexA > indexB ? 1 : 0;
     });
     return appIds;
   }
