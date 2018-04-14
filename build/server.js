@@ -54,72 +54,72 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   var _this = this;
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   __webpack_require__(1);
-  
+
   var _path = __webpack_require__(2);
-  
+
   var _path2 = _interopRequireDefault(_path);
-  
+
   var _express = __webpack_require__(3);
-  
+
   var _express2 = _interopRequireDefault(_express);
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _reactDomServer = __webpack_require__(5);
-  
+
   var _reactDomServer2 = _interopRequireDefault(_reactDomServer);
-  
+
   var _routes = __webpack_require__(6);
-  
+
   var _routes2 = _interopRequireDefault(_routes);
-  
+
   var _componentsHtml = __webpack_require__(78);
-  
+
   var _componentsHtml2 = _interopRequireDefault(_componentsHtml);
-  
+
   var _assets = __webpack_require__(79);
-  
+
   var _assets2 = _interopRequireDefault(_assets);
-  
+
   var _config = __webpack_require__(14);
-  
+
   var _configJson = __webpack_require__(48);
-  
+
   var _configJson2 = _interopRequireDefault(_configJson);
-  
+
   var _coreFetch = __webpack_require__(12);
-  
+
   var _coreFetch2 = _interopRequireDefault(_coreFetch);
-  
+
   var server = global.server = (0, _express2['default'])();
-  
+
   //
   // Register Node.js middleware
   // -----------------------------------------------------------------------------
   server.use(_express2['default']['static'](_path2['default'].join(__dirname, 'public')));
-  
+
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
   server.use('/api/content', __webpack_require__(80));
-  
+
   server.all('*', function (req, res, next) {
     res.header('Access-Control-Allow-Origin', _configJson2['default'][("production")].clientUri);
     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
   });
-  
+
   server.get('/api/steam', function callee$0$0(req, res, next) {
     var url, isXml, key, joiner, response, data;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
@@ -127,11 +127,11 @@ module.exports =
         case 0:
           url = req.query.path;
           isXml = false;
-  
+
           for (key in req.query) {
             if (key !== 'path') {
               joiner = url.indexOf('?') > -1 ? '&' : '?';
-  
+
               url = url + joiner + key + '=' + encodeURIComponent(req.query[key]);
             }
             if (key === 'xml') {
@@ -145,52 +145,52 @@ module.exports =
           }
           context$1$0.next = 6;
           return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
-  
+
         case 6:
           response = context$1$0.sent;
-  
+
           if (!isXml) {
             context$1$0.next = 13;
             break;
           }
-  
+
           context$1$0.next = 10;
           return regeneratorRuntime.awrap(response.text());
-  
+
         case 10:
           context$1$0.t0 = context$1$0.sent;
           context$1$0.next = 16;
           break;
-  
+
         case 13:
           context$1$0.next = 15;
           return regeneratorRuntime.awrap(response.json());
-  
+
         case 15:
           context$1$0.t0 = context$1$0.sent;
-  
+
         case 16:
           data = context$1$0.t0;
-  
+
           if (isXml) {
             res.set('Content-Type', 'text/xml');
           }
           res.send(data);
-  
+
         case 19:
         case 'end':
           return context$1$0.stop();
       }
     }, null, _this);
   });
-  
+
   //
   // Register server-side rendering middleware
   // -----------------------------------------------------------------------------
   server.get('*', function callee$0$0(req, res, next) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       var _this2 = this;
-  
+
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           context$1$0.prev = 0;
@@ -222,36 +222,36 @@ module.exports =
                     data.body = _reactDomServer2['default'].renderToString(component);
                     data.css = css.join('');
                   }));
-  
+
                 case 6:
                   html = _reactDomServer2['default'].renderToStaticMarkup(_react2['default'].createElement(_componentsHtml2['default'], data));
-  
+
                   res.status(statusCode).send('<!doctype html>\n' + html);
-  
+
                 case 8:
                 case 'end':
                   return context$2$0.stop();
               }
             }, null, _this2);
           })());
-  
+
         case 3:
           context$1$0.next = 8;
           break;
-  
+
         case 5:
           context$1$0.prev = 5;
           context$1$0.t0 = context$1$0['catch'](0);
-  
+
           next(context$1$0.t0);
-  
+
         case 8:
         case 'end':
           return context$1$0.stop();
       }
     }, null, _this, [[0, 5]]);
   });
-  
+
   //
   // Launch the server
   // -----------------------------------------------------------------------------
@@ -302,57 +302,57 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _this = this;
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _reactRoutingSrcRouter = __webpack_require__(7);
-  
+
   var _reactRoutingSrcRouter2 = _interopRequireDefault(_reactRoutingSrcRouter);
-  
+
   var _coreFetch = __webpack_require__(12);
-  
+
   var _coreFetch2 = _interopRequireDefault(_coreFetch);
-  
+
   var _componentsApp = __webpack_require__(15);
-  
+
   var _componentsApp2 = _interopRequireDefault(_componentsApp);
-  
+
   var _componentsContentPage = __webpack_require__(39);
-  
+
   var _componentsContentPage2 = _interopRequireDefault(_componentsContentPage);
-  
+
   var _componentsSteamLookupPage = __webpack_require__(42);
-  
+
   var _componentsSteamLookupPage2 = _interopRequireDefault(_componentsSteamLookupPage);
-  
+
   var _componentsSteamUserPage = __webpack_require__(51);
-  
+
   var _componentsSteamUserPage2 = _interopRequireDefault(_componentsSteamUserPage);
-  
+
   var _componentsSteamGamePage = __webpack_require__(61);
-  
+
   var _componentsSteamGamePage2 = _interopRequireDefault(_componentsSteamGamePage);
-  
+
   var _componentsNotFoundPage = __webpack_require__(72);
-  
+
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
-  
+
   var _componentsErrorPage = __webpack_require__(75);
-  
+
   var _componentsErrorPage2 = _interopRequireDefault(_componentsErrorPage);
-  
+
   var router = new _reactRoutingSrcRouter2['default'](function (on) {
     on('*', function callee$1$0(state, next) {
       var component;
@@ -361,7 +361,7 @@ module.exports =
           case 0:
             context$2$0.next = 2;
             return regeneratorRuntime.awrap(next());
-  
+
           case 2:
             component = context$2$0.sent;
             return context$2$0.abrupt('return', component && _react2['default'].createElement(
@@ -369,54 +369,54 @@ module.exports =
               { context: state.context },
               component
             ));
-  
+
           case 4:
           case 'end':
             return context$2$0.stop();
         }
       }, null, _this);
     });
-  
+
     on('/', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
             return context$2$0.abrupt('return', _react2['default'].createElement(_componentsSteamLookupPage2['default'], null));
-  
+
           case 1:
           case 'end':
             return context$2$0.stop();
         }
       }, null, _this);
     });
-  
+
     on('/steam/:username', function callee$1$0(req) {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
             return context$2$0.abrupt('return', _react2['default'].createElement(_componentsSteamUserPage2['default'], { username: req.params.username }));
-  
+
           case 1:
           case 'end':
             return context$2$0.stop();
         }
       }, null, _this);
     });
-  
+
     on('/steam/:username/game/:appId', function callee$1$0(req) {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
             return context$2$0.abrupt('return', _react2['default'].createElement(_componentsSteamGamePage2['default'], { username: req.params.username,
               appId: req.params.appId }));
-  
+
           case 1:
           case 'end':
             return context$2$0.stop();
         }
       }, null, _this);
     });
-  
+
     on('*', function callee$1$0(state) {
       var response, content;
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
@@ -424,23 +424,23 @@ module.exports =
           case 0:
             context$2$0.next = 2;
             return regeneratorRuntime.awrap((0, _coreFetch2['default'])('/api/content?path=' + state.path));
-  
+
           case 2:
             response = context$2$0.sent;
             context$2$0.next = 5;
             return regeneratorRuntime.awrap(response.json());
-  
+
           case 5:
             content = context$2$0.sent;
             return context$2$0.abrupt('return', content && _react2['default'].createElement(_componentsContentPage2['default'], content));
-  
+
           case 7:
           case 'end':
             return context$2$0.stop();
         }
       }, null, _this);
     });
-  
+
     on('error', function (state, error) {
       return state.statusCode === 404 ? _react2['default'].createElement(
         _componentsApp2['default'],
@@ -453,7 +453,7 @@ module.exports =
       );
     });
   });
-  
+
   exports['default'] = router;
   module.exports = exports['default'];
 
@@ -465,58 +465,58 @@ module.exports =
    * React Routing | http://www.kriasoft.com/react-routing
    * Copyright (c) Konstantin Tarkus <hello@tarkus.me> | The MIT License
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   var _Route = __webpack_require__(8);
-  
+
   var _Route2 = _interopRequireDefault(_Route);
-  
+
   var emptyFunction = function emptyFunction() {};
-  
+
   var Router = (function () {
-  
+
     /**
      * Creates a new instance of the `Router` class.
      */
-  
+
     function Router(initialize) {
       _classCallCheck(this, Router);
-  
+
       this.routes = [];
       this.events = Object.create(null);
-  
+
       if (typeof initialize === 'function') {
         initialize(this.on.bind(this));
       }
     }
-  
+
     /**
      * Adds a new route to the routing table or registers an event listener.
      *
      * @param {String} path A string in the Express format, an array of strings, or a regular expression.
      * @param {Function|Array} handlers Asynchronous route handler function(s).
      */
-  
+
     _createClass(Router, [{
       key: 'on',
       value: function on(path) {
         for (var _len = arguments.length, handlers = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
           handlers[_key - 1] = arguments[_key];
         }
-  
+
         if (path === 'error') {
           this.events[path] = handlers[0];
         } else {
@@ -532,9 +532,9 @@ module.exports =
             case 0:
               next = function next() {
                 var _handlers$next;
-  
+
                 var _value, _value2, match, handler;
-  
+
                 return regeneratorRuntime.async(function next$(context$3$0) {
                   while (1) switch (context$3$0.prev = context$3$0.next) {
                     case 0:
@@ -542,44 +542,44 @@ module.exports =
                         context$3$0.next = 16;
                         break;
                       }
-  
+
                       _value = value;
                       _value2 = _slicedToArray(_value, 2);
                       match = _value2[0];
                       handler = _value2[1];
-  
+
                       state.params = match.params;
-  
+
                       if (!(handler.length > 1)) {
                         context$3$0.next = 12;
                         break;
                       }
-  
+
                       context$3$0.next = 9;
                       return regeneratorRuntime.awrap(handler(state, next));
-  
+
                     case 9:
                       context$3$0.t0 = context$3$0.sent;
                       context$3$0.next = 15;
                       break;
-  
+
                     case 12:
                       context$3$0.next = 14;
                       return regeneratorRuntime.awrap(handler(state));
-  
+
                     case 14:
                       context$3$0.t0 = context$3$0.sent;
-  
+
                     case 15:
                       return context$3$0.abrupt('return', context$3$0.t0);
-  
+
                     case 16:
                     case 'end':
                       return context$3$0.stop();
                   }
                 }, null, this);
               };
-  
+
               if (typeof state === 'string' || state instanceof String) {
                 state = { path: state };
               }
@@ -587,7 +587,7 @@ module.exports =
               routes = this.routes;
               handlers = regeneratorRuntime.mark(function callee$2$0() {
                 var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, route, match, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, handler;
-  
+
                 return regeneratorRuntime.wrap(function callee$2$0$(context$3$0) {
                   while (1) switch (context$3$0.prev = context$3$0.next) {
                     case 0:
@@ -596,115 +596,115 @@ module.exports =
                       _iteratorError = undefined;
                       context$3$0.prev = 3;
                       _iterator = routes[Symbol.iterator]();
-  
+
                     case 5:
                       if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
                         context$3$0.next = 38;
                         break;
                       }
-  
+
                       route = _step.value;
                       match = route.match(state.path);
-  
+
                       if (!match) {
                         context$3$0.next = 35;
                         break;
                       }
-  
+
                       _iteratorNormalCompletion2 = true;
                       _didIteratorError2 = false;
                       _iteratorError2 = undefined;
                       context$3$0.prev = 12;
                       _iterator2 = match.route.handlers[Symbol.iterator]();
-  
+
                     case 14:
                       if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
                         context$3$0.next = 21;
                         break;
                       }
-  
+
                       handler = _step2.value;
                       context$3$0.next = 18;
                       return [match, handler];
-  
+
                     case 18:
                       _iteratorNormalCompletion2 = true;
                       context$3$0.next = 14;
                       break;
-  
+
                     case 21:
                       context$3$0.next = 27;
                       break;
-  
+
                     case 23:
                       context$3$0.prev = 23;
                       context$3$0.t0 = context$3$0['catch'](12);
                       _didIteratorError2 = true;
                       _iteratorError2 = context$3$0.t0;
-  
+
                     case 27:
                       context$3$0.prev = 27;
                       context$3$0.prev = 28;
-  
+
                       if (!_iteratorNormalCompletion2 && _iterator2['return']) {
                         _iterator2['return']();
                       }
-  
+
                     case 30:
                       context$3$0.prev = 30;
-  
+
                       if (!_didIteratorError2) {
                         context$3$0.next = 33;
                         break;
                       }
-  
+
                       throw _iteratorError2;
-  
+
                     case 33:
                       return context$3$0.finish(30);
-  
+
                     case 34:
                       return context$3$0.finish(27);
-  
+
                     case 35:
                       _iteratorNormalCompletion = true;
                       context$3$0.next = 5;
                       break;
-  
+
                     case 38:
                       context$3$0.next = 44;
                       break;
-  
+
                     case 40:
                       context$3$0.prev = 40;
                       context$3$0.t1 = context$3$0['catch'](3);
                       _didIteratorError = true;
                       _iteratorError = context$3$0.t1;
-  
+
                     case 44:
                       context$3$0.prev = 44;
                       context$3$0.prev = 45;
-  
+
                       if (!_iteratorNormalCompletion && _iterator['return']) {
                         _iterator['return']();
                       }
-  
+
                     case 47:
                       context$3$0.prev = 47;
-  
+
                       if (!_didIteratorError) {
                         context$3$0.next = 50;
                         break;
                       }
-  
+
                       throw _iteratorError;
-  
+
                     case 50:
                       return context$3$0.finish(47);
-  
+
                     case 51:
                       return context$3$0.finish(44);
-  
+
                     case 52:
                     case 'end':
                       return context$3$0.stop();
@@ -712,64 +712,64 @@ module.exports =
                 }, callee$2$0, this, [[3, 40, 44, 52], [12, 23, 27, 35], [28,, 30, 34], [45,, 47, 51]]);
               })();
               value = undefined, result = undefined, done = false;
-  
+
             case 6:
               if (done) {
                 context$2$0.next = 16;
                 break;
               }
-  
+
               context$2$0.next = 9;
               return regeneratorRuntime.awrap(next());
-  
+
             case 9:
               result = context$2$0.sent;
-  
+
               if (!result) {
                 context$2$0.next = 14;
                 break;
               }
-  
+
               state.statusCode = 200;
               cb(state, result);
               return context$2$0.abrupt('return');
-  
+
             case 14:
               context$2$0.next = 6;
               break;
-  
+
             case 16:
               if (!this.events.error) {
                 context$2$0.next = 32;
                 break;
               }
-  
+
               context$2$0.prev = 17;
-  
+
               state.statusCode = 404;
               context$2$0.next = 21;
               return regeneratorRuntime.awrap(this.events.error(state, new Error('Cannot found a route matching \'' + state.path + '\'.')));
-  
+
             case 21:
               result = context$2$0.sent;
-  
+
               cb(state, result);
               context$2$0.next = 32;
               break;
-  
+
             case 25:
               context$2$0.prev = 25;
               context$2$0.t0 = context$2$0['catch'](17);
-  
+
               state.statusCode = 500;
               context$2$0.next = 30;
               return regeneratorRuntime.awrap(this.events.error(state, context$2$0.t0));
-  
+
             case 30:
               result = context$2$0.sent;
-  
+
               cb(state, result);
-  
+
             case 32:
             case 'end':
               return context$2$0.stop();
@@ -777,10 +777,10 @@ module.exports =
         }, null, this, [[17, 25]]);
       }
     }]);
-  
+
     return Router;
   })();
-  
+
   exports['default'] = Router;
   module.exports = exports['default'];
 
@@ -792,36 +792,36 @@ module.exports =
    * React Routing | http://www.kriasoft.com/react-routing
    * Copyright (c) Konstantin Tarkus <hello@tarkus.me> | The MIT License
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   var _pathToRegexp = __webpack_require__(9);
-  
+
   var _pathToRegexp2 = _interopRequireDefault(_pathToRegexp);
-  
+
   var _Match = __webpack_require__(11);
-  
+
   var _Match2 = _interopRequireDefault(_Match);
-  
+
   var Route = (function () {
     function Route(path, handlers) {
       _classCallCheck(this, Route);
-  
+
       this.path = path;
       this.handlers = handlers;
       this.regExp = (0, _pathToRegexp2['default'])(path, this.keys = []);
     }
-  
+
     _createClass(Route, [{
       key: 'match',
       value: function match(path) {
@@ -829,10 +829,10 @@ module.exports =
         return m ? new _Match2['default'](this, path, this.keys, m) : null;
       }
     }]);
-  
+
     return Route;
   })();
-  
+
   exports['default'] = Route;
   module.exports = exports['default'];
 
@@ -841,7 +841,7 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   var isarray = __webpack_require__(10)
-  
+
   /**
    * Expose `pathToRegexp`.
    */
@@ -850,7 +850,7 @@ module.exports =
   module.exports.compile = compile
   module.exports.tokensToFunction = tokensToFunction
   module.exports.tokensToRegExp = tokensToRegExp
-  
+
   /**
    * The main path matching regexp utility.
    *
@@ -868,7 +868,7 @@ module.exports =
     // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
     '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?|\\(((?:\\\\.|[^()])+)\\))([+*?])?|(\\*))'
   ].join('|'), 'g')
-  
+
   /**
    * Parse a string for the raw tokens.
    *
@@ -881,38 +881,38 @@ module.exports =
     var index = 0
     var path = ''
     var res
-  
+
     while ((res = PATH_REGEXP.exec(str)) != null) {
       var m = res[0]
       var escaped = res[1]
       var offset = res.index
       path += str.slice(index, offset)
       index = offset + m.length
-  
+
       // Ignore already escaped sequences.
       if (escaped) {
         path += escaped[1]
         continue
       }
-  
+
       // Push the current path onto the tokens.
       if (path) {
         tokens.push(path)
         path = ''
       }
-  
+
       var prefix = res[2]
       var name = res[3]
       var capture = res[4]
       var group = res[5]
       var suffix = res[6]
       var asterisk = res[7]
-  
+
       var repeat = suffix === '+' || suffix === '*'
       var optional = suffix === '?' || suffix === '*'
       var delimiter = prefix || '/'
       var pattern = capture || group || (asterisk ? '.*' : '[^' + delimiter + ']+?')
-  
+
       tokens.push({
         name: name || key++,
         prefix: prefix || '',
@@ -922,20 +922,20 @@ module.exports =
         pattern: escapeGroup(pattern)
       })
     }
-  
+
     // Match any characters still remaining.
     if (index < str.length) {
       path += str.substr(index)
     }
-  
+
     // If the path exists, push it onto the end.
     if (path) {
       tokens.push(path)
     }
-  
+
     return tokens
   }
-  
+
   /**
    * Compile a string to a template function for the path.
    *
@@ -945,37 +945,37 @@ module.exports =
   function compile (str) {
     return tokensToFunction(parse(str))
   }
-  
+
   /**
    * Expose a method for transforming tokens into the path function.
    */
   function tokensToFunction (tokens) {
     // Compile all the tokens into regexps.
     var matches = new Array(tokens.length)
-  
+
     // Compile all the patterns before compilation.
     for (var i = 0; i < tokens.length; i++) {
       if (typeof tokens[i] === 'object') {
         matches[i] = new RegExp('^' + tokens[i].pattern + '$')
       }
     }
-  
+
     return function (obj) {
       var path = ''
       var data = obj || {}
-  
+
       for (var i = 0; i < tokens.length; i++) {
         var token = tokens[i]
-  
+
         if (typeof token === 'string') {
           path += token
-  
+
           continue
         }
-  
+
         var value = data[token.name]
         var segment
-  
+
         if (value == null) {
           if (token.optional) {
             continue
@@ -983,12 +983,12 @@ module.exports =
             throw new TypeError('Expected "' + token.name + '" to be defined')
           }
         }
-  
+
         if (isarray(value)) {
           if (!token.repeat) {
             throw new TypeError('Expected "' + token.name + '" to not repeat, but received "' + value + '"')
           }
-  
+
           if (value.length === 0) {
             if (token.optional) {
               continue
@@ -996,33 +996,33 @@ module.exports =
               throw new TypeError('Expected "' + token.name + '" to not be empty')
             }
           }
-  
+
           for (var j = 0; j < value.length; j++) {
             segment = encodeURIComponent(value[j])
-  
+
             if (!matches[i].test(segment)) {
               throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
             }
-  
+
             path += (j === 0 ? token.prefix : token.delimiter) + segment
           }
-  
+
           continue
         }
-  
+
         segment = encodeURIComponent(value)
-  
+
         if (!matches[i].test(segment)) {
           throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
         }
-  
+
         path += token.prefix + segment
       }
-  
+
       return path
     }
   }
-  
+
   /**
    * Escape a regular expression string.
    *
@@ -1032,7 +1032,7 @@ module.exports =
   function escapeString (str) {
     return str.replace(/([.+*?=^!:${}()[\]|\/])/g, '\\$1')
   }
-  
+
   /**
    * Escape the capturing group by escaping special characters and meaning.
    *
@@ -1042,7 +1042,7 @@ module.exports =
   function escapeGroup (group) {
     return group.replace(/([=!:$\/()])/g, '\\$1')
   }
-  
+
   /**
    * Attach the keys as a property of the regexp.
    *
@@ -1054,7 +1054,7 @@ module.exports =
     re.keys = keys
     return re
   }
-  
+
   /**
    * Get the flags for a regexp from the options.
    *
@@ -1064,7 +1064,7 @@ module.exports =
   function flags (options) {
     return options.sensitive ? '' : 'i'
   }
-  
+
   /**
    * Pull out keys from a regexp.
    *
@@ -1075,7 +1075,7 @@ module.exports =
   function regexpToRegexp (path, keys) {
     // Use a negative lookahead to match only capturing groups.
     var groups = path.source.match(/\((?!\?)/g)
-  
+
     if (groups) {
       for (var i = 0; i < groups.length; i++) {
         keys.push({
@@ -1088,10 +1088,10 @@ module.exports =
         })
       }
     }
-  
+
     return attachKeys(path, keys)
   }
-  
+
   /**
    * Transform an array into a regexp.
    *
@@ -1102,16 +1102,16 @@ module.exports =
    */
   function arrayToRegexp (path, keys, options) {
     var parts = []
-  
+
     for (var i = 0; i < path.length; i++) {
       parts.push(pathToRegexp(path[i], keys, options).source)
     }
-  
+
     var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
-  
+
     return attachKeys(regexp, keys)
   }
-  
+
   /**
    * Create a path regexp from string input.
    *
@@ -1123,17 +1123,17 @@ module.exports =
   function stringToRegexp (path, keys, options) {
     var tokens = parse(path)
     var re = tokensToRegExp(tokens, options)
-  
+
     // Attach keys back to the regexp.
     for (var i = 0; i < tokens.length; i++) {
       if (typeof tokens[i] !== 'string') {
         keys.push(tokens[i])
       }
     }
-  
+
     return attachKeys(re, keys)
   }
-  
+
   /**
    * Expose a function for taking tokens and returning a RegExp.
    *
@@ -1144,27 +1144,27 @@ module.exports =
    */
   function tokensToRegExp (tokens, options) {
     options = options || {}
-  
+
     var strict = options.strict
     var end = options.end !== false
     var route = ''
     var lastToken = tokens[tokens.length - 1]
     var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken)
-  
+
     // Iterate over the tokens and create our regexp string.
     for (var i = 0; i < tokens.length; i++) {
       var token = tokens[i]
-  
+
       if (typeof token === 'string') {
         route += escapeString(token)
       } else {
         var prefix = escapeString(token.prefix)
         var capture = token.pattern
-  
+
         if (token.repeat) {
           capture += '(?:' + prefix + capture + ')*'
         }
-  
+
         if (token.optional) {
           if (prefix) {
             capture = '(?:' + prefix + '(' + capture + '))?'
@@ -1174,11 +1174,11 @@ module.exports =
         } else {
           capture = prefix + '(' + capture + ')'
         }
-  
+
         route += capture
       }
     }
-  
+
     // In non-strict mode we allow a slash at the end of match. If the path to
     // match already ends with a slash, we remove it for consistency. The slash
     // is valid at the end of a path match, not in the middle. This is important
@@ -1186,7 +1186,7 @@ module.exports =
     if (!strict) {
       route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?'
     }
-  
+
     if (end) {
       route += '$'
     } else {
@@ -1194,10 +1194,10 @@ module.exports =
       // possible by using a positive lookahead to the end or next path segment.
       route += strict && endsWithSlash ? '' : '(?=\\/|$)'
     }
-  
+
     return new RegExp('^' + route, flags(options))
   }
-  
+
   /**
    * Normalize the given path string, returning a regular expression.
    *
@@ -1212,22 +1212,22 @@ module.exports =
    */
   function pathToRegexp (path, keys, options) {
     keys = keys || []
-  
+
     if (!isarray(keys)) {
       options = keys
       keys = []
     } else if (!options) {
       options = {}
     }
-  
+
     if (path instanceof RegExp) {
       return regexpToRegexp(path, keys, options)
     }
-  
+
     if (isarray(path)) {
       return arrayToRegexp(path, keys, options)
     }
-  
+
     return stringToRegexp(path, keys, options)
   }
 
@@ -1249,18 +1249,18 @@ module.exports =
    * React Routing | http://www.kriasoft.com/react-routing
    * Copyright (c) Konstantin Tarkus <hello@tarkus.me> | The MIT License
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   var Match = function Match(route, path, keys, match) {
     _classCallCheck(this, Match);
-  
+
     this.route = route;
     this.path = path;
     this.params = Object.create(null);
@@ -1268,12 +1268,12 @@ module.exports =
       this.params[keys[i - 1].name] = decodeParam(match[i]);
     }
   };
-  
+
   function decodeParam(val) {
     if (!(typeof val === 'string' || val instanceof String)) {
       return val;
     }
-  
+
     try {
       return decodeURIComponent(val);
     } catch (e) {
@@ -1282,7 +1282,7 @@ module.exports =
       throw err;
     }
   }
-  
+
   exports['default'] = Match;
   module.exports = exports['default'];
 
@@ -1298,37 +1298,37 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   var _nodeFetch = __webpack_require__(13);
-  
+
   var _nodeFetch2 = _interopRequireDefault(_nodeFetch);
-  
+
   var _config = __webpack_require__(14);
-  
+
   function localUrl(url) {
     if (url.startsWith('//')) {
       return 'https:' + url;
     }
-  
+
     if (url.startsWith('http')) {
       return url;
     }
-  
+
     return 'http://' + _config.host + url;
   }
-  
+
   function localFetch(url, options) {
     return (0, _nodeFetch2['default'])(localUrl(url), options);
   }
-  
+
   exports['default'] = localFetch;
   exports.Request = _nodeFetch.Request;
   exports.Headers = _nodeFetch.Headers;
@@ -1352,9 +1352,9 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
@@ -1362,8 +1362,6 @@ module.exports =
   exports.port = port;
   var host = process.env.WEBSITE_HOSTNAME || 'localhost:' + port;
   exports.host = host;
-  var googleAnalyticsId = 'UA-72002164-1';
-  exports.googleAnalyticsId = googleAnalyticsId;
 
 /***/ },
 /* 15 */
@@ -1377,52 +1375,52 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _fbjsLibEmptyFunction = __webpack_require__(16);
-  
+
   var _fbjsLibEmptyFunction2 = _interopRequireDefault(_fbjsLibEmptyFunction);
-  
+
   var _AppScss = __webpack_require__(17);
-  
+
   var _AppScss2 = _interopRequireDefault(_AppScss);
-  
+
   var _Header = __webpack_require__(21);
-  
+
   var _Header2 = _interopRequireDefault(_Header);
-  
+
   var _Footer = __webpack_require__(36);
-  
+
   var _Footer2 = _interopRequireDefault(_Footer);
-  
+
   var App = (function (_Component) {
     _inherits(App, _Component);
-  
+
     function App() {
       _classCallCheck(this, App);
-  
+
       _get(Object.getPrototypeOf(App.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(App, [{
       key: 'getChildContext',
       value: function getChildContext() {
@@ -1482,10 +1480,10 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     return App;
   })(_react.Component);
-  
+
   exports['default'] = App;
   module.exports = exports['default'];
 
@@ -1499,18 +1497,18 @@ module.exports =
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(18);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 18 */
@@ -1518,11 +1516,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, "/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background-color:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:700}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-.5em}sub{bottom:-.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type=checkbox],input[type=radio]{box-sizing:border-box;padding:0}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{height:auto}input[type=search]{-webkit-appearance:textfield;box-sizing:content-box}input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:700}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}[data-tt]{position:relative;box-sizing:border-box}[data-tt]:after,[data-tt]:before{border:none;box-sizing:inherit;display:inline-block;font-size:13px;font-style:normal;font-weight:300;line-height:18px;opacity:0;pointer-events:none;position:absolute;right:50%;text-align:center;text-decoration:none;text-shadow:none;text-transform:none;top:100%;-webkit-transform:translateX(50%);transform:translateX(50%);-webkit-transition:opacity .2s step-start .1s;transition:opacity .2s step-start .1s;visibility:hidden;z-index:1000000}[data-tt]:before{background:#333;border-radius:3px;color:#eee;content:attr(data-tt);margin:10px 0 0;padding:9px 13px;white-space:pre;word-wrap:break-word}[data-tt]:after{border:5px solid transparent;border-bottom-color:#333;content:'';margin:0 0 0 -5px}[data-tt]:hover:after,[data-tt]:hover:before{visibility:visible;opacity:1}.App_tt-n_1Ns:after,.App_tt-n_1Ns:before{top:auto;bottom:100%}.App_tt-e_CK0:after,.App_tt-e_CK0:before,.App_tt-w_3gh:after,.App_tt-w_3gh:before{top:auto;bottom:50%;-webkit-transform:translateY(50%);transform:translateY(50%)}.App_tt-e_CK0:after,.App_tt-e_CK0:before{left:100%;right:auto}.App_tt-w_3gh:after,.App_tt-w_3gh:before{left:auto;right:100%}.App_tt-n_1Ns:before{margin:0 0 10px}.App_tt-e_CK0:before{margin:0 0 0 10px}.App_tt-w_3gh:before{margin:0 10px 0 0}.App_tt-n_1Ns:after{border-color:transparent;border-top-color:#333;margin:0 0 0 5px}.App_tt-e_CK0:after,.App_tt-w_3gh:after{border-color:transparent;margin:5px 0 0}.App_tt-e_CK0:after{border-right-color:#333}.App_tt-w_3gh:after{border-left-color:#333}html{font-weight:100;font-size:1em;font-family:Segoe UI,HelveticaNeue-Light,sans-serif;line-height:1.375}body{color:#000;background-color:#d9dfed}.App_appContainer__kC,body{min-height:100vh;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column}.App_appContainer__kC,body,main{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex}main{-webkit-box-flex:1;-webkit-flex:1 0 auto;-ms-flex:1 0 auto;flex:1 0 auto;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center}a,a:link,a:visited{text-decoration:none;-webkit-transition:all .25s ease-in-out;transition:all .25s ease-in-out;color:#562437}a:active,a:focus,a:hover{color:#647ca4}h1,h2,h3{font-weight:400}h1{margin-top:1rem}h2,h3{margin-top:0}::-moz-selection{background:#b3d4fc;text-shadow:none}::selection{background:#b3d4fc;text-shadow:none}hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0}audio,canvas,iframe,img,svg,video{vertical-align:middle}fieldset{border:0;margin:0;padding:0}textarea{resize:vertical}.App_browserupgrade_1t4{margin:.2em 0;background:#ccc;color:#000;padding:.2em 0}@media print{*,:after,:before{background:transparent!important;color:#000!important;box-shadow:none!important;text-shadow:none!important}a,a:visited{text-decoration:underline}a[href]:after{content:\" (\" attr(href) \")\"}abbr[title]:after{content:\" (\" attr(title) \")\"}a[href^=\"#\"]:after,a[href^=\"javascript:\"]:after{content:\"\"}blockquote,pre{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}img,tr{page-break-inside:avoid}img{max-width:100%!important}h2,h3,p{orphans:3;widows:3}h2,h3{page-break-after:avoid}}", ""]);
-  
+
   // exports
   exports.locals = {
   	"tt-n": "App_tt-n_1Ns",
@@ -1543,7 +1541,7 @@ module.exports =
   // css base code, injected by the css-loader
   module.exports = function() {
   	var list = [];
-  
+
   	// return the list of modules as css string
   	list.toString = function toString() {
   		var result = [];
@@ -1557,7 +1555,7 @@ module.exports =
   		}
   		return result.join("");
   	};
-  
+
   	// import a list of modules into the list
   	list.i = function(modules, mediaQuery) {
   		if(typeof modules === "string")
@@ -1593,9 +1591,9 @@ module.exports =
 /***/ function(module, exports) {
 
   'use strict';
-  
+
   var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
-  
+
   /**
    * Isomorphic CSS style loader for Webpack
    *
@@ -1604,11 +1602,11 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   var prefix = 's';
   var inserted = {};
   var canUseURL = typeof URL === 'function' && typeof URL.createObjectURL === 'function' && typeof URL.revokeObjectURL === 'function' && typeof Blob === 'function' && typeof btoa === 'function';
-  
+
   /**
    * Remove style/link elements for specified Module IDs
    * if they are no longer referenced by UI components.
@@ -1617,11 +1615,11 @@ module.exports =
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
     var _iteratorError = undefined;
-  
+
     try {
       for (var _iterator = ids[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var id = _step.value;
-  
+
         if (--inserted[id] === 0) {
           var elem = document.getElementById(prefix + id);
           if (elem) {
@@ -1647,7 +1645,7 @@ module.exports =
       }
     }
   }
-  
+
   /**
    * Example:
    *   // Insert CSS styles object generated by `css-loader` into DOM
@@ -1658,43 +1656,43 @@ module.exports =
    */
   function insertCss(styles) {
     var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-  
+
     var _Object$assign = Object.assign({
       replace: false,
       prepend: false
     }, options);
-  
+
     var replace = _Object$assign.replace;
     var prepend = _Object$assign.prepend;
     var _iteratorNormalCompletion2 = true;
     var _didIteratorError2 = false;
     var _iteratorError2 = undefined;
-  
+
     try {
-  
+
       for (var _iterator2 = styles[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
         var _step2$value = _slicedToArray(_step2.value, 4);
-  
+
         var id = _step2$value[0];
         var css = _step2$value[1];
         var media = _step2$value[2];
         var sourceMap = _step2$value[3];
-  
+
         if (inserted[id]) {
           if (!replace) {
             inserted[id]++;
             continue;
           }
         }
-  
+
         inserted[id] = 1;
-  
+
         var elem = document.getElementById(prefix + id);
         var create = false;
-  
+
         if (!elem) {
           create = true;
-  
+
           if (sourceMap && canUseURL) {
             elem = document.createElement('link');
             elem.setAttribute('rel', 'stylesheet');
@@ -1702,14 +1700,14 @@ module.exports =
             elem = document.createElement('style');
             elem.setAttribute('type', 'text/css');
           }
-  
+
           elem.id = prefix + id;
-  
+
           if (media) {
             elem.setAttribute('media', media);
           }
         }
-  
+
         if (elem.tagName === 'STYLE') {
           if ('textContent' in elem) {
             elem.textContent = css;
@@ -1718,15 +1716,15 @@ module.exports =
           }
         } else {
           var blob = new Blob([css + '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'], { type: 'text/css' });
-  
+
           var href = elem.href;
           elem.href = URL.createObjectURL(blob);
-  
+
           if (href) {
             URL.revokeObjectURL(href);
           }
         }
-  
+
         if (create) {
           if (prepend) {
             document.head.insertBefore(elem, document.head.childNodes[0]);
@@ -1749,12 +1747,12 @@ module.exports =
         }
       }
     }
-  
+
     return removeCss.bind(null, styles.map(function (x) {
       return x[0];
     }));
   }
-  
+
   module.exports = insertCss;
 
 /***/ },
@@ -1762,50 +1760,50 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _HeaderScss = __webpack_require__(22);
-  
+
   var _HeaderScss2 = _interopRequireDefault(_HeaderScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var _Link = __webpack_require__(25);
-  
+
   var _Link2 = _interopRequireDefault(_Link);
-  
+
   var _Navigation = __webpack_require__(32);
-  
+
   var _Navigation2 = _interopRequireDefault(_Navigation);
-  
+
   var Header = (function (_Component) {
     _inherits(Header, _Component);
-  
+
     function Header() {
       _classCallCheck(this, _Header);
-  
+
       _get(Object.getPrototypeOf(_Header.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(Header, [{
       key: 'render',
       value: function render() {
@@ -1829,12 +1827,12 @@ module.exports =
         );
       }
     }]);
-  
+
     var _Header = Header;
     Header = (0, _decoratorsWithStyles2['default'])(_HeaderScss2['default'])(Header) || Header;
     return Header;
   })(_react.Component);
-  
+
   exports['default'] = Header;
   module.exports = exports['default'];
 
@@ -1842,18 +1840,18 @@ module.exports =
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(23);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 23 */
@@ -1861,11 +1859,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, ".Header_root_14I{background-color:#7c5f70;color:#fff}.Header_container_izf{margin:0 auto;padding:20px 0;max-width:1000px}a.Header_brand_1-T{text-decoration:none;font-size:1.75em}a.Header_brand_1-T,a.Header_brand_1-T:link,a.Header_brand_1-T:visited{color:#f0e9f9}a.Header_brand_1-T:active,a.Header_brand_1-T:focus,a.Header_brand_1-T:hover{color:#f0e9f9;text-decoration:none}.Header_brandTxt_162{margin-left:10px}.Header_nav_3wx{float:right;margin-top:6px}.Header_banner_UgC{text-align:center}.Header_bannerTitle_3Qi{margin:0;padding:10px;font-weight:400;font-size:4em;line-height:1em}.Header_bannerDesc_3Ow{padding:0;color:hsla(0,0%,100%,.5);font-size:1.25em;margin:0}", ""]);
-  
+
   // exports
   exports.locals = {
   	"root": "Header_root_14I",
@@ -1890,42 +1888,42 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   function withStyles() {
     for (var _len = arguments.length, styles = Array(_len), _key = 0; _key < _len; _key++) {
       styles[_key] = arguments[_key];
     }
-  
+
     return function (BaseComponent) {
       return (function (_Component) {
         _inherits(StyledComponent, _Component);
-  
+
         function StyledComponent() {
           _classCallCheck(this, StyledComponent);
-  
+
           _get(Object.getPrototypeOf(StyledComponent.prototype), 'constructor', this).apply(this, arguments);
         }
-  
+
         _createClass(StyledComponent, [{
           key: 'componentWillMount',
           value: function componentWillMount() {
@@ -1948,12 +1946,12 @@ module.exports =
           },
           enumerable: true
         }]);
-  
+
         return StyledComponent;
       })(_react.Component);
     };
   }
-  
+
   exports['default'] = withStyles;
   module.exports = exports['default'];
 
@@ -1969,67 +1967,67 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _this = this;
-  
+
   var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _historyLibParsePath = __webpack_require__(26);
-  
+
   var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
-  
+
   var _coreLocation = __webpack_require__(27);
-  
+
   var _coreLocation2 = _interopRequireDefault(_coreLocation);
-  
+
   function isLeftClickEvent(event) {
     return event.button === 0;
   }
-  
+
   function isModifiedEvent(event) {
     return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
   }
-  
+
   var Link = (function (_Component) {
     _inherits(Link, _Component);
-  
+
     function Link() {
       _classCallCheck(this, Link);
-  
+
       _get(Object.getPrototypeOf(Link.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(Link, [{
       key: 'render',
       value: function render() {
         var _props = this.props;
         var to = _props.to;
         var query = _props.query;
-  
+
         var props = _objectWithoutProperties(_props, ['to', 'query']);
-  
+
         return _react2['default'].createElement('a', _extends({ href: _coreLocation2['default'].createHref(to, query), onClick: Link.handleClick.bind(this) }, props));
       }
     }], [{
@@ -2046,21 +2044,21 @@ module.exports =
       value: function value(event) {
         var allowTransition = true;
         var clickResult = undefined;
-  
+
         if (_this.props && _this.props.onClick) {
           clickResult = _this.props.onClick(event);
         }
-  
+
         if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
           return;
         }
-  
+
         if (clickResult === false || event.defaultPrevented === true) {
           allowTransition = false;
         }
-  
+
         event.preventDefault();
-  
+
         if (allowTransition) {
           var link = event.currentTarget;
           if (_this.props && _this.props.to) {
@@ -2078,10 +2076,10 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     return Link;
   })(_react.Component);
-  
+
   exports['default'] = Link;
   module.exports = exports['default'];
 
@@ -2103,31 +2101,31 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   var _fbjsLibExecutionEnvironment = __webpack_require__(28);
-  
+
   var _historyLibCreateBrowserHistory = __webpack_require__(29);
-  
+
   var _historyLibCreateBrowserHistory2 = _interopRequireDefault(_historyLibCreateBrowserHistory);
-  
+
   var _historyLibCreateMemoryHistory = __webpack_require__(30);
-  
+
   var _historyLibCreateMemoryHistory2 = _interopRequireDefault(_historyLibCreateMemoryHistory);
-  
+
   var _historyLibUseQueries = __webpack_require__(31);
-  
+
   var _historyLibUseQueries2 = _interopRequireDefault(_historyLibUseQueries);
-  
+
   var location = (0, _historyLibUseQueries2['default'])(_fbjsLibExecutionEnvironment.canUseDOM ? _historyLibCreateBrowserHistory2['default'] : _historyLibCreateMemoryHistory2['default'])();
-  
+
   exports['default'] = location;
   module.exports = exports['default'];
 
@@ -2167,52 +2165,52 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _classnames = __webpack_require__(33);
-  
+
   var _classnames2 = _interopRequireDefault(_classnames);
-  
+
   var _NavigationScss = __webpack_require__(34);
-  
+
   var _NavigationScss2 = _interopRequireDefault(_NavigationScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var _Link = __webpack_require__(25);
-  
+
   var _Link2 = _interopRequireDefault(_Link);
-  
+
   var Navigation = (function (_Component) {
     _inherits(Navigation, _Component);
-  
+
     function Navigation() {
       _classCallCheck(this, _Navigation);
-  
+
       _get(Object.getPrototypeOf(_Navigation.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(Navigation, [{
       key: 'render',
       value: function render() {
@@ -2225,12 +2223,12 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     var _Navigation = Navigation;
     Navigation = (0, _decoratorsWithStyles2['default'])(_NavigationScss2['default'])(Navigation) || Navigation;
     return Navigation;
   })(_react.Component);
-  
+
   exports['default'] = Navigation;
   module.exports = exports['default'];
 
@@ -2244,18 +2242,18 @@ module.exports =
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(35);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 35 */
@@ -2263,11 +2261,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, ".Navigation_link_12k{display:inline-block;padding:3px 8px;text-decoration:none;font-size:1.125em}.Navigation_link_12k,.Navigation_link_12k:active,.Navigation_link_12k:visited{color:hsla(0,0%,100%,.6)}.Navigation_link_12k:hover{color:#fff}.Navigation_highlight_2cu{margin-right:8px;margin-left:8px;border-radius:3px;background:rgba(0,0,0,.15);color:#fff}.Navigation_highlight_2cu:hover{background:rgba(0,0,0,.3)}.Navigation_spacer_2MV{color:hsla(0,0%,100%,.3)}", ""]);
-  
+
   // exports
   exports.locals = {
   	"root": "Navigation_root_2Gx",
@@ -2288,48 +2286,48 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _FooterScss = __webpack_require__(37);
-  
+
   var _FooterScss2 = _interopRequireDefault(_FooterScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var _Link = __webpack_require__(25);
-  
+
   var _Link2 = _interopRequireDefault(_Link);
-  
+
   var Footer = (function (_Component) {
     _inherits(Footer, _Component);
-  
+
     function Footer() {
       _classCallCheck(this, _Footer);
-  
+
       _get(Object.getPrototypeOf(_Footer.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(Footer, [{
       key: 'render',
       value: function render() {
@@ -2360,12 +2358,12 @@ module.exports =
         );
       }
     }]);
-  
+
     var _Footer = Footer;
     Footer = (0, _decoratorsWithStyles2['default'])(_FooterScss2['default'])(Footer) || Footer;
     return Footer;
   })(_react.Component);
-  
+
   exports['default'] = Footer;
   module.exports = exports['default'];
 
@@ -2373,18 +2371,18 @@ module.exports =
 /* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(38);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 38 */
@@ -2392,11 +2390,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, ".Footer_root_3dP{background:#8395c3}.Footer_container_26p{margin:0 auto;padding:20px 15px;max-width:1000px;text-align:center}.Footer_spacer_3n7{color:hsla(0,0%,100%,.3)}.Footer_link_NoJ,.Footer_text_tTp{padding:2px 5px;font-size:1em}.Footer_link_NoJ,.Footer_link_NoJ:active,.Footer_link_NoJ:visited{color:hsla(0,0%,100%,.6);text-decoration:none}.Footer_link_NoJ:hover{color:#fff}", ""]);
-  
+
   // exports
   exports.locals = {
   	"root": "Footer_root_3dP",
@@ -2418,44 +2416,44 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _ContentPageScss = __webpack_require__(40);
-  
+
   var _ContentPageScss2 = _interopRequireDefault(_ContentPageScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var ContentPage = (function (_Component) {
     _inherits(ContentPage, _Component);
-  
+
     function ContentPage() {
       _classCallCheck(this, _ContentPage);
-  
+
       _get(Object.getPrototypeOf(_ContentPage.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(ContentPage, [{
       key: 'render',
       value: function render() {
@@ -2490,12 +2488,12 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     var _ContentPage = ContentPage;
     ContentPage = (0, _decoratorsWithStyles2['default'])(_ContentPageScss2['default'])(ContentPage) || ContentPage;
     return ContentPage;
   })(_react.Component);
-  
+
   exports['default'] = ContentPage;
   module.exports = exports['default'];
 
@@ -2503,18 +2501,18 @@ module.exports =
 /* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(41);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 41 */
@@ -2522,11 +2520,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, ".ContentPage_container_1JT{margin:0 auto;padding:0 0 40px;max-width:1000px}", ""]);
-  
+
   // exports
   exports.locals = {
   	"root": "ContentPage_root_1Kg",
@@ -2538,64 +2536,64 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _reactDom = __webpack_require__(43);
-  
+
   var _reactDom2 = _interopRequireDefault(_reactDom);
-  
+
   var _SteamLookupPageScss = __webpack_require__(44);
-  
+
   var _SteamLookupPageScss2 = _interopRequireDefault(_SteamLookupPageScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var _underscore = __webpack_require__(46);
-  
+
   var _underscore2 = _interopRequireDefault(_underscore);
-  
+
   var _storesLocalStorage = __webpack_require__(47);
-  
+
   var _storesLocalStorage2 = _interopRequireDefault(_storesLocalStorage);
-  
+
   var _actionsSteam = __webpack_require__(49);
-  
+
   var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
-  
+
   var _historyLibParsePath = __webpack_require__(26);
-  
+
   var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
-  
+
   var _coreLocation = __webpack_require__(27);
-  
+
   var _coreLocation2 = _interopRequireDefault(_coreLocation);
-  
+
   var title = 'Find Steam User';
-  
+
   var SteamLookupPage = (function (_Component) {
     _inherits(SteamLookupPage, _Component);
-  
+
     _createClass(SteamLookupPage, null, [{
       key: 'contextTypes',
       value: {
@@ -2603,15 +2601,15 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     function SteamLookupPage(props, context) {
       _classCallCheck(this, _SteamLookupPage);
-  
+
       _get(Object.getPrototypeOf(_SteamLookupPage.prototype), 'constructor', this).call(this, props, context);
       this.state = {};
       this.onInputChange = _underscore2['default'].debounce(this.onInputChange.bind(this), 2000);
     }
-  
+
     _createClass(SteamLookupPage, [{
       key: 'onFormSubmit',
       value: function onFormSubmit(event) {
@@ -2689,12 +2687,12 @@ module.exports =
         );
       }
     }]);
-  
+
     var _SteamLookupPage = SteamLookupPage;
     SteamLookupPage = (0, _decoratorsWithStyles2['default'])(_SteamLookupPageScss2['default'])(SteamLookupPage) || SteamLookupPage;
     return SteamLookupPage;
   })(_react.Component);
-  
+
   exports['default'] = SteamLookupPage;
   module.exports = exports['default'];
 
@@ -2708,18 +2706,18 @@ module.exports =
 /* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(45);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 45 */
@@ -2727,11 +2725,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, ".SteamLookupPage_root_2uV{width:100%}.SteamLookupPage_container_3f4{margin:0 auto;padding:0 0 40px;max-width:1000px}label{display:inline-block;max-width:100%;margin-bottom:5px;font-weight:700}input[type=text]{display:block;width:30em;height:1.4rem;padding:.3em .6em;font-size:1.1rem;line-height:1.42857143;color:#555;background-color:#fff;background-image:none;border:1px solid #ccc;border-radius:2px;box-shadow:inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s}input[type=text]:focus{border-color:#66afe9;outline:0;box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)}p.SteamLookupPage_helpBlock_3Tx{display:block;margin-top:5px;margin-bottom:10px;color:#737373}", ""]);
-  
+
   // exports
   exports.locals = {
   	"root": "SteamLookupPage_root_2uV",
@@ -2750,26 +2748,26 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   var _configJson = __webpack_require__(48);
-  
+
   var _configJson2 = _interopRequireDefault(_configJson);
-  
+
   var LocalStorage = (function () {
     function LocalStorage() {
       _classCallCheck(this, LocalStorage);
     }
-  
+
     _createClass(LocalStorage, null, [{
       key: 'getJSON',
       value: function getJSON() {
@@ -2808,10 +2806,10 @@ module.exports =
         }
       }
     }]);
-  
+
     return LocalStorage;
   })();
-  
+
   exports['default'] = LocalStorage;
   module.exports = exports['default'];
 
@@ -2837,35 +2835,35 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   var _coreFetch = __webpack_require__(12);
-  
+
   var _coreFetch2 = _interopRequireDefault(_coreFetch);
-  
+
   var _configJson = __webpack_require__(48);
-  
+
   var _configJson2 = _interopRequireDefault(_configJson);
-  
+
   var _xml2js = __webpack_require__(50);
-  
+
   var Steam = (function () {
     function Steam() {
       _classCallCheck(this, Steam);
     }
-  
+
     _createClass(Steam, null, [{
       key: 'getSteamId',
-  
+
       // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
       value: function getSteamId(username) {
         var data, message;
@@ -2874,17 +2872,17 @@ module.exports =
             case 0:
               context$2$0.next = 2;
               return regeneratorRuntime.awrap(this.get('/api/steam?format=json' + '&path=/ISteamUser/ResolveVanityURL/v0001/' + '&vanityurl=' + encodeURIComponent(username)));
-  
+
             case 2:
               data = context$2$0.sent;
-  
+
               if (!data.response.steamid) {
                 context$2$0.next = 5;
                 break;
               }
-  
+
               return context$2$0.abrupt('return', data);
-  
+
             case 5:
               if (data.response.message) {
                 message = data.response.message;
@@ -2892,7 +2890,7 @@ module.exports =
                 message = 'Failed to get Steam ID.';
               }
               throw new Error(message);
-  
+
             case 7:
             case 'end':
               return context$2$0.stop();
@@ -2909,10 +2907,10 @@ module.exports =
               batches = [];
               batchSize = 100;
               index = 0;
-  
+
               while (index < steamIds.length) {
                 batch = [];
-  
+
                 while (batch.length < batchSize && index < steamIds.length) {
                   batch.push(steamIds[index]);
                   index++;
@@ -2921,28 +2919,28 @@ module.exports =
               }
               summaries = [];
               i = 0;
-  
+
             case 6:
               if (!(i < batches.length)) {
                 context$2$0.next = 14;
                 break;
               }
-  
+
               context$2$0.next = 9;
               return regeneratorRuntime.awrap(this.get('/api/steam?format=json' + '&path=/ISteamUser/GetPlayerSummaries/v0002/' + '&steamids=' + batches[i].join(',')));
-  
+
             case 9:
               result = context$2$0.sent;
-  
+
               if (result.response) {
                 summaries = summaries.concat(result.response.players || []);
               }
-  
+
             case 11:
               i++;
               context$2$0.next = 6;
               break;
-  
+
             case 14:
               summaries.sort(function (a, b) {
                 var aName = a.personaname.toLowerCase();
@@ -2950,7 +2948,7 @@ module.exports =
                 return aName.localeCompare(bName);
               });
               return context$2$0.abrupt('return', summaries);
-  
+
             case 16:
             case 'end':
               return context$2$0.stop();
@@ -2966,20 +2964,20 @@ module.exports =
             case 0:
               context$2$0.next = 2;
               return regeneratorRuntime.awrap(this.get('/api/steam?format=json' + '&path=/ISteamUser/GetFriendList/v0001/' + '&steamid=' + steamId + '&relationship=friend'));
-  
+
             case 2:
               data = context$2$0.sent;
-  
+
               if (!data.friendslist) {
                 context$2$0.next = 5;
                 break;
               }
-  
+
               return context$2$0.abrupt('return', data);
-  
+
             case 5:
               throw new Error('Failed to get friends for ' + steamId + '; may not be a public profile.');
-  
+
             case 6:
             case 'end':
               return context$2$0.stop();
@@ -2995,20 +2993,20 @@ module.exports =
             case 0:
               context$2$0.next = 2;
               return regeneratorRuntime.awrap(this.get('/api/steam?format=json' + '&path=/IPlayerService/GetOwnedGames/v0001/' + '&steamid=' + steamId));
-  
+
             case 2:
               data = context$2$0.sent;
-  
+
               if (!data.response.games) {
                 context$2$0.next = 5;
                 break;
               }
-  
+
               return context$2$0.abrupt('return', data);
-  
+
             case 5:
               throw new Error('Could not get Steam games for ID ' + steamId + '; may not be a public profile.');
-  
+
             case 6:
             case 'end':
               return context$2$0.stop();
@@ -3021,15 +3019,15 @@ module.exports =
         var xml, result;
         return regeneratorRuntime.async(function getAchievements$(context$2$0) {
           var _this = this;
-  
+
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
               context$2$0.next = 2;
               return regeneratorRuntime.awrap(this.get('/api/steam?path=/profiles/' + steamId + '/stats/' + appId + '/achievements/&xml=1', 'xml'));
-  
+
             case 2:
               xml = context$2$0.sent;
-  
+
               (0, _xml2js.parseString)(xml, (function (err, rawResult) {
                 if (err === null) {
                   var achievements = rawResult.playerstats.achievements[0].achievement.map(function (a) {
@@ -3051,7 +3049,7 @@ module.exports =
                 }
               }).bind(this));
               return context$2$0.abrupt('return', result);
-  
+
             case 5:
             case 'end':
               return context$2$0.stop();
@@ -3067,29 +3065,29 @@ module.exports =
             case 0:
               context$2$0.next = 2;
               return regeneratorRuntime.awrap(this.get('/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/' + '&appid=' + appId + '&steamid=' + steamId + '&format=json'));
-  
+
             case 2:
               rawResult = context$2$0.sent;
-  
+
               if (!(typeof rawResult.playerstats.error === 'string')) {
                 context$2$0.next = 5;
                 break;
               }
-  
+
               throw new Error(rawResult.playerstats.error);
-  
+
             case 5:
               context$2$0.next = 7;
               return regeneratorRuntime.awrap(this.getGameSchema(appId));
-  
+
             case 7:
               schema = context$2$0.sent;
               schemaAchievements = schema.game.availableGameStats.achievements;
               achievementInfo = {};
-  
+
               for (i = 0; i < schemaAchievements.length; i++) {
                 achievement = schemaAchievements[i];
-  
+
                 achievementInfo[achievement.name] = achievement;
               }
               achievements = rawResult.playerstats.achievements.map(function (a) {
@@ -3103,7 +3101,7 @@ module.exports =
                 };
               });
               return context$2$0.abrupt('return', { achievements: achievements });
-  
+
             case 13:
             case 'end':
               return context$2$0.stop();
@@ -3117,7 +3115,7 @@ module.exports =
           while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
               return context$2$0.abrupt('return', this.get('/api/steam?format=json' + '&path=/ISteamUserStats/GetSchemaForGame/v2/' + '&appid=' + appId));
-  
+
             case 1:
             case 'end':
               return context$2$0.stop();
@@ -3135,44 +3133,44 @@ module.exports =
               url = _configJson2['default'][("production")].serverUri + path;
               context$2$0.next = 4;
               return regeneratorRuntime.awrap((0, _coreFetch2['default'])(url));
-  
+
             case 4:
               response = context$2$0.sent;
-  
+
               if (!(response.status >= 200 && response.status < 300)) {
                 context$2$0.next = 16;
                 break;
               }
-  
+
               if (!(type === 'json')) {
                 context$2$0.next = 12;
                 break;
               }
-  
+
               context$2$0.next = 9;
               return regeneratorRuntime.awrap(response.json());
-  
+
             case 9:
               context$2$0.t0 = context$2$0.sent;
               context$2$0.next = 15;
               break;
-  
+
             case 12:
               context$2$0.next = 14;
               return regeneratorRuntime.awrap(response.text());
-  
+
             case 14:
               context$2$0.t0 = context$2$0.sent;
-  
+
             case 15:
               return context$2$0.abrupt('return', context$2$0.t0);
-  
+
             case 16:
               error = new Error(response.statusText);
-  
+
               error.response = response;
               throw error;
-  
+
             case 19:
             case 'end':
               return context$2$0.stop();
@@ -3180,10 +3178,10 @@ module.exports =
         }, null, this);
       }
     }]);
-  
+
     return Steam;
   })();
-  
+
   exports['default'] = Steam;
   module.exports = exports['default'];
 
@@ -3202,74 +3200,74 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamUserPageScss = __webpack_require__(52);
-  
+
   var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var _underscore = __webpack_require__(46);
-  
+
   var _underscore2 = _interopRequireDefault(_underscore);
-  
+
   var _storesLocalStorage = __webpack_require__(47);
-  
+
   var _storesLocalStorage2 = _interopRequireDefault(_storesLocalStorage);
-  
+
   var _actionsSteam = __webpack_require__(49);
-  
+
   var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
-  
+
   var _historyLibParsePath = __webpack_require__(26);
-  
+
   var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
-  
+
   var _coreLocation = __webpack_require__(27);
-  
+
   var _coreLocation2 = _interopRequireDefault(_coreLocation);
-  
+
   var _Link = __webpack_require__(25);
-  
+
   var _Link2 = _interopRequireDefault(_Link);
-  
+
   var _PlayedGamesList = __webpack_require__(54);
-  
+
   var _PlayedGamesList2 = _interopRequireDefault(_PlayedGamesList);
-  
+
   var _storesSteamApps = __webpack_require__(56);
-  
+
   var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
-  
+
   var _FriendsList = __webpack_require__(58);
-  
+
   var _FriendsList2 = _interopRequireDefault(_FriendsList);
-  
+
   var SteamUserPage = (function (_Component) {
     _inherits(SteamUserPage, _Component);
-  
+
     _createClass(SteamUserPage, null, [{
       key: 'contextTypes',
       value: {
@@ -3277,10 +3275,10 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     function SteamUserPage(props, context) {
       _classCallCheck(this, _SteamUserPage);
-  
+
       _get(Object.getPrototypeOf(_SteamUserPage.prototype), 'constructor', this).call(this, props, context);
       var ownedGames = {};
       var selectedFriends = _storesLocalStorage2['default'].get('steam-selected-friends');
@@ -3291,7 +3289,7 @@ module.exports =
       }
       this.state = { ownedGames: ownedGames };
     }
-  
+
     _createClass(SteamUserPage, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
@@ -3648,12 +3646,12 @@ module.exports =
         );
       }
     }]);
-  
+
     var _SteamUserPage = SteamUserPage;
     SteamUserPage = (0, _decoratorsWithStyles2['default'])(_SteamUserPageScss2['default'])(SteamUserPage) || SteamUserPage;
     return SteamUserPage;
   })(_react.Component);
-  
+
   exports['default'] = SteamUserPage;
   module.exports = exports['default'];
 
@@ -3661,18 +3659,18 @@ module.exports =
 /* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(53);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 53 */
@@ -3680,11 +3678,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, "h2{margin-bottom:0}.SteamUserPage_friendsList_2ru{list-style:none;padding-left:0}.SteamUserPage_friendsList_2ru:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamUserPage_friend_2B-{width:210px;float:left;margin:0 30px 8px 0;line-height:32px}.SteamUserPage_friendAvatar_ghP{border-radius:4px;display:inline-block;margin-right:8px;margin-left:8px;width:32px;height:32px}.SteamUserPage_friendName_2gl{display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:140px;vertical-align:middle}.SteamUserPage_friendToggle_1vj{position:absolute;left:-9999px;visibility:hidden}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:before{top:6px;left:0;width:5px;height:10px;border-top:1px solid transparent;border-left:1px solid transparent;border-right:2px solid #fff;border-bottom:2px solid #fff;-webkit-transform:rotate(40deg);transform:rotate(40deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.SteamUserPage_friendToggle_1vj:checked+.SteamUserPage_label_1yi:after{width:14px;height:14px;border:2px solid #7c5f70;background-color:#7c5f70;z-index:0;top:7px}.SteamUserPage_label_1yi{display:inline-block;white-space:nowrap;position:relative;padding-left:18px;cursor:pointer;height:32px;line-height:32px;-webkit-user-select:none;-moz-user-select:none;-khtml-user-select:none;-ms-user-select:none}.SteamUserPage_label_1yi:before{width:14px;height:14px;border:2px solid #7c5f70;border-radius:1px;margin-top:2px}.SteamUserPage_label_1yi:after{border-radius:2px}.SteamUserPage_label_1yi:after,.SteamUserPage_label_1yi:before{content:'';left:0;top:7px;position:absolute;-webkit-transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;z-index:1}.SteamUserPage_root_24_{width:100%}.SteamUserPage_container_3qe{margin:0 auto;padding:0 0 40px;max-width:1000px}.SteamUserPage_clearSteamUsername_2G2{padding-right:.3em;display:inline-block;vertical-align:top;color:#999;width:.5em}h1{margin-left:-.8em}.SteamUserPage_row_1U1{margin-right:-15px;margin-left:-15px;box-sizing:border-box}.SteamUserPage_row_1U1:after,.SteamUserPage_row_1U1:before{box-sizing:border-box;display:table;content:\" \"}.SteamUserPage_row_1U1:after{clear:both}.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{position:relative;min-height:1px;padding-right:15px;padding-left:15px;list-style:none}.SteamUserPage_alert_3vI{padding:15px;border:1px solid transparent;border-radius:4px}.SteamUserPage_alert_3vI.SteamUserPage_alertError_3l5{color:#a94442;background-color:#f2dede;border-color:#ebccd1}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_instructions_3Gm{margin:0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b{margin:1em 0}.SteamUserPage_steamIdErrorWrapper_2gl .SteamUserPage_steamProfileWrapper_32b img{border:1px solid #333;padding:5px;background-color:#fff}.SteamUserPage_playerRealName_2XE{opacity:.8}.SteamUserPage_playerRealName_2XE:before{content:\"(\"}.SteamUserPage_playerRealName_2XE:after{content:\")\"}.SteamUserPage_playerAvatar_isD{height:38px;display:inline-block;border-radius:4px;vertical-align:middle;margin-top:-.2em}@media (min-width:992px){.SteamUserPage_row_1U1 .SteamUserPage_leftColumn_3Re,.SteamUserPage_row_1U1 .SteamUserPage_rightColumn_1qd{width:47%;float:left}}", ""]);
-  
+
   // exports
   exports.locals = {
   	"playedGames": "SteamUserPage_playedGames_31q",
@@ -3717,47 +3715,47 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamUserPageScss = __webpack_require__(52);
-  
+
   var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
-  
+
   var _SteamGame = __webpack_require__(55);
-  
+
   var _SteamGame2 = _interopRequireDefault(_SteamGame);
-  
+
   var PlayedGamesList = (function (_Component) {
     _inherits(PlayedGamesList, _Component);
-  
+
     function PlayedGamesList() {
       _classCallCheck(this, PlayedGamesList);
-  
+
       _get(Object.getPrototypeOf(PlayedGamesList.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(PlayedGamesList, [{
       key: 'render',
       value: function render() {
         var _this = this;
-  
+
         var index = Math.ceil(this.props.games.length / 2.0);
         var column1 = this.props.games.slice(0, index);
         var column2 = this.props.games.slice(index);
@@ -3794,10 +3792,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return PlayedGamesList;
   })(_react.Component);
-  
+
   exports['default'] = PlayedGamesList;
   module.exports = exports['default'];
 
@@ -3806,46 +3804,46 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamUserPageScss = __webpack_require__(52);
-  
+
   var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
-  
+
   var _Link = __webpack_require__(25);
-  
+
   var _Link2 = _interopRequireDefault(_Link);
-  
+
   var _storesSteamApps = __webpack_require__(56);
-  
+
   var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
-  
+
   var SteamGame = (function (_Component) {
     _inherits(SteamGame, _Component);
-  
+
     function SteamGame() {
       _classCallCheck(this, SteamGame);
-  
+
       _get(Object.getPrototypeOf(SteamGame.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(SteamGame, [{
       key: 'render',
       value: function render() {
@@ -3861,10 +3859,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return SteamGame;
   })(_react.Component);
-  
+
   exports['default'] = SteamGame;
   module.exports = exports['default'];
 
@@ -3873,26 +3871,26 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   var _steamAppsJson = __webpack_require__(57);
-  
+
   var _steamAppsJson2 = _interopRequireDefault(_steamAppsJson);
-  
+
   var SteamApps = (function () {
     function SteamApps() {
       _classCallCheck(this, SteamApps);
     }
-  
+
     _createClass(SteamApps, null, [{
       key: 'sortedIds',
       value: function sortedIds() {
@@ -3944,10 +3942,10 @@ module.exports =
         return appIds;
       }
     }]);
-  
+
     return SteamApps;
   })();
-  
+
   exports['default'] = SteamApps;
   module.exports = exports['default'];
 
@@ -92743,43 +92741,43 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamUserPageScss = __webpack_require__(52);
-  
+
   var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
-  
+
   var _Friend = __webpack_require__(59);
-  
+
   var _Friend2 = _interopRequireDefault(_Friend);
-  
+
   var FriendsList = (function (_Component) {
     _inherits(FriendsList, _Component);
-  
+
     function FriendsList(props, context) {
       _classCallCheck(this, FriendsList);
-  
+
       _get(Object.getPrototypeOf(FriendsList.prototype), 'constructor', this).call(this, props, context);
       this.state = { selectedIds: props.selectedIds };
     }
-  
+
     _createClass(FriendsList, [{
       key: 'onFriendToggled',
       value: function onFriendToggled(steamId, isSelected) {
@@ -92797,7 +92795,7 @@ module.exports =
       key: 'render',
       value: function render() {
         var _this = this;
-  
+
         return _react2['default'].createElement(
           'section',
           { className: _SteamUserPageScss2['default'].friends },
@@ -92822,10 +92820,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return FriendsList;
   })(_react.Component);
-  
+
   exports['default'] = FriendsList;
   module.exports = exports['default'];
 
@@ -92834,38 +92832,38 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamUserPageScss = __webpack_require__(52);
-  
+
   var _SteamUserPageScss2 = _interopRequireDefault(_SteamUserPageScss);
-  
+
   var Friend = (function (_Component) {
     _inherits(Friend, _Component);
-  
+
     function Friend() {
       _classCallCheck(this, Friend);
-  
+
       _get(Object.getPrototypeOf(Friend.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(Friend, [{
       key: 'onToggle',
       value: function onToggle(event) {
@@ -92896,10 +92894,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return Friend;
   })(_react.Component);
-  
+
   exports['default'] = Friend;
   module.exports = exports['default'];
 
@@ -92914,78 +92912,78 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamGamePageScss = __webpack_require__(62);
-  
+
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var _underscore = __webpack_require__(46);
-  
+
   var _underscore2 = _interopRequireDefault(_underscore);
-  
+
   var _storesLocalStorage = __webpack_require__(47);
-  
+
   var _storesLocalStorage2 = _interopRequireDefault(_storesLocalStorage);
-  
+
   var _actionsSteam = __webpack_require__(49);
-  
+
   var _actionsSteam2 = _interopRequireDefault(_actionsSteam);
-  
+
   var _Link = __webpack_require__(25);
-  
+
   var _Link2 = _interopRequireDefault(_Link);
-  
+
   var _storesSteamApps = __webpack_require__(56);
-  
+
   var _storesSteamApps2 = _interopRequireDefault(_storesSteamApps);
-  
+
   var _AchievementsList = __webpack_require__(64);
-  
+
   var _AchievementsList2 = _interopRequireDefault(_AchievementsList);
-  
+
   var _AchievementsComparison = __webpack_require__(65);
-  
+
   var _AchievementsComparison2 = _interopRequireDefault(_AchievementsComparison);
-  
+
   var _PlayersList = __webpack_require__(70);
-  
+
   var _PlayersList2 = _interopRequireDefault(_PlayersList);
-  
+
   var _historyLibParsePath = __webpack_require__(26);
-  
+
   var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
-  
+
   var _coreLocation = __webpack_require__(27);
-  
+
   var _coreLocation2 = _interopRequireDefault(_coreLocation);
-  
+
   var SteamGamePage = (function (_Component) {
     _inherits(SteamGamePage, _Component);
-  
+
     _createClass(SteamGamePage, null, [{
       key: 'contextTypes',
       value: {
@@ -92993,15 +92991,15 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     function SteamGamePage(props, context) {
       _classCallCheck(this, _SteamGamePage);
-  
+
       _get(Object.getPrototypeOf(_SteamGamePage.prototype), 'constructor', this).call(this, props, context);
       var selectedIds = _storesLocalStorage2['default'].get('steam-selected-friends') || [_storesLocalStorage2['default'].get('steam-id')];
       this.state = { selectedIds: selectedIds };
     }
-  
+
     _createClass(SteamGamePage, [{
       key: 'componentDidMount',
       value: function componentDidMount() {
@@ -93134,12 +93132,12 @@ module.exports =
         );
       }
     }]);
-  
+
     var _SteamGamePage = SteamGamePage;
     SteamGamePage = (0, _decoratorsWithStyles2['default'])(_SteamGamePageScss2['default'])(SteamGamePage) || SteamGamePage;
     return SteamGamePage;
   })(_react.Component);
-  
+
   exports['default'] = SteamGamePage;
   module.exports = exports['default'];
 
@@ -93147,18 +93145,18 @@ module.exports =
 /* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(63);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 63 */
@@ -93166,11 +93164,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, ".SteamGamePage_achievementsList_3F0{padding-left:0}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r{display:inline-block;list-style:none;width:240px;margin:0 8px 8px 0;float:left;position:relative}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementIcon_O3H{border-radius:4px;display:inline-block;vertical-align:middle}.SteamGamePage_achievementsList_3F0 .SteamGamePage_achievement_14r .SteamGamePage_achievementName_3tz{display:inline-block;vertical-align:middle;position:absolute;left:72px;width:168px}.SteamGamePage_clearfix_1GN:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_achievementsList_3F0{list-style:none;padding-left:0;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center}.SteamGamePage_playersList_3MY{list-style:none;padding-left:0;margin-left:7em}.SteamGamePage_playersList_3MY li{display:inline-block;margin:0 16px 8px 0}.SteamGamePage_intro_20n{display:block;font-weight:700;float:left;width:6em}.SteamGamePage_playersListWrapper_34u:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_player_2ID .SteamGamePage_playerAvatar_yN0{border-radius:4px;display:inline-block;margin-right:8px}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz{padding-left:.3em;font-weight:700}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz:before{content:\"(\"}.SteamGamePage_player_2ID .SteamGamePage_unlockPct_2Mz:after{content:\")\"}.SteamGamePage_achievementComparison_3ep{display:inline-block;margin:0 8px 8px 0;width:300px;border:1px solid #a28696;border-radius:2px;padding:8px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center}.SteamGamePage_achievementComparison_3ep.SteamGamePage_unlocked_oDR{background-color:#c3b1bc}.SteamGamePage_achievementComparison_3ep:after{visibility:hidden;display:block;font-size:0;content:\" \";clear:both;height:0}.SteamGamePage_achievementIcon_O3H{border-radius:4px;display:inline-block;margin-right:16px}.SteamGamePage_achievementName_3tz{margin:0;font-size:1.2rem;width:212px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.SteamGamePage_playerAchievements_s6k{list-style:none;padding-left:0;margin:0}.SteamGamePage_playerAchievements_s6k .SteamGamePage_playerAchievement_2_2 .SteamGamePage_playerName_3Y6{padding-left:8px}.SteamGamePage_bar_14s{fill:#94a4cc}.SteamGamePage_bar_14s:hover{fill:#647ca4}.SteamGamePage_axis_1DL{font:.9rem Segoe UI,HelveticaNeue-Light,sans-serif}.SteamGamePage_axis_1DL line,.SteamGamePage_axis_1DL path{fill:none;stroke:#000;shape-rendering:crispEdges}.SteamGamePage_axis_1DL.SteamGamePage_x_11S path{display:none}svg{display:block;margin:0 auto;position:relative}.SteamGamePage_label_2x6{font:.9rem Segoe UI,HelveticaNeue-Light,sans-serif;fill:#fff}.SteamGamePage_filtersWrapper_Fk1{margin-bottom:1em}.SteamGamePage_filters_10S{margin:0;padding-left:0;list-style:none}.SteamGamePage_filters_10S li{display:inline-block;margin:0 1em 0 0}.SteamGamePage_header_1ym{font-weight:700}.SteamGamePage_footer_V1N:before{content:\"\\2014\";padding-right:1em}.SteamGamePage_filterToggle_1pk{position:absolute;left:-9999px;visibility:hidden}.SteamGamePage_filterToggle_1pk:checked+.SteamGamePage_label_2x6:before{top:1px;left:0;width:5px;height:10px;border-top:1px solid transparent;border-left:1px solid transparent;border-right:2px solid #fff;border-bottom:2px solid #fff;-webkit-transform:rotate(40deg);transform:rotate(40deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform-origin:100% 100%;transform-origin:100% 100%}.SteamGamePage_filterToggle_1pk:checked+.SteamGamePage_label_2x6:after{width:14px;height:14px;border:2px solid #7c5f70;background-color:#7c5f70;z-index:0;top:0}.SteamGamePage_label_2x6{display:inline-block;white-space:nowrap;position:relative;padding-left:26px;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-khtml-user-select:none;-ms-user-select:none;vertical-align:middle}.SteamGamePage_label_2x6:before{width:14px;height:14px;border:2px solid #7c5f70;border-radius:1px}.SteamGamePage_label_2x6:after{border-radius:2px}.SteamGamePage_label_2x6:after,.SteamGamePage_label_2x6:before{content:'';left:0;top:0;position:absolute;-webkit-transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;transition:border .25s,background-color .25s,width .2s .1s,height .2s .1s,top .2s .1s,left .2s .1s;z-index:1}.SteamGamePage_root_3OO{width:100%}.SteamGamePage_container_2h6{margin:0 auto;padding:0 0 40px;max-width:1000px}.SteamGamePage_clearSteamGame_2Cz{padding-right:.3em;display:inline-block;vertical-align:top;color:#999;width:.5em}h1{margin-left:-.8em}.SteamGamePage_gameIcon_2GW{margin-right:8px;border-radius:4px;display:inline-block;vertical-align:middle}.SteamGamePage_achievementCount_32B{font-size:1.1rem;margin-left:.8em;display:inline-block;color:#4f6487}.SteamGamePage_achievementCount_32B .SteamGamePage_units_Wat{padding-left:.3em}", ""]);
-  
+
   // exports
   exports.locals = {
   	"achievementsList": "SteamGamePage_achievementsList_3F0",
@@ -93216,42 +93214,42 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamGamePageScss = __webpack_require__(62);
-  
+
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
+
   var _classnames = __webpack_require__(33);
-  
+
   var _classnames2 = _interopRequireDefault(_classnames);
-  
+
   var AchievementsList = (function (_Component) {
     _inherits(AchievementsList, _Component);
-  
+
     function AchievementsList() {
       _classCallCheck(this, AchievementsList);
-  
+
       _get(Object.getPrototypeOf(AchievementsList.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(AchievementsList, [{
       key: 'getUnlockedCount',
       value: function getUnlockedCount() {
@@ -93315,10 +93313,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return AchievementsList;
   })(_react.Component);
-  
+
   exports['default'] = AchievementsList;
   module.exports = exports['default'];
 
@@ -93327,52 +93325,52 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamGamePageScss = __webpack_require__(62);
-  
+
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
+
   var _AchievementComparison = __webpack_require__(66);
-  
+
   var _AchievementComparison2 = _interopRequireDefault(_AchievementComparison);
-  
+
   var _UnlockedBarChart = __webpack_require__(67);
-  
+
   var _UnlockedBarChart2 = _interopRequireDefault(_UnlockedBarChart);
-  
+
   var _Filters = __webpack_require__(69);
-  
+
   var _Filters2 = _interopRequireDefault(_Filters);
-  
+
   var AchievementsComparison = (function (_Component) {
     _inherits(AchievementsComparison, _Component);
-  
+
     function AchievementsComparison(props, context) {
       _classCallCheck(this, AchievementsComparison);
-  
+
       _get(Object.getPrototypeOf(AchievementsComparison.prototype), 'constructor', this).call(this, props, context);
       this.state = { achievements: this.getInitialListOfAchievements(props),
         players: this.getInitialHashOfPlayers(props) };
     }
-  
+
     _createClass(AchievementsComparison, [{
       key: 'getInitialHashOfPlayers',
       value: function getInitialHashOfPlayers(props) {
@@ -93484,7 +93482,7 @@ module.exports =
       key: 'render',
       value: function render() {
         var _this = this;
-  
+
         var haveAchievements = this.state.achievements.length > 0;
         var filteredAchievements = this.state.achievements.filter(this.includeAchievement.bind(this));
         return _react2['default'].createElement(
@@ -93511,10 +93509,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return AchievementsComparison;
   })(_react.Component);
-  
+
   exports['default'] = AchievementsComparison;
   module.exports = exports['default'];
 
@@ -93523,42 +93521,42 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamGamePageScss = __webpack_require__(62);
-  
+
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
+
   var _classnames = __webpack_require__(33);
-  
+
   var _classnames2 = _interopRequireDefault(_classnames);
-  
+
   var AchievementComparison = (function (_Component) {
     _inherits(AchievementComparison, _Component);
-  
+
     function AchievementComparison() {
       _classCallCheck(this, AchievementComparison);
-  
+
       _get(Object.getPrototypeOf(AchievementComparison.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(AchievementComparison, [{
       key: 'render',
       value: function render() {
@@ -93607,10 +93605,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return AchievementComparison;
   })(_react.Component);
-  
+
   exports['default'] = AchievementComparison;
   module.exports = exports['default'];
 
@@ -93619,43 +93617,43 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamGamePageScss = __webpack_require__(62);
-  
+
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
+
   var _d3 = __webpack_require__(68);
-  
+
   var _d32 = _interopRequireDefault(_d3);
-  
+
   var UnlockedBarChart = (function (_Component) {
     _inherits(UnlockedBarChart, _Component);
-  
+
     function UnlockedBarChart(props, context) {
       _classCallCheck(this, UnlockedBarChart);
-  
+
       _get(Object.getPrototypeOf(UnlockedBarChart.prototype), 'constructor', this).call(this, props, context);
       this.state = { countsByPlayer: this.getCountsByPlayer(props.achievements) };
     }
-  
+
     _createClass(UnlockedBarChart, [{
       key: 'componentDidMount',
       value: function componentDidMount() {
@@ -93735,10 +93733,10 @@ module.exports =
         return _react2['default'].createElement('div', { id: 'unlockedBarChart', className: _SteamGamePageScss2['default'].unlockedBarChart });
       }
     }]);
-  
+
     return UnlockedBarChart;
   })(_react.Component);
-  
+
   exports['default'] = UnlockedBarChart;
   module.exports = exports['default'];
 
@@ -93753,43 +93751,43 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _reactDom = __webpack_require__(43);
-  
+
   var _reactDom2 = _interopRequireDefault(_reactDom);
-  
+
   var _SteamGamePageScss = __webpack_require__(62);
-  
+
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
+
   var Filters = (function (_Component) {
     _inherits(Filters, _Component);
-  
+
     function Filters(props, context) {
       _classCallCheck(this, Filters);
-  
+
       _get(Object.getPrototypeOf(Filters.prototype), 'constructor', this).call(this, props, context);
       this.state = { activeFilters: [] };
     }
-  
+
     _createClass(Filters, [{
       key: 'onFilterChange',
       value: function onFilterChange(event) {
@@ -93881,10 +93879,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return Filters;
   })(_react.Component);
-  
+
   exports['default'] = Filters;
   module.exports = exports['default'];
 
@@ -93893,47 +93891,47 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamGamePageScss = __webpack_require__(62);
-  
+
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
+
   var _Player = __webpack_require__(71);
-  
+
   var _Player2 = _interopRequireDefault(_Player);
-  
+
   var PlayersList = (function (_Component) {
     _inherits(PlayersList, _Component);
-  
+
     function PlayersList() {
       _classCallCheck(this, PlayersList);
-  
+
       _get(Object.getPrototypeOf(PlayersList.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(PlayersList, [{
       key: 'render',
       value: function render() {
         var _this = this;
-  
+
         var achievements = this.props.achievements || {};
         return _react2['default'].createElement(
           'div',
@@ -93957,10 +93955,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return PlayersList;
   })(_react.Component);
-  
+
   exports['default'] = PlayersList;
   module.exports = exports['default'];
 
@@ -93969,55 +93967,55 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _SteamGamePageScss = __webpack_require__(62);
-  
+
   var _SteamGamePageScss2 = _interopRequireDefault(_SteamGamePageScss);
-  
+
   var _storesLocalStorage = __webpack_require__(47);
-  
+
   var _storesLocalStorage2 = _interopRequireDefault(_storesLocalStorage);
-  
+
   var _historyLibParsePath = __webpack_require__(26);
-  
+
   var _historyLibParsePath2 = _interopRequireDefault(_historyLibParsePath);
-  
+
   var _coreLocation = __webpack_require__(27);
-  
+
   var _coreLocation2 = _interopRequireDefault(_coreLocation);
-  
+
   var Player = (function (_Component) {
     _inherits(Player, _Component);
-  
+
     function Player(props, context) {
       _classCallCheck(this, Player);
-  
+
       _get(Object.getPrototypeOf(Player.prototype), 'constructor', this).call(this, props, context);
       this.state = {
         userPagePath: '/steam/' + encodeURIComponent(props.player.personaname)
       };
     }
-  
+
     _createClass(Player, [{
       key: 'getUnlockPercentageText',
       value: function getUnlockPercentageText() {
@@ -94086,10 +94084,10 @@ module.exports =
         );
       }
     }]);
-  
+
     return Player;
   })(_react.Component);
-  
+
   exports['default'] = Player;
   module.exports = exports['default'];
 
@@ -94105,46 +94103,46 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _NotFoundPageScss = __webpack_require__(73);
-  
+
   var _NotFoundPageScss2 = _interopRequireDefault(_NotFoundPageScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var title = 'Page Not Found';
-  
+
   var NotFoundPage = (function (_Component) {
     _inherits(NotFoundPage, _Component);
-  
+
     function NotFoundPage() {
       _classCallCheck(this, _NotFoundPage);
-  
+
       _get(Object.getPrototypeOf(_NotFoundPage.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(NotFoundPage, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
@@ -94177,12 +94175,12 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     var _NotFoundPage = NotFoundPage;
     NotFoundPage = (0, _decoratorsWithStyles2['default'])(_NotFoundPageScss2['default'])(NotFoundPage) || NotFoundPage;
     return NotFoundPage;
   })(_react.Component);
-  
+
   exports['default'] = NotFoundPage;
   module.exports = exports['default'];
 
@@ -94190,18 +94188,18 @@ module.exports =
 /* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(74);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 74 */
@@ -94209,11 +94207,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, "*{margin:0;line-height:1.2}html{display:table;width:100%;height:100%;color:#888;text-align:center;font-family:sans-serif}body{display:table-cell;margin:2em auto;vertical-align:middle}h1{color:#555;font-weight:400;font-size:2em}p{margin:0 auto;width:280px}@media only screen and (max-width:280px){body,p{width:95%}h1{font-size:1.5em;margin:0 0 .3em}}", ""]);
-  
+
   // exports
 
 
@@ -94229,46 +94227,46 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _ErrorPageScss = __webpack_require__(76);
-  
+
   var _ErrorPageScss2 = _interopRequireDefault(_ErrorPageScss);
-  
+
   var _decoratorsWithStyles = __webpack_require__(24);
-  
+
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
+
   var title = 'Error';
-  
+
   var ErrorPage = (function (_Component) {
     _inherits(ErrorPage, _Component);
-  
+
     function ErrorPage() {
       _classCallCheck(this, _ErrorPage);
-  
+
       _get(Object.getPrototypeOf(_ErrorPage.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(ErrorPage, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
@@ -94300,12 +94298,12 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     var _ErrorPage = ErrorPage;
     ErrorPage = (0, _decoratorsWithStyles2['default'])(_ErrorPageScss2['default'])(ErrorPage) || ErrorPage;
     return ErrorPage;
   })(_react.Component);
-  
+
   exports['default'] = ErrorPage;
   module.exports = exports['default'];
 
@@ -94313,18 +94311,18 @@ module.exports =
 /* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
-  
+
       var content = __webpack_require__(77);
       var insertCss = __webpack_require__(20);
-  
+
       if (typeof content === 'string') {
         content = [[module.id, content, '']];
       }
-  
+
       module.exports = content.locals || {};
       module.exports._getCss = function() { return content.toString(); };
       module.exports._insertCss = insertCss.bind(null, content);
-    
+
 
 /***/ },
 /* 77 */
@@ -94332,11 +94330,11 @@ module.exports =
 
   exports = module.exports = __webpack_require__(19)();
   // imports
-  
-  
+
+
   // module
   exports.push([module.id, "*{margin:0;line-height:1.2}html{display:table;width:100%;height:100%;color:#888;text-align:center;font-family:sans-serif}body{display:table-cell;margin:2em auto;vertical-align:middle}h1{color:#555;font-weight:400;font-size:2em}p{margin:0 auto;width:280px}@media only screen and (max-width:280px){body,p{width:95%}h1{font-size:1.5em;margin:0 0 .3em}}", ""]);
-  
+
   // exports
 
 
@@ -94352,45 +94350,39 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
+
   var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
+
   function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
+
   var _react = __webpack_require__(4);
-  
+
   var _react2 = _interopRequireDefault(_react);
-  
+
   var _config = __webpack_require__(14);
-  
+
   var Html = (function (_Component) {
     _inherits(Html, _Component);
-  
+
     function Html() {
       _classCallCheck(this, Html);
-  
+
       _get(Object.getPrototypeOf(Html.prototype), 'constructor', this).apply(this, arguments);
     }
-  
+
     _createClass(Html, [{
-      key: 'trackingCode',
-      value: function trackingCode() {
-        return { __html: '(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=' + 'function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;' + 'e=o.createElement(i);r=o.getElementsByTagName(i)[0];' + 'e.src=\'https://www.google-analytics.com/analytics.js\';' + 'r.parentNode.insertBefore(e,r)}(window,document,\'script\',\'ga\'));' + ('ga(\'create\',\'' + _config.googleAnalyticsId + '\',\'auto\');ga(\'send\',\'pageview\');')
-        };
-      }
-    }, {
       key: 'render',
       value: function render() {
         return _react2['default'].createElement(
@@ -94416,8 +94408,7 @@ module.exports =
             'body',
             null,
             _react2['default'].createElement('div', { id: 'app', dangerouslySetInnerHTML: { __html: this.props.body } }),
-            _react2['default'].createElement('script', { src: this.props.entry }),
-            _react2['default'].createElement('script', { dangerouslySetInnerHTML: this.trackingCode() })
+            _react2['default'].createElement('script', { src: this.props.entry })
           )
         );
       }
@@ -94439,10 +94430,10 @@ module.exports =
       },
       enumerable: true
     }]);
-  
+
     return Html;
   })(_react.Component);
-  
+
   exports['default'] = Html;
   module.exports = exports['default'];
 
@@ -94464,56 +94455,56 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
+
   'use strict';
-  
+
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
-  
+
   var _this = this;
-  
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
+
   var _fs = __webpack_require__(81);
-  
+
   var _fs2 = _interopRequireDefault(_fs);
-  
+
   var _path = __webpack_require__(2);
-  
+
   var _express = __webpack_require__(3);
-  
+
   var _bluebird = __webpack_require__(82);
-  
+
   var _bluebird2 = _interopRequireDefault(_bluebird);
-  
+
   var _jade = __webpack_require__(83);
-  
+
   var _jade2 = _interopRequireDefault(_jade);
-  
+
   var _frontMatter = __webpack_require__(84);
-  
+
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
-  
+
   // A folder with Jade/Markdown/HTML content pages
   var CONTENT_DIR = (0, _path.join)(__dirname, './content');
-  
+
   // Extract 'front matter' metadata and generate HTML
   var parseJade = function parseJade(path, jadeContent) {
     var fmContent = (0, _frontMatter2['default'])(jadeContent);
     var htmlContent = _jade2['default'].render(fmContent.body);
     return Object.assign({ path: path, content: htmlContent }, fmContent.attributes);
   };
-  
+
   var readFile = _bluebird2['default'].promisify(_fs2['default'].readFile);
   var fileExists = function fileExists(filename) {
     return new _bluebird2['default'](function (resolve) {
       _fs2['default'].exists(filename, resolve);
     });
   };
-  
+
   var router = new _express.Router();
-  
+
   router.get('/', function callee$0$0(req, res, next) {
     var path, fileName, source, content;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
@@ -94521,69 +94512,69 @@ module.exports =
         case 0:
           context$1$0.prev = 0;
           path = req.query.path;
-  
+
           if (!(!path || path === 'undefined')) {
             context$1$0.next = 5;
             break;
           }
-  
+
           res.status(400).send({ error: 'The \'path\' query parameter cannot be empty.' });
           return context$1$0.abrupt('return');
-  
+
         case 5:
           fileName = (0, _path.join)(CONTENT_DIR, (path === '/' ? '/index' : path) + '.jade');
           context$1$0.next = 8;
           return regeneratorRuntime.awrap(fileExists(fileName));
-  
+
         case 8:
           if (context$1$0.sent) {
             context$1$0.next = 10;
             break;
           }
-  
+
           fileName = (0, _path.join)(CONTENT_DIR, path + '/index.jade');
-  
+
         case 10:
           context$1$0.next = 12;
           return regeneratorRuntime.awrap(fileExists(fileName));
-  
+
         case 12:
           if (context$1$0.sent) {
             context$1$0.next = 16;
             break;
           }
-  
+
           res.status(404).send({ error: 'The page \'' + path + '\' is not found.' });
           context$1$0.next = 21;
           break;
-  
+
         case 16:
           context$1$0.next = 18;
           return regeneratorRuntime.awrap(readFile(fileName, { encoding: 'utf8' }));
-  
+
         case 18:
           source = context$1$0.sent;
           content = parseJade(path, source);
-  
+
           res.status(200).send(content);
-  
+
         case 21:
           context$1$0.next = 26;
           break;
-  
+
         case 23:
           context$1$0.prev = 23;
           context$1$0.t0 = context$1$0['catch'](0);
-  
+
           next(context$1$0.t0);
-  
+
         case 26:
         case 'end':
           return context$1$0.stop();
       }
     }, null, _this, [[0, 23]]);
   });
-  
+
   exports['default'] = router;
   module.exports = exports['default'];
 
