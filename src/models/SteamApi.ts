@@ -25,11 +25,11 @@ class SteamApi {
     throw new Error(message);
   }
 
-  static async getPlayerSummaries(steamIds) {
-    var batches = [];
+  static async getPlayerSummaries(steamIds: string[]) {
+    const batches = [];
     // see https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
-    var batchSize = 100;
-    var index = 0;
+    const batchSize = 100;
+    let index = 0;
     while (index < steamIds.length) {
       var batch = [];
       while (batch.length < batchSize && index < steamIds.length) {
@@ -38,7 +38,7 @@ class SteamApi {
       }
       batches.push(batch);
     }
-    var summaries = [];
+    let summaries: any[] = [];
     for (var i = 0; i < batches.length; i++) {
       var result =
           await this.get('/api/steam?format=json' +
@@ -56,7 +56,7 @@ class SteamApi {
     return summaries;
   }
 
-  static async getFriends(steamId) {
+  static async getFriends(steamId: string) {
     const data = await this.get('/api/steam?format=json' +
                                 '&path=/ISteamUser/GetFriendList/v0001/' +
                                 '&steamid=' + steamId +
@@ -68,7 +68,7 @@ class SteamApi {
                     '; may not be a public profile.');
   }
 
-  static async getOwnedGames(steamId) {
+  static async getOwnedGames(steamId: string) {
     const data = await this.get('/api/steam?format=json' +
                                 '&path=/IPlayerService/GetOwnedGames/v0001/' +
                                 '&steamid=' + steamId);
@@ -79,16 +79,16 @@ class SteamApi {
                     '; may not be a public profile.');
   }
 
-  static async getAchievements(steamId, appId) {
+  static async getAchievements(steamId: string, appId: number) {
     const xml = await this.get('/api/steam?path=/profiles/' + steamId +
                                '/stats/' + appId + '/achievements/&xml=1',
-                               'xml');
+                               ResponseType.XML);
     var result;
     const self = this;
     parseString(xml, (err, rawResult) => {
       if (err === null) {
         const achievements =
-            rawResult.playerstats.achievements[0].achievement.map((a) => {
+            rawResult.playerstats.achievements[0].achievement.map((a: any) => {
               var isUnlocked = typeof a.unlockTimestamp !== 'undefined';
               return {
                 key: a.apiname[0],
@@ -110,7 +110,7 @@ class SteamApi {
     return result;
   }
 
-  static async getJsonAchievements(steamId, appId) {
+  static async getJsonAchievements(steamId: string, appId: number) {
     const rawResult = await this.get(
       '/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/' +
       '&appid=' + appId + '&steamid=' + steamId + '&format=json'
@@ -121,12 +121,12 @@ class SteamApi {
     // TODO: somehow get game iconUri from JSON API
     const schema = await this.getGameSchema(appId);
     const schemaAchievements = schema.game.availableGameStats.achievements;
-    var achievementInfo = {};
+    const achievementInfo: any = {};
     for (var i = 0; i < schemaAchievements.length; i++) {
       var achievement = schemaAchievements[i];
       achievementInfo[achievement.name] = achievement;
     }
-    const achievements = rawResult.playerstats.achievements.map((a => {
+    const achievements = rawResult.playerstats.achievements.map(((a: any) => {
       var info = achievementInfo[a.apiname];
       var isUnlocked = a.achieved === 1;
       return {
@@ -139,7 +139,7 @@ class SteamApi {
     return {achievements: achievements};
   }
 
-  static async getGameSchema(appId) {
+  static async getGameSchema(appId: number) {
     return this.get('/api/steam?format=json' +
                     '&path=/ISteamUserStats/GetSchemaForGame/v2/' +
                     '&appid=' + appId);

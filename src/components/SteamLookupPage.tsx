@@ -16,24 +16,16 @@ const SteamLookupPage = () => {
     }
   }, [username])
 
-  const onFormSubmit = (event) => {
-    event.preventDefault()
-  }
-
-  const onUsernameChange = (event) => {
-    setUsername(event.target.value.trim())
-  }
-
   return (
     <div>
       <div>
         <h1>{title}</h1>
-        <form onSubmit={onFormSubmit}>
+        <form onSubmit={e => e.preventDefault()}>
           <label htmlFor="steam-username">
             Steam user name:
           </label>
           <input type="text" value={username} id="steam-username" autoFocus={true} 
-            placeholder="e.g., cheshire137" onChange={onUsernameChange} />
+            placeholder="e.g., cheshire137" onChange={e => setUsername(e.target.value.trim())} />
           <p>
             The Steam profile must be public.
           </p>
