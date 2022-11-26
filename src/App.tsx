@@ -1,8 +1,8 @@
-import logo from './logo.svg';
+import React from 'react';
 import SteamLookupPage from './components/SteamLookupPage';
 import './App.css';
 
-function App() {
+const App = () => {
   return (
     <div className="App">
       <SteamLookupPage />
