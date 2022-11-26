@@ -1,10 +1,15 @@
-import fetch from '../core/fetch';
-import Config from '../config.json';
 import {parseString} from 'xml2js';
 
-class Steam {
+enum ResponseType {
+  JSON = "json",
+  XML = "xml"
+}
+
+const serverUrl = 'http://localhost:8080';
+
+class SteamApi {
   // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
-  static async getSteamId(username) {
+  static async getSteamId(username: string) {
     const data = await this.get('/api/steam?format=json' +
                                 '&path=/ISteamUser/ResolveVanityURL/v0001/' +
                                 '&vanityurl=' + encodeURIComponent(username));
@@ -139,17 +144,14 @@ class Steam {
                     '&appid=' + appId);
   }
 
-  static async get(path, type) {
-    type = type || 'json';
-    const url = Config[process.env.NODE_ENV].serverUri + path;
-    const response = await fetch(url);
+  static async get(path: string, type?: ResponseType) {
+    type = type || ResponseType.JSON;
+    const response = await fetch(serverUrl + path);
     if (response.status >= 200 && response.status < 300) {
-      return type === 'json' ? await response.json() : await response.text();
+      return type === ResponseType.JSON ? await response.json() : await response.text();
     }
-    var error = new Error(response.statusText);
-    error.response = response;
-    throw error;
+    throw new Error(response.statusText);
   }
 }
 
-export default Steam;
+export default SteamApi;
