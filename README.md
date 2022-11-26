@@ -15,12 +15,8 @@ I'm using the following tool versions:
 
 Get a [Steam Web API Key](http://steamcommunity.com/dev/apikey).
 
-    cp src/env.sh.example src/env.sh
-
-Customize src/env.sh.
-
     npm install
-    node server.js
+    STEAM_API_KEY="your API key here" node server.js
     npm start
 
 Visit [localhost:3000](http://localhost:3000/).
