@@ -1,6 +1,0 @@
-{
-  "name": "SteamUserPage",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./SteamUserPage.js"
-}
