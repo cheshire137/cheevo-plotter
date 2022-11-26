@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import LocalStorage from '../stores/LocalStorage';
-import SteamApi from '../models/SteamApi';
 
 const title = 'Find Steam User';
 
-const SteamLookupPage = () => {
+interface Props {
+  onUsernameChange(newUsername: string): void;
+}
+
+const SteamLookupPage = (props: Props) => {
   const [username, setUsername] = useState("");
 
-  useEffect(() => {
-    LocalStorage.delete('steam-id');
-    LocalStorage.delete('steam-games');
-    LocalStorage.delete('steam-selected-friends');
-    if (username.length < 1) {
-      LocalStorage.delete('steam-username');
-    }
-  }, [username])
+  const onUsernameChange = (newUsername: string) => {
+    setUsername(newUsername)
+    props.onUsernameChange(newUsername)
+  }
 
   return (
     <div>
@@ -25,7 +24,7 @@ const SteamLookupPage = () => {
             Steam user name:
           </label>
           <input type="text" value={username} id="steam-username" autoFocus={true} 
-            placeholder="e.g., cheshire137" onChange={e => setUsername(e.target.value.trim())} />
+            placeholder="e.g., cheshire137" onChange={e => onUsernameChange(e.target.value.trim())} />
           <p>
             The Steam profile must be public.
           </p>
