@@ -20,6 +20,7 @@ Get a [Steam Web API Key](http://steamcommunity.com/dev/apikey).
 Customize src/env.sh.
 
     npm install
+    node server.js
     npm start
 
 Visit [localhost:3000](http://localhost:3000/).
