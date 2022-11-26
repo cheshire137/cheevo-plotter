@@ -1,17 +1,10 @@
-import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import s from './SteamLookupPage.scss';
-import withStyles from '../../decorators/withStyles';
-import _ from 'underscore';
-import LocalStorage from '../../stores/localStorage';
-import Steam from '../../actions/steam';
+import LocalStorage from '../stores/localStorage';
+import Steam from '../actions/steam';
 import parsePath from 'history/lib/parsePath';
-import Location from '../../core/Location';
 
 const title = 'Find Steam User';
 
-@withStyles(s)
-class SteamLookupPage extends Component {
+function SteamLookupPage() {
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
   };
