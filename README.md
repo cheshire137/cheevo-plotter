@@ -27,10 +27,3 @@ Visit [localhost:3000](http://localhost:3000/).
 You can update the cached list of Steam apps/games with:
 
     npm run update-steam-apps
-
-## How to Deploy to Heroku
-
-1. [Add an app on heroku.com.](https://dashboard.heroku.com/new)
-1. `heroku git:remote -a your_heroku_app_name`
-1. `heroku config:set STEAM_API_KEY="your Steam Web API Key"`
-1. `./deploy.sh`
