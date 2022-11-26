@@ -2,7 +2,7 @@ import React from 'react';
 import SteamLookupPage from './components/SteamLookupPage';
 import './App.css';
 
-const App = () => {
+function App() {
   return (
     <div className="App">
       <SteamLookupPage />
