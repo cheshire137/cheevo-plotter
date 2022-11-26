@@ -84,6 +84,7 @@ class SteamApi {
                                '/stats/' + appId + '/achievements/&xml=1',
                                'xml');
     var result;
+    const self = this;
     parseString(xml, (err, rawResult) => {
       if (err === null) {
         const achievements =
@@ -103,9 +104,9 @@ class SteamApi {
       } else {
         console.error('failed to get XML achievements for user ' + steamId +
                       ', app ' + appId + ': ' + err)
-        result = this.getJsonAchievements(steamId, appId);
+        result = self.getJsonAchievements(steamId, appId);
       }
-    }.bind(this));
+    });
     return result;
   }
 
