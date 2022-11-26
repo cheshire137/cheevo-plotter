@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
 const app = express();
+const port = process.env.PORT || 8080;
+const steamApiKey = process.env.STEAM_API_KEY;
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/ping', function (req, res) {
@@ -29,7 +32,7 @@ app.get('/api/steam', async (req, res, next) => {
   } else {
     url = 'http://api.steampowered.com' + url +
           (url.indexOf('?') > -1 ? '&' : '?') + 'key=' +
-          process.env.STEAM_API_KEY;
+          steamApiKey;
   }
   const response = await fetch(url);
   const data = isXml ? await response.text() : await response.json();
@@ -39,6 +42,10 @@ app.get('/api/steam', async (req, res, next) => {
   res.send(data);
 });
 
-const port = process.env.PORT || 8080;
 console.log("Starting server on port " + port);
+if (typeof steamApiKey === 'undefined' || steamApiKey.length < 1) {
+  console.error("No Steam API key found, set in STEAM_API_KEY");
+} else {
+  console.log("Have Steam API key");
+}
 app.listen(port);
