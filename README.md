@@ -9,9 +9,9 @@ Compare your Steam achievements with your friends'.
 I'm using the following tool versions:
 
     % node --version
-    v5.3.0
+    v18.12.1
     % npm --version
-    3.3.12
+    8.19.2
 
 Get a [Steam Web API Key](http://steamcommunity.com/dev/apikey).
 
