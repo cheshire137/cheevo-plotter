@@ -1,4 +1,4 @@
-import {parseString} from 'xml2js';
+import {parseStringPromise} from 'xml2js';
 
 enum ResponseType {
   JSON = "json",
@@ -84,29 +84,27 @@ class SteamApi {
                                '/stats/' + appId + '/achievements/&xml=1',
                                ResponseType.XML);
     var result;
-    const self = this;
-    parseString(xml, (err, rawResult) => {
-      if (err === null) {
-        const achievements =
-            rawResult.playerstats.achievements[0].achievement.map((a: any) => {
-              var isUnlocked = typeof a.unlockTimestamp !== 'undefined';
-              return {
-                key: a.apiname[0],
-                isUnlocked: isUnlocked,
-                name: a.name[0],
-                iconUri: isUnlocked ? a.iconClosed[0] : a.iconOpen[0]
-              };
-            });
-        result = {
-          achievements: achievements,
-          iconUri: rawResult.playerstats.game[0].gameIcon[0]
+    let rawResult
+    try {
+      rawResult = await parseStringPromise(xml)
+      const achievements = rawResult.playerstats.achievements[0].achievement.map((a: any) => {
+        var isUnlocked = typeof a.unlockTimestamp !== 'undefined';
+        return {
+          key: a.apiname[0],
+          isUnlocked: isUnlocked,
+          name: a.name[0],
+          iconUri: isUnlocked ? a.iconClosed[0] : a.iconOpen[0]
         };
-      } else {
-        console.error('failed to get XML achievements for user ' + steamId +
-                      ', app ' + appId + ': ' + err)
-        result = self.getJsonAchievements(steamId, appId);
-      }
-    });
+      });
+      result = {
+        achievements: achievements,
+        iconUri: rawResult.playerstats.game[0].gameIcon[0]
+      };
+    } catch (err) {
+      console.error('failed to get XML achievements for user ' + steamId +
+        ', app ' + appId + ': ' + err)
+      result = this.getJsonAchievements(steamId, appId)
+    }
     return result;
   }
 
