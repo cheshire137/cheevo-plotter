@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SteamLookupPage from './components/SteamLookupPage';
 import SteamUserPage from './components/SteamUserPage';
-import LocalStorage from './stores/LocalStorage';
+import LocalStorage from './models/LocalStorage';
 import './App.css';
 
 function App() {

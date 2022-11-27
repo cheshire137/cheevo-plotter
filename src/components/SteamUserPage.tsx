@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import s from './SteamUserPage.scss';
 import withStyles from '../../decorators/withStyles';
 import _ from 'underscore';
-import LocalStorage from '../../stores/localStorage';
+import LocalStorage from '../../models/localStorage';
 import Steam from '../../actions/steam';
 import parsePath from 'history/lib/parsePath';
 import Location from '../../core/Location';

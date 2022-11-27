@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import s from './SteamGamePage.scss';
-import LocalStorage from '../../stores/localStorage';
+import LocalStorage from '../../models/localStorage';
 import parsePath from 'history/lib/parsePath';
 import Location from '../../core/Location';
 

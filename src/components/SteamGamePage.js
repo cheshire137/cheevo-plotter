@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import s from './SteamGamePage.scss';
 import withStyles from '../../decorators/withStyles';
 import _ from 'underscore';
-import LocalStorage from '../../stores/localStorage';
+import LocalStorage from '../../models/localStorage';
 import Steam from '../../actions/steam';
 import Link from '../Link';
 import SteamApps from '../../stores/steamApps';
