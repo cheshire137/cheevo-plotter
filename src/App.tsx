@@ -25,7 +25,7 @@ function App() {
   return (
     <div className="App">
       {username.length > 0 ? (
-        <SteamUserPage />
+        <SteamUserPage steamUsername={username} onUsernameChange={onUsernameChange} />
       ) : (
         <SteamLookupPage onUsernameChange={onUsernameChange} />
       )}
