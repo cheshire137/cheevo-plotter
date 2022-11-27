@@ -262,8 +262,8 @@ const SteamUserPage = ({ steamUsername, onUsernameChange }: Props) => {
           </p>
         ) : null}
         {haveSteamId && haveFriendsList ? (
-          <FriendsList selectedIds={selectedSteamIds}
-                        username={steamUsername}
+          <FriendsList initiallySelectedIDs={selectedSteamIds}
+                        steamUsername={steamUsername}
                         friends={friends}
                         onSelectionChange={(sf: any[]) => onFriendSelectionChanged(sf)} />
         ) : haveSteamId ? friendsError ? (
