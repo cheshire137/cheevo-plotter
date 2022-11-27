@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Friend from './Friend';
+import FriendListItem from './FriendListItem';
 
 interface Props {
   steamUsername: string;
@@ -27,11 +27,12 @@ const FriendsList = ({ steamUsername, initiallySelectedIDs, friends, onSelection
     <section>
       <h2>{steamUsername}'s Friends ({friends.length})</h2>
       <ul>
-        {friends.map((friend) => {
-          const isSelected = selectedIDs.indexOf(friend.steamid) > -1
-          return <Friend key={friend.steamid} friend={friend} isSelected={isSelected}
-            onToggle={(id: string, checked: boolean) => onFriendToggled(id, checked)} />
-        })}
+        {friends.map((friend) => <FriendListItem
+          key={friend.steamid}
+          friend={friend}
+          isSelected={selectedIDs.indexOf(friend.steamid) > -1}
+          onToggle={(id: string, checked: boolean) => onFriendToggled(id, checked)} />
+        )}
       </ul>
     </section>
   );
