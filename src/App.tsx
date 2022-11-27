@@ -13,8 +13,12 @@ function App() {
     setUsername(LocalStorage.get('steam-username'))
   }, [setUsername])
 
-  const onUsernameChange = (username: string) => {
-    LocalStorage.delete('steam-id');
+  const onUsernameChange = (username: string, steamID?: string) => {
+    if (typeof steamID === 'string') {
+      LocalStorage.set('steam-id', steamID);
+    } else {
+      LocalStorage.delete('steam-id');
+    }
     LocalStorage.delete('steam-games');
     LocalStorage.delete('steam-selected-friends');
     if (username.length < 1) {
