@@ -83,10 +83,8 @@ class SteamApi {
     const xml = await this.get('/api/steam?path=/profiles/' + steamId +
                                '/stats/' + appId + '/achievements/&xml=1',
                                ResponseType.XML);
-    var result;
-    let rawResult
     try {
-      rawResult = await parseStringPromise(xml)
+      const rawResult = await parseStringPromise(xml)
       const achievements = rawResult.playerstats.achievements[0].achievement.map((a: any) => {
         var isUnlocked = typeof a.unlockTimestamp !== 'undefined';
         return {
@@ -96,16 +94,14 @@ class SteamApi {
           iconUri: isUnlocked ? a.iconClosed[0] : a.iconOpen[0]
         };
       });
-      result = {
+      return {
         achievements: achievements,
         iconUri: rawResult.playerstats.game[0].gameIcon[0]
       };
     } catch (err) {
-      console.error('failed to get XML achievements for user ' + steamId +
-        ', app ' + appId + ': ' + err)
-      result = this.getJsonAchievements(steamId, appId)
+      console.error('failed to get XML achievements for user ' + steamId + ', app ' + appId + ': ' + err)
+      return this.getJsonAchievements(steamId, appId)
     }
-    return result;
   }
 
   static async getJsonAchievements(steamId: string, appId: number) {
