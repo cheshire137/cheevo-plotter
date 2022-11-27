@@ -1,15 +1,19 @@
-import React, { Component, PropTypes } from 'react';
-import s from './SteamGamePage.scss';
+import React from 'react';
 import d3 from 'd3';
 
-class UnlockedBarChart extends Component {
+interface Props {
+  achievements: any[];
+  players: any;
+}
+
+const UnlockedBarChart = ({ achievements, players }: Props) => {
   constructor(props, context) {
     super(props, context);
     this.state = {countsByPlayer: this.getCountsByPlayer(props.achievements)};
   }
 
   componentDidMount() {
-    const playerCount = Object.keys(this.props.players).length;
+    const playerCount = Object.keys(players).length;
     const margin = {top: 10, right: 0, bottom: 30, left: 43};
     const width = Math.min(960, 150 * playerCount) - margin.left - margin.right;
     const height = 230 - margin.top - margin.bottom;
@@ -48,7 +52,7 @@ class UnlockedBarChart extends Component {
   getUnlockedCounts() {
     var data = [];
     for (var steamId in this.state.countsByPlayer) {
-      var label = this.props.players[steamId].personaname;
+      var label = players[steamId].personaname;
       if (label.length > 17) {
         label = label.slice(0, 14) + '...';
       }
@@ -78,11 +82,7 @@ class UnlockedBarChart extends Component {
     return countsByPlayer;
   }
 
-  render() {
-    return (
-      <div id="unlockedBarChart" className={s.unlockedBarChart}></div>
-    );
-  }
+  return <div id="unlockedBarChart"></div>
 }
 
 export default UnlockedBarChart;
