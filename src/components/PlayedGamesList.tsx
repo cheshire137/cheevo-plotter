@@ -2,11 +2,11 @@ import React from 'react';
 import SteamGame from './SteamGame';
 
 interface Props {
-  steamUsername: string;
+  loadSteamApp(appID: number): void;
   games: number[];
 }
 
-const PlayedGamesList = ({ steamUsername, games }: Props) => {
+const PlayedGamesList = ({ loadSteamApp, games }: Props) => {
   const index = Math.ceil(games.length / 2.0)
   const column1 = games.slice(0, index)
   const column2 = games.slice(index)
@@ -16,10 +16,10 @@ const PlayedGamesList = ({ steamUsername, games }: Props) => {
       <h2>Played Games ({games.length})</h2>
       <div>
         <ul>
-          {column1.map(appId => <SteamGame username={steamUsername} appId={appId} key={appId} />)}
+          {column1.map(appId => <SteamGame loadSteamApp={loadSteamApp} appID={appId} key={appId} />)}
         </ul>
         <ul>
-          {column2.map(appId => <SteamGame username={steamUsername} appId={appId} key={appId} />)}
+          {column2.map(appId => <SteamGame loadSteamApp={loadSteamApp} appID={appId} key={appId} />)}
         </ul>
       </div>
     </section>

@@ -6,6 +6,7 @@ import './App.css';
 
 function App() {
   const [username, setUsername] = useState("")
+  const [appID, setAppID] = useState<number | null>(null)
 
   useEffect(() => {
     setUsername(LocalStorage.get('steam-username'))
@@ -20,6 +21,10 @@ function App() {
     } else {
       LocalStorage.set('steam-username', username)
     }
+  }
+
+  const onAppIDChange = (appID: number) {
+    setAppID(appID)
   }
 
   return (
