@@ -1,75 +1,68 @@
-import React, { Component, PropTypes } from 'react';
-import s from './SteamGamePage.scss';
-import withStyles from '../../decorators/withStyles';
-import _ from 'underscore';
-import LocalStorage from '../../models/localStorage';
-import Steam from '../../actions/steam';
-import Link from '../Link';
-import SteamApps from '../../stores/steamApps';
+import React, { useState, useEffect } from 'react';
+import LocalStorage from '../models/LocalStorage'
+import SteamApi from '../models/SteamApi';
+import SteamApps from '../stores/steamApps';
 import AchievementsList from './AchievementsList';
 import AchievementsComparison from './AchievementsComparison';
 import PlayersList from './PlayersList';
-import parsePath from 'history/lib/parsePath';
-import Location from '../../core/Location';
 
-@withStyles(s)
-class SteamGamePage extends Component {
-  static contextTypes = {
-    onSetTitle: PropTypes.func.isRequired,
-  };
+interface Props {
+  steamUsername: string;
+  appID: number;
+  onUsernameChange(newUsername: string): void;
+}
 
-  constructor(props, context) {
-    super(props, context);
-    const selectedIds = LocalStorage.get('steam-selected-friends') || [
-      LocalStorage.get('steam-id')
-    ];
-    this.state = {selectedIds: selectedIds};
+const SteamGamePage = ({ steamUsername, appID, onUsernameChange }: Props) => {
+  const [selectedIDs, setSelectedIDs] = useState<string[]>([])
+  const [gameName, setGameName] = useState("")
+  const [steamID, setSteamID] = useState("")
+  const [players, setPlayers] = useState<any[] | null>(null)
+  const [achievements, setAchievements] = useState<any>({})
+  const [achievementLoadCount, setAchievementLoadCount] = useState(0)
+  const [iconURI, setIconURI] = useState<string | null>(null)
+
+  const getAchievements = async () => {
+    for (const selectedSteamID of selectedIDs) {
+      let data
+      try {
+        data = await SteamApi.getAchievements(selectedSteamID, appID)
+      } catch (err) {
+        continue
+      }
+      setAchievementLoadCount(achievementLoadCount + 1)
+      const newAchievements = Object.assign({}, achievements)
+      newAchievements[selectedSteamID] = data.achievements;
+      setAchievements(newAchievements)
+      setIconURI(data.iconUri)
+    }
   }
 
-  componentDidMount() {
-    var playerSteamId = LocalStorage.get('steam-id');
+  const getPlayerSummaries = async () => {
+    let playerSummaries
+    try {
+      playerSummaries = await SteamApi.getPlayerSummaries(selectedIDs)
+      setPlayers(playerSummaries)
+    } catch (err) {
+      console.error('failed to load player summaries', err)
+    }
+  }
+
+  useEffect(() => {
+    setSelectedIDs(LocalStorage.get('steam-selected-friends') || [LocalStorage.get('steam-id')])
+
+    const playerSteamId = LocalStorage.get('steam-id');
     if (typeof playerSteamId === 'undefined') {
       LocalStorage.delete('steam-games');
       LocalStorage.delete('steam-selected-friends');
-      const path = '/steam/' + encodeURIComponent(this.props.username);
-      Location.push({
-        ...(parsePath(path))
-      });
+      onUsernameChange(steamUsername);
       return;
     }
-    const name = SteamApps.getName(this.props.appId);
-    this.context.onSetTitle('Steam / ' + this.props.username + ' / ' + name);
-    this.setState({gameName: name, steamId: playerSteamId});
-    for (var i = 0; i < this.state.selectedIds.length; i++) {
-      var steamId = this.state.selectedIds[i];
-      Steam.getAchievements(steamId, this.props.appId).
-            then(this.onAchievementsLoaded.bind(this, steamId)).
-            then(undefined, this.onAchievementsError.bind(this, steamId));
-    }
-    Steam.getPlayerSummaries(this.state.selectedIds).
-          then(this.onPlayerSummariesFetched.bind(this)).
-          then(undefined, this.onPlayerSummariesError.bind(this));
-  }
 
-  onPlayerSummariesFetched(players) {
-    this.setState({players: players});
-  }
-
-  onPlayerSummariesError(err) {
-    console.error('failed to load player summaries', err);
-  }
-
-  onAchievementsLoaded(steamId, data) {
-    var achievements = this.state.achievements || {};
-    var loadCount = this.state.achievementLoadCount;
-    if (typeof loadCount === 'undefined') {
-      loadCount = 0;
-    }
-    loadCount++;
-    achievements[steamId] = data.achievements;
-    this.setState({iconUri: data.iconUri, achievements: achievements,
-                   achievementLoadCount: loadCount});
-  }
+    setGameName(SteamApps.getName(appID))
+    setSteamID(playerSteamId)
+    getAchievements()
+    getPlayerSummaries()
+  }, [setSelectedIDs, setGameName, setSteamID, getAchievements, getPlayerSummaries, appID, onUsernameChange])
 
   onAchievementsError(steamId, err) {
     console.error('failed to load achievements list for ' + steamId, err);
@@ -85,12 +78,12 @@ class SteamGamePage extends Component {
   }
 
   render() {
-    const gameUrl = 'https://steamcommunity.com/app/' + this.props.appId;
+    const gameUrl = 'https://steamcommunity.com/app/' + appID;
     const profileUrl = 'https://steamcommunity.com/id/' +
                        this.props.username + '/';
-    const onlyOneUser = this.state.selectedIds.length === 1;
+    const onlyOneUser = selectedIDs.length === 1;
     const haveAchievements = typeof this.state.achievements === 'object' &&
-        this.state.achievementLoadCount === this.state.selectedIds.length;
+        this.state.achievementLoadCount === selectedIDs.length;
     const havePlayers = typeof this.state.players === 'object';
     const achievementCount = haveAchievements ?
         this.state.achievements[this.state.steamId].length : 0;
