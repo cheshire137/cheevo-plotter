@@ -23,7 +23,7 @@ function App() {
     }
   }
 
-  const onAppIDChange = (appID: number) {
+  const onAppIDChange = (appID: number) => {
     setAppID(appID)
   }
 
