@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SteamLookupPage from './components/SteamLookupPage';
 import SteamUserPage from './components/SteamUserPage';
+import SteamGamePage from './components/SteamGamePage';
 import LocalStorage from './models/LocalStorage';
 import './App.css';
 
@@ -23,17 +24,17 @@ function App() {
     }
   }
 
-  const onAppIDChange = (appID: number) => {
-    setAppID(appID)
+  const onAppIDChange = (newAppID: number) => {
+    setAppID(newAppID)
   }
 
   return (
     <div className="App">
-      {username.length > 0 ? (
-        <SteamUserPage steamUsername={username} onUsernameChange={onUsernameChange} />
-      ) : (
-        <SteamLookupPage onUsernameChange={onUsernameChange} />
-      )}
+      {username.length > 0 && appID !== null ? <SteamGamePage
+        steamUsername={username} appID={appID} onUsernameChange={onUsernameChange}
+      /> : username.length > 0 ? <SteamUserPage
+        loadSteamGame={onAppIDChange} steamUsername={username} onUsernameChange={onUsernameChange}
+      /> : <SteamLookupPage onUsernameChange={onUsernameChange} />}
     </div>
   );
 }
