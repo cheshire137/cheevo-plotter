@@ -67,7 +67,7 @@ const UnlockedBarChart = ({ achievements, players }: Props) => {
     .attr('height', d => height - y(d.value))
   svg.selectAll('.bar').data(data).enter().append('text')
     .text(d => d.value > 5 ? d.value : '')
-    .attr('x', (d, _) => x(d.label) + 8)
+    .attr('x', (d, _) => (x(d.label) || 0) + 8)
     .attr('y', d => y(d.value) + 21)
 
   return <div id="unlockedBarChart"></div>
