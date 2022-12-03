@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import LocalStorage from '../models/LocalStorage';
-import SteamApi from '../models/SteamApi';
-import PlayedGamesList from './PlayedGamesList';
-import SteamApps from '../stores/steamApps';
-import FriendsList from './FriendsList';
+import React, { useState, useEffect } from 'react'
+import LocalStorage from '../models/LocalStorage'
+import SteamApi from '../models/SteamApi'
+import PlayedGamesList from './PlayedGamesList'
+import SteamApps from '../stores/steamApps'
+import FriendsList from './FriendsList'
+import PlayerSummary from '../models/PlayerSummary'
 
 interface Props {
   steamUsername: string;
@@ -12,21 +13,17 @@ interface Props {
 }
 
 const SteamUserPage = ({ steamUsername, onUsernameChange, loadSteamGame }: Props) => {
-  const [ownedGames, setOwnedGames] = useState<any>({});
-  const [steamID, setSteamID] = useState("");
-  const [steamIDError, setSteamIDError] = useState(false);
+  const [ownedGames, setOwnedGames] = useState<any>({})
+  const [steamID, setSteamID] = useState("")
+  const [steamIDError, setSteamIDError] = useState(false)
   const [friendsError, setFriendsError] = useState(false)
   const [games, setGames] = useState<any[]>([])
   const [gamesError, setGamesError] = useState(false)
-  const [playerSummary, setPlayerSummary] = useState<any | null>(null)
+  const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
   const [friends, setFriends] = useState<any[]>([])
 
   const clearSteamUsername = (event: React.MouseEvent) => {
     event.preventDefault();
-    LocalStorage.delete('steam-id');
-    LocalStorage.delete('steam-username');
-    LocalStorage.delete('steam-games');
-    LocalStorage.delete('steam-selected-friends');
     onUsernameChange('')
   }
 
@@ -38,7 +35,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadSteamGame }: Props
     }
   }
 
-  const updateSharedGames = (gamesBySteamId: any[]) => {
+  const updateSharedGames = (gamesBySteamId: { [steamID: string]: any }) => {
     gamesBySteamId = gamesBySteamId || ownedGames;
     const gamesList: any[] = [];
     for (var steamId in gamesBySteamId) {
@@ -135,17 +132,17 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadSteamGame }: Props
     }
   }
 
-  const fetchFriends = async (steamId: string) => {
+  const fetchFriends = async (steamID: string) => {
     let data: any
     try {
-      data = await SteamApi.getFriends(steamId)
+      data = await SteamApi.getFriends(steamID)
     } catch (err) {
       console.error('failed to fetch Steam friends', err);
       setFriendsError(true)
       return
     }
 
-    const friendIds = data.friendslist.friends.map((f: any) => f.steamid).concat([steamId]);
+    const friendIds = data.friendslist.friends.map((f: any) => f.steamid).concat([steamID]);
     let summaries: any
     try {
       summaries = SteamApi.getPlayerSummaries(friendIds)
@@ -158,8 +155,8 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadSteamGame }: Props
     // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
     // communityvisibilitystate 3 means the profile is public.
     // Need public profiles to see owned/played games for comparison.
-    const publicFriends = summaries.filter((p: any) => p.communityvisibilitystate === 3 && p.steamid !== steamId);
-    const loadedPlayerSummary = summaries.filter((p: any) => p.steamid === steamId)[0];
+    const publicFriends = summaries.filter((p: any) => p.communityvisibilitystate === 3 && p.steamid !== steamID);
+    const loadedPlayerSummary = summaries.filter((p: any) => p.steamid === steamID)[0];
     loadedPlayerSummary.username = getUsernameFromProfileUrl(loadedPlayerSummary.profileurl) || steamUsername;
     setPlayerSummary(loadedPlayerSummary)
     setFriends(publicFriends)
@@ -218,9 +215,8 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadSteamGame }: Props
   const haveSteamId = typeof steamID !== 'undefined'
   const haveGamesList = typeof games === 'object'
   const haveFriendsList = typeof friends === 'object'
-  const havePlayerSummary = typeof playerSummary === 'object'
-  const haveRealName = havePlayerSummary && typeof playerSummary.realname === 'string' && playerSummary.realname.length > 0
-  const profileUrl = havePlayerSummary ? playerSummary.profileurl : 'https://steamcommunity.com/id/' + encodeURIComponent(steamUsername) + '/'
+  const haveRealName = playerSummary && playerSummary.realname.length > 0
+  const profileUrl = playerSummary ? playerSummary.profileurl : 'https://steamcommunity.com/id/' + encodeURIComponent(steamUsername) + '/'
 
   return (
     <div>
@@ -228,46 +224,32 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadSteamGame }: Props
         <h1>
           <button onClick={e => clearSteamUsername(e)}>&laquo;</button>
           Steam <span> / </span>
-          {havePlayerSummary ? <a href={profileUrl} rel="noreferrer" target="_blank">
+          {playerSummary ? <a href={profileUrl} rel="noreferrer" target="_blank">
             <img src={playerSummary.avatarmedium} alt={playerSummary.steamid} />
             <span> {playerSummary.personaname} </span>
             {haveRealName ? <span>{playerSummary.realname}</span> : null}
           </a> : <a href={profileUrl} rel="noreferrer" target="_blank">{steamUsername}</a>}
         </h1>
         {steamIDError ? <div>
-          <p>
-            Could not find Steam ID for that username.
-          </p>
-          <p>
-            Try setting your custom URL in Steam:
-          </p>
-          <p>
-            <img src={require('./steam-edit-profile.jpg')} width="640" height="321" alt="Edit Steam profile" />
-          </p>
-          <p>
-            Then, search here for the name you set in that custom URL.
-          </p>
+          <p>Could not find Steam ID for that username.</p>
+          <p>Try setting your custom URL in Steam:</p>
+          <p><img src={require('./steam-edit-profile.jpg')} width="640" height="321" alt="Edit Steam profile" /></p>
+          <p>Then, search here for the name you set in that custom URL.</p>
         </div> : null}
         {haveSteamId && haveFriendsList && haveGamesList ? <p>
-            Choose some other players and a game to compare your achievements!
+          Choose some other players and a game to compare your achievements!
         </p> : null}
         {haveSteamId && haveFriendsList ? <FriendsList initiallySelectedIDs={selectedSteamIds}
           steamUsername={steamUsername} friends={friends}
           onSelectionChange={(sf: any[]) => onFriendSelectionChanged(sf)}
-        /> : haveSteamId ? friendsError ? <p>
-          There was an error loading the friends list.
-        </p> : <p>
-          Loading friends list...
-        </p> : null}
+        /> : haveSteamId ? friendsError
+          ? <p>There was an error loading the friends list.</p>
+          : <p>Loading friends list...</p> : null}
         {haveFriendsList && haveGamesList ? <hr /> : null}
         {haveSteamId ? haveGamesList ? (
           <PlayedGamesList games={games} loadSteamApp={loadSteamGame} />
         ) : gamesError ? (
-          <p>
-            There was an error loading the list of games
-            <strong> {steamUsername} </strong>
-            owns.
-          </p>
+          <p>There was an error loading the list of games <strong>{steamUsername}</strong> owns.</p>
         ) : (
           <p>Loading games list...</p>
         ) : steamIDError ? null : <p>Loading...</p>}

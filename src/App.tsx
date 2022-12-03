@@ -5,7 +5,7 @@ import SteamGamePage from './components/SteamGamePage';
 import LocalStorage from './models/LocalStorage';
 import './App.css';
 
-const onUsernameChange = (username: string, steamID?: string) => {
+const persistUsernameChange = (username: string, steamID?: string) => {
   if (typeof steamID === 'string') {
     LocalStorage.set('steam-id', steamID);
   } else {
@@ -22,8 +22,13 @@ const onUsernameChange = (username: string, steamID?: string) => {
 
 function App() {
   const [appID, setAppID] = useState<number | null>(null)
-  const username = LocalStorage.get('steam-username') || ""
+  const [username, setUsername] = useState<string>(LocalStorage.get('steam-username') || "")
   const onAppIDChange = (newAppID: number) => setAppID(newAppID)
+
+  const onUsernameChange = (newUsername: string) => {
+    persistUsernameChange(newUsername)
+    setUsername(newUsername)
+  }
 
   if (username.length < 1) {
     return <SteamLookupPage onUsernameChange={onUsernameChange} />
