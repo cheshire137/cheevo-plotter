@@ -1,7 +1,8 @@
-import React from 'react';
+import React from 'react'
+import Player from '../models/Player'
 
 interface Props {
-  players: any[];
+  players: { [key: string]: Player };
   achievement: any;
 }
 

@@ -39,11 +39,9 @@ class SteamApi {
       batches.push(batch);
     }
     let summaries: any[] = [];
-    for (var i = 0; i < batches.length; i++) {
-      var result =
-          await this.get('/api/steam?format=json' +
-                         '&path=/ISteamUser/GetPlayerSummaries/v0002/' +
-                         '&steamids=' + batches[i].join(','));
+    for (const batch of batches) {
+      const result = await this.get('/api/steam?format=json&path=/ISteamUser/GetPlayerSummaries/v0002/' +
+        '&steamids=' + batch.join(','));
       if (result.response) {
         summaries = summaries.concat(result.response.players || []);
       }
@@ -64,8 +62,7 @@ class SteamApi {
     if (data.friendslist) {
       return data;
     }
-    throw new Error('Failed to get friends for ' + steamId +
-                    '; may not be a public profile.');
+    throw new Error('Failed to get friends for ' + steamId + '; may not be a public profile.');
   }
 
   static async getOwnedGames(steamId: string) {
@@ -80,9 +77,8 @@ class SteamApi {
   }
 
   static async getAchievements(steamId: string, appId: number) {
-    const xml = await this.get('/api/steam?path=/profiles/' + steamId +
-                               '/stats/' + appId + '/achievements/&xml=1',
-                               ResponseType.XML);
+    const xml = await this.get('/api/steam?path=/profiles/' + steamId + '/stats/' + appId + '/achievements/&xml=1',
+      ResponseType.XML);
     try {
       const rawResult = await parseStringPromise(xml)
       const achievements = rawResult.playerstats.achievements[0].achievement.map((a: any) => {
@@ -105,10 +101,8 @@ class SteamApi {
   }
 
   static async getJsonAchievements(steamId: string, appId: number) {
-    const rawResult = await this.get(
-      '/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/' +
-      '&appid=' + appId + '&steamid=' + steamId + '&format=json'
-    );
+    const rawResult = await this.get('/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/&appid=' + appId +
+      '&steamid=' + steamId + '&format=json');
     if (typeof rawResult.playerstats.error === 'string') {
       throw new Error(rawResult.playerstats.error);
     }
@@ -134,9 +128,7 @@ class SteamApi {
   }
 
   static async getGameSchema(appId: number) {
-    return this.get('/api/steam?format=json' +
-                    '&path=/ISteamUserStats/GetSchemaForGame/v2/' +
-                    '&appid=' + appId);
+    return this.get('/api/steam?format=json&path=/ISteamUserStats/GetSchemaForGame/v2/&appid=' + appId);
   }
 
   static async get(path: string, type?: ResponseType) {

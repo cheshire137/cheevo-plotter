@@ -96,12 +96,12 @@ const SteamGamePage = ({ steamUsername, appID, onUsernameChange }: Props) => {
         </span>
       ) : null}
     </h1>
-    {havePlayers ? onlyOneUser ? null : <PlayersList players={players} currentSteamId={steamID}
-      achievements={achievements} /> : <p>Loading player data...</p>}
+    {havePlayers ? onlyOneUser ? null : <PlayersList players={players} currentSteamID={steamID}
+      achievements={achievements} onUsernameChange={onUsernameChange} /> : <p>Loading player data...</p>}
     {haveAchievements ? onlyOneUser ? <AchievementsList
       achievements={achievements[steamID]} />
-     : havePlayers ? <AchievementsComparison players={players} steamId={steamID}
-      achievementsBySteamId={achievements} /> : null : <p>Loading achievements...</p>}
+     : havePlayers ? <AchievementsComparison initialPlayers={players}
+      achievementsBySteamID={achievements} /> : null : <p>Loading achievements...</p>}
   </div>
 }
 

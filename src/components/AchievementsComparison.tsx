@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import AchievementComparison from './AchievementComparison';
-import UnlockedBarChart from './UnlockedBarChart';
-import Filters from './Filters';
+import React, { useState } from 'react'
+import AchievementComparison from './AchievementComparison'
+import UnlockedBarChart from './UnlockedBarChart'
+import Filters from './Filters'
+import Player from '../models/Player'
 
 interface Props {
-  initialPlayers: any[];
+  initialPlayers: Player[];
   achievementsBySteamID: any;
 }
 
-const getInitialHashOfPlayers = (initialPlayers: any[]) => {
-  const players: any = {};
+const getInitialHashOfPlayers = (initialPlayers: Player[]) => {
+  const players: { [key: string]: Player } = {};
   for (const player of initialPlayers) {
     players[player.steamid] = player
   }
   return players
 }
 
-const getMasterListOfAchievements = (achievementsBySteamID: any) => {
+const getMasterListOfAchievements = (achievementsBySteamID: { [key: string]: any }) => {
   const achievements = []
   for (var steamID in achievementsBySteamID) {
     for (var i = 0; i < achievementsBySteamID[steamID].length; i++) {
@@ -67,9 +68,9 @@ const getInitialListOfAchievements = (achievementsBySteamID: any) => {
 }
 
 const AchievementsComparison = ({ initialPlayers, achievementsBySteamID }: Props) => {
-  const [players, setPlayers] = useState<any[]>(getInitialHashOfPlayers(initialPlayers))
-  const [achievements, setAchievements] = useState<any[]>(getInitialListOfAchievements(achievementsBySteamID))
   const [filters, setFilters] = useState<string[]>([])
+  const players = getInitialHashOfPlayers(initialPlayers)
+  const achievements = getInitialListOfAchievements(achievementsBySteamID)
 
   const onFilterChange = (activeFilters: string[]) => {
     setFilters(activeFilters)
