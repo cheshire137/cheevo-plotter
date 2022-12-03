@@ -1,15 +1,13 @@
-import React from 'react';
-import SteamApps from '../stores/steamApps';
+import React from 'react'
+import Game from '../models/Game'
 
 interface Props {
-  appID: number;
-  loadSteamApp(appID: number): void;
+  game: Game;
+  loadGame(game: Game): void;
 }
 
-const SteamGame = ({ appID, loadSteamApp }: Props) => <li>
-  <button type="button" onClick={() => loadSteamApp(appID)}>
-    {SteamApps.getName(appID)}
-  </button>
+const SteamGame = ({ game, loadGame }: Props) => <li>
+  <button type="button" onClick={() => loadGame(game)}>{game.name}</button>
 </li>
 
 export default SteamGame;

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import SteamLookupPage from './components/SteamLookupPage';
-import SteamUserPage from './components/SteamUserPage';
-import SteamGamePage from './components/SteamGamePage';
-import LocalStorage from './models/LocalStorage';
-import './App.css';
+import React, { useState } from 'react'
+import SteamLookupPage from './components/SteamLookupPage'
+import SteamUserPage from './components/SteamUserPage'
+import SteamGamePage from './components/SteamGamePage'
+import LocalStorage from './models/LocalStorage'
+import Game from './models/Game'
+import './App.css'
 
 const persistUsernameChange = (username: string, steamID?: string) => {
   if (typeof steamID === 'string') {
@@ -21,9 +22,8 @@ const persistUsernameChange = (username: string, steamID?: string) => {
 }
 
 function App() {
-  const [appID, setAppID] = useState<number | null>(null)
+  const [game, setGame] = useState<Game | null>(null)
   const [username, setUsername] = useState<string>(LocalStorage.get('steam-username') || "")
-  const onAppIDChange = (newAppID: number) => setAppID(newAppID)
 
   const onUsernameChange = (newUsername: string) => {
     persistUsernameChange(newUsername)
@@ -34,11 +34,11 @@ function App() {
     return <SteamLookupPage onUsernameChange={onUsernameChange} />
   }
 
-  if (appID !== null) {
-    return <SteamGamePage steamUsername={username} appID={appID} onUsernameChange={onUsernameChange} />
+  if (game !== null) {
+    return <SteamGamePage steamUsername={username} game={game} onUsernameChange={onUsernameChange} />
   }
 
-  return <SteamUserPage loadSteamGame={onAppIDChange} steamUsername={username} onUsernameChange={onUsernameChange} />
+  return <SteamUserPage loadGame={g => setGame(g)} steamUsername={username} onUsernameChange={onUsernameChange} />
 }
 
 export default App;

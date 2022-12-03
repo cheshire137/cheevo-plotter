@@ -1,26 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import LocalStorage from '../models/LocalStorage'
-import SteamApi from '../models/SteamApi';
-import SteamApps from '../stores/steamApps';
-import AchievementsList from './AchievementsList';
-import AchievementsComparison from './AchievementsComparison';
-import PlayersList from './PlayersList';
+import Game from '../models/Game'
+import SteamApi from '../models/SteamApi'
+import AchievementsList from './AchievementsList'
+import AchievementsComparison from './AchievementsComparison'
+import PlayersList from './PlayersList'
 
 interface Props {
   steamUsername: string;
-  appID: number;
+  game: Game;
   onUsernameChange(newUsername: string): void;
 }
 
-const SteamGamePage = ({ steamUsername, appID, onUsernameChange }: Props) => {
+const SteamGamePage = ({ steamUsername, game, onUsernameChange }: Props) => {
   const [selectedIDs, setSelectedIDs] = useState<string[]>([])
-  const [gameName, setGameName] = useState("")
   const [steamID, setSteamID] = useState("")
   const [players, setPlayers] = useState<any[] | null>(null)
   const [achievements, setAchievements] = useState<any>({})
   const [achievementLoadCount, setAchievementLoadCount] = useState(0)
   const [iconURI, setIconURI] = useState<string | null>(null)
-  const gameUrl = 'https://steamcommunity.com/app/' + appID
   const profileUrl = 'https://steamcommunity.com/id/' + steamUsername + '/'
   const onlyOneUser = selectedIDs.length === 1
   const haveAchievements = typeof achievements === 'object' && achievementLoadCount === selectedIDs.length
@@ -38,15 +36,13 @@ const SteamGamePage = ({ steamUsername, appID, onUsernameChange }: Props) => {
       return;
     }
 
-    setGameName(SteamApps.getName(appID))
     setSteamID(playerSteamId)
-
 
     const getAchievements = async () => {
       for (const selectedSteamID of selectedIDs) {
         let data
         try {
-          data = await SteamApi.getAchievements(selectedSteamID, appID)
+          data = await SteamApi.getAchievements(selectedSteamID, game.appID)
         } catch (err) {
           console.error('failed to load achievements list for ' + selectedSteamID, err);
           const newAchievements = Object.assign({}, achievements)
@@ -77,7 +73,7 @@ const SteamGamePage = ({ steamUsername, appID, onUsernameChange }: Props) => {
 
     getAchievements()
     getPlayerSummaries()
-  }, [setSelectedIDs, setGameName, setSteamID, steamUsername, achievementLoadCount, selectedIDs, achievements, appID, onUsernameChange])
+  }, [setSelectedIDs, setSteamID, steamUsername, achievementLoadCount, selectedIDs, achievements, game, onUsernameChange])
 
   const clearSteamGame = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -86,21 +82,18 @@ const SteamGamePage = ({ steamUsername, appID, onUsernameChange }: Props) => {
   return <div>
     <h1>
       <button onClick={e => clearSteamGame(e)}>&laquo;</button>
-      {typeof iconURI === 'string' ? <img src={iconURI} alt={gameName} /> : null}
+      {typeof iconURI === 'string' ? <img src={iconURI} alt={game.name} /> : null}
       Steam / <a href={profileUrl} rel="noreferrer" target="_blank"> {steamUsername} </a> /
-      <a href={gameUrl} rel="noreferrer" target="_blank"> {gameName}</a>
-      {haveAchievements && achievementCount > 0 ? (
-        <span>
-          <span>{achievementCount}</span>
-          <span>{achievementCount === 1 ? 'achievement' : 'achievements'}</span>
-        </span>
-      ) : null}
+      <a href={game.url} rel="noreferrer" target="_blank"> {game.name}</a>
+      {haveAchievements && achievementCount > 0 ? <>
+        <span>{achievementCount}</span>
+        <span>{achievementCount === 1 ? 'achievement' : 'achievements'}</span>
+      </> : null}
     </h1>
     {havePlayers ? onlyOneUser ? null : <PlayersList players={players} currentSteamID={steamID}
       achievements={achievements} onUsernameChange={onUsernameChange} /> : <p>Loading player data...</p>}
     {haveAchievements ? onlyOneUser ? <AchievementsList
-      achievements={achievements[steamID]} />
-     : havePlayers ? <AchievementsComparison initialPlayers={players}
+      achievements={achievements[steamID]} /> : havePlayers ? <AchievementsComparison initialPlayers={players}
       achievementsBySteamID={achievements} /> : null : <p>Loading achievements...</p>}
   </div>
 }

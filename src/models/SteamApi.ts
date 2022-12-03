@@ -64,13 +64,23 @@ class SteamApi {
     throw new Error('Failed to get friends for ' + steamID + '; may not be a public profile.');
   }
 
-  static async getOwnedGames(steamID: string) {
+  static async getOwnedGames(steamID: string): Promise<Game[]> {
     const data = await this.get('/api/steam?format=json&path=/IPlayerService/GetOwnedGames/v0001/&steamid=' +
       steamID);
     if (data.response.games) {
-      return data;
+      console.log('getOwnedGames', data)
+      return data.response.games.map((g: any) => new Game({
+        appID: g.appid,
+        totalPlaytime: g.playtime_forever,
+        timeLastPlayed: g.rtime_last_played,
+      }))
     }
     throw new Error('Could not get Steam games for ID ' + steamID + '; may not be a public profile.');
+  }
+
+  static async getOwnedPlayedGames(steamID: string) {
+    const ownedGames = await this.getOwnedGames(steamID)
+    return ownedGames.filter(game => game.totalPlaytime > 0)
   }
 
   static async getAchievements(steamID: string, appID: number) {
@@ -86,9 +96,7 @@ class SteamApi {
         return new Achievement(isUnlocked, achievementIconUri, achievementName, achievementKey)
       })
       const gameIconUri = rawResult.playerstats.game[0].gameIcon[0]
-      const game = new Game(gameIconUri, appID)
-      game.setAchievements(achievements)
-      return game
+      return new Game({ iconUri: gameIconUri, appID, achievements })
     } catch (err) {
       console.error('failed to get XML achievements for user ' + steamID + ', app ' + appID + ': ' + err)
       return this.getJsonAchievements(steamID, appID)
@@ -115,9 +123,7 @@ class SteamApi {
       return new Achievement(isUnlocked, achievementIconUri, achievementName, achievementKey)
     });
     // TODO: somehow get game iconUri from JSON API
-    const game = new Game('', appID)
-    game.setAchievements(achievements)
-    return game
+    return new Game({ iconUri: '', appID, achievements })
   }
 
   static async getGameSchema(appID: number) {
