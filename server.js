@@ -1,11 +1,22 @@
 const express = require('express');
-const bodyParser = require('body-parser')
+const cors = require('cors');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 8080;
 const steamApiKey = process.env.STEAM_API_KEY;
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+const allowedOrigins = ['http://localhost:3000'];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error())
+    }
+  }
+}))
 
 app.get('/ping', function (req, res) {
  return res.send('pong');
