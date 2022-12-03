@@ -5,29 +5,24 @@ import SteamGamePage from './components/SteamGamePage';
 import LocalStorage from './models/LocalStorage';
 import './App.css';
 
-function App() {
-  const [username, setUsername] = useState("")
-  const [appID, setAppID] = useState<number | null>(null)
-
-  useEffect(() => {
-    setUsername(LocalStorage.get('steam-username'))
-  }, [setUsername])
-
-  const onUsernameChange = (username: string, steamID?: string) => {
-    if (typeof steamID === 'string') {
-      LocalStorage.set('steam-id', steamID);
-    } else {
-      LocalStorage.delete('steam-id');
-    }
-    LocalStorage.delete('steam-games');
-    LocalStorage.delete('steam-selected-friends');
-    if (username.length < 1) {
-      LocalStorage.delete('steam-username');
-    } else {
-      LocalStorage.set('steam-username', username)
-    }
+const onUsernameChange = (username: string, steamID?: string) => {
+  if (typeof steamID === 'string') {
+    LocalStorage.set('steam-id', steamID);
+  } else {
+    LocalStorage.delete('steam-id');
   }
+  LocalStorage.delete('steam-games');
+  LocalStorage.delete('steam-selected-friends');
+  if (username.length < 1) {
+    LocalStorage.delete('steam-username');
+  } else {
+    LocalStorage.set('steam-username', username)
+  }
+}
 
+function App() {
+  const [appID, setAppID] = useState<number | null>(null)
+  const username = LocalStorage.get('steam-username') || ""
   const onAppIDChange = (newAppID: number) => setAppID(newAppID)
 
   if (username.length < 1) {
