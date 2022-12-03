@@ -7,11 +7,11 @@ class Achievement {
   name: string;
   players: Player[];
 
-  constructor(isUnlocked: boolean, iconUri: string, name: string) {
+  constructor(isUnlocked: boolean, iconUri: string, name: string, key: string) {
     this.isUnlocked = isUnlocked;
     this.iconUri = iconUri;
     this.name = name;
-    this.key = `${name} (${isUnlocked ? 'unlocked' : 'locked'})`;
+    this.key = key;
     this.players = [];
   }
 }
