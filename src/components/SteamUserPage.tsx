@@ -6,6 +6,7 @@ import PlayedGamesList from './PlayedGamesList'
 import FriendsList from './FriendsList'
 import PlayerSummary from '../models/PlayerSummary'
 import SteamUserPageHeader from './SteamUserPageHeader'
+import SteamUserError from './SteamUserError'
 
 interface Props {
   steamUsername: string;
@@ -237,12 +238,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   return <div>
     <SteamUserPageHeader playerSummary={playerSummary} steamUsername={steamUsername}
       onUsernameChange={onUsernameChange} />
-    {steamIDError ? <div>
-      <p>Could not find Steam ID for that username.</p>
-      <p>Try setting your custom URL in Steam:</p>
-      <p><img src={require('./steam-edit-profile.jpg')} width="640" height="321" alt="Edit Steam profile" /></p>
-      <p>Then, search here for the name you set in that custom URL.</p>
-    </div> : null}
+    {steamIDError && <SteamUserError />}
     {steamID && friends && games ? <p>
       Choose some other players and a game to compare your achievements!
     </p> : null}
