@@ -1,37 +1,26 @@
-import React, { useState } from 'react';
-import LocalStorage from '../models/LocalStorage';
-
-const title = 'Find Steam User';
+import React, { useState } from 'react'
 
 interface Props {
   onUsernameChange(newUsername: string): void;
 }
 
-const SteamLookupPage = (props: Props) => {
-  const [username, setUsername] = useState("");
+const SteamLookupPage = ({ onUsernameChange }: Props) => {
+  const [username, setUsername] = useState("")
 
-  const onUsernameChange = (newUsername: string) => {
-    setUsername(newUsername)
-    props.onUsernameChange(newUsername)
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    onUsernameChange(username)
   }
 
-  return (
-    <div>
-      <div>
-        <h1>{title}</h1>
-        <form onSubmit={e => e.preventDefault()}>
-          <label htmlFor="steam-username">
-            Steam user name:
-          </label>
-          <input type="text" value={username} id="steam-username" autoFocus={true}
-            placeholder="e.g., cheshire137" onChange={e => onUsernameChange(e.target.value.trim())} />
-          <p>
-            The Steam profile must be public.
-          </p>
-        </form>
-      </div>
-    </div>
-  );
+  return <div>
+    <h1>Find Steam user</h1>
+    <form onSubmit={e => onSubmit(e)}>
+      <label htmlFor="steam-username">Steam user name:</label>
+      <input type="text" value={username} id="steam-username" autoFocus={true}
+        placeholder="e.g., cheshire137" onChange={e => setUsername(e.target.value.trim())} />
+      <p>The Steam profile must be public.</p>
+    </form>
+  </div>
 }
 
 export default SteamLookupPage;
