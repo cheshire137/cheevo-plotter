@@ -232,7 +232,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       fetchStoredFriendGames();
       setSteamID(rememberedSteamID)
     }
-  }, [setSteamIDError, steamUsername, onUsernameChange, updateSharedGames, ownedGames, setOwnedGames, setSteamID])
+  }, [setSteamIDError, steamUsername, onUsernameChange, friendGamesError, friendsError, gamesError, updateSharedGames, ownedGames, setOwnedGames, setSteamID])
 
   return <div>
     <SteamUserPageHeader playerSummary={playerSummary} steamUsername={steamUsername}
