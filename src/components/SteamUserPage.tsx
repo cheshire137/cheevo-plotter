@@ -30,6 +30,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   const [gamesError, setGamesError] = useState(false)
   const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
   const [friends, setFriends] = useState<any[] | null>(null)
+  const [friendGamesError, setFriendGamesError] = useState(false)
   const selectedSteamIDs = Object.keys(ownedGames)
 
   const updateSharedGames = (gamesBySteamId: { [steamID: string]: any }) => {
@@ -67,6 +68,8 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       }
     }
     const fetchKnownFriendGames = async (steamIDToFetch: string) => {
+      if (friendGamesError) return
+
       let friendGames
       try {
         friendGames = await SteamApi.getOwnedGames(steamIDToFetch)
@@ -75,11 +78,13 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
         delete newOwnedGames[steamIDToFetch]
         setOwnedGames(newOwnedGames)
         updateSharedGames(newOwnedGames)
+        setFriendGamesError(true)
         return
       }
       newOwnedGames[steamIDToFetch] = friendGames
       setOwnedGames(newOwnedGames)
       updateSharedGames(newOwnedGames)
+      setFriendGamesError(false)
     }
     for (const friendSteamID of selectedFriends) {
       if (knownFriends.indexOf(friendSteamID) < 0) {
@@ -90,6 +95,8 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
 
   useEffect(() => {
     const fetchGames = async (steamIDToFetch: string) => {
+      if (gamesError) return
+
       const games = LocalStorage.get('steam-games');
       const newOwnedGames = Object.assign({}, ownedGames)
       if (typeof games === 'object') {
@@ -123,6 +130,9 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
           knownFriends.push(friendSteamID);
         }
       }
+
+      if (friendGamesError) return
+
       for (const friendSteamID of selectedFriends) {
         if (knownFriends.indexOf(friendSteamID) < 0) {
           let friendGames
@@ -133,16 +143,20 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
             delete newOwnedGames[friendSteamID]
             setOwnedGames(newOwnedGames)
             updateSharedGames(newOwnedGames)
+            setFriendGamesError(true)
             continue
           }
           newOwnedGames[friendSteamID] = friendGames
           setOwnedGames(newOwnedGames)
           updateSharedGames(newOwnedGames)
+          setFriendGamesError(false)
         }
       }
     }
 
     const fetchFriends = async (steamID: string) => {
+      if (friendsError) return
+
       let data: any
       try {
         data = await SteamApi.getFriends(steamID)
