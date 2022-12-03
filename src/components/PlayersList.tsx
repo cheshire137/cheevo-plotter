@@ -1,5 +1,5 @@
 import React from 'react';
-import Player from './Player';
+import PlayerListItem from './PlayerListItem';
 
 interface Props {
   achievements: any[];
@@ -10,7 +10,7 @@ interface Props {
 const PlayersList = ({ achievements, players, currentSteamID }: Props) => <div>
   <span>Comparing:</span>
   <ul>
-    {players.map((player) => <Player key={player.steamid} player={player}
+    {players.map(player => <PlayerListItem key={player.steamid} player={player}
       isCurrent={currentSteamID === player.steamid} achievements={achievements[player.steamid]} />)}
   </ul>
 </div>

@@ -7,7 +7,7 @@ interface Props {
   onUsernameChange(username: string, steamID?: string): void;
 }
 
-const Player = ({ player, achievements, isCurrent, onUsernameChange }: Props) => {
+const PlayerListItem = ({ player, achievements, isCurrent, onUsernameChange }: Props) => {
   const getUnlockPercentageText = () => {
     if (typeof achievements !== 'object') {
       return '--';
@@ -38,4 +38,4 @@ const Player = ({ player, achievements, isCurrent, onUsernameChange }: Props) =>
   </li>
 }
 
-export default Player;
+export default PlayerListItem;
