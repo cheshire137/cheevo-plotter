@@ -28,19 +28,17 @@ function App() {
     }
   }
 
-  const onAppIDChange = (newAppID: number) => {
-    setAppID(newAppID)
+  const onAppIDChange = (newAppID: number) => setAppID(newAppID)
+
+  if (username.length < 1) {
+    return <SteamLookupPage onUsernameChange={onUsernameChange} />
   }
 
-  return (
-    <div className="App">
-      {username.length > 0 && appID !== null ? <SteamGamePage
-        steamUsername={username} appID={appID} onUsernameChange={onUsernameChange}
-      /> : username.length > 0 ? <SteamUserPage
-        loadSteamGame={onAppIDChange} steamUsername={username} onUsernameChange={onUsernameChange}
-      /> : <SteamLookupPage onUsernameChange={onUsernameChange} />}
-    </div>
-  );
+  if (appID !== null) {
+    return <SteamGamePage steamUsername={username} appID={appID} onUsernameChange={onUsernameChange} />
+  }
+
+  return <SteamUserPage loadSteamGame={onAppIDChange} steamUsername={username} onUsernameChange={onUsernameChange} />
 }
 
 export default App;
