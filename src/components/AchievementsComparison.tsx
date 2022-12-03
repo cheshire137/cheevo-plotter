@@ -3,10 +3,13 @@ import AchievementComparison from './AchievementComparison'
 import UnlockedBarChart from './UnlockedBarChart'
 import Filters from './Filters'
 import Player from '../models/Player'
+import Achievement from '../models/Achievement'
+
+type AchievementsBySteamID = { [steamID: string]: Achievement[] };
 
 interface Props {
   initialPlayers: Player[];
-  achievementsBySteamID: any;
+  achievementsBySteamID: AchievementsBySteamID;
 }
 
 const getInitialHashOfPlayers = (initialPlayers: Player[]) => {
@@ -17,7 +20,7 @@ const getInitialHashOfPlayers = (initialPlayers: Player[]) => {
   return players
 }
 
-const getMasterListOfAchievements = (achievementsBySteamID: { [key: string]: any }) => {
+const getMasterListOfAchievements = (achievementsBySteamID: AchievementsBySteamID) => {
   const achievements = []
   for (var steamID in achievementsBySteamID) {
     for (var i = 0; i < achievementsBySteamID[steamID].length; i++) {
@@ -61,7 +64,7 @@ const setIconUriOnAchievements = (achievements: any[]) => {
   }
 }
 
-const getInitialListOfAchievements = (achievementsBySteamID: any) => {
+const getInitialListOfAchievements = (achievementsBySteamID: AchievementsBySteamID) => {
   var achievements = getMasterListOfAchievements(achievementsBySteamID);
   setIconUriOnAchievements(achievements);
   return achievements;
@@ -108,7 +111,7 @@ const AchievementsComparison = ({ initialPlayers, achievementsBySteamID }: Props
     {haveAchievements ? <hr /> : null}
     {haveAchievements ? <Filters onChange={onFilterChange} filteredCount={filteredAchievements.length} /> : null}
     <ul>
-      {filteredAchievements.map((achievement) => <AchievementComparison players={players}
+      {filteredAchievements.map(achievement => <AchievementComparison players={players}
         achievement={achievement} key={achievement.key} />
       )}
     </ul>

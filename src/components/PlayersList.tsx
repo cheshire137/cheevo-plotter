@@ -1,9 +1,10 @@
 import React from 'react'
 import PlayerListItem from './PlayerListItem'
 import Player from '../models/Player'
+import Achievement from '../models/Achievement'
 
 interface Props {
-  achievements: { [key: string]: any };
+  achievements: { [key: string]: Achievement[] };
   players: Player[];
   currentSteamID: string;
   onUsernameChange(username: string, steamID?: string): void;

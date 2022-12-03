@@ -1,8 +1,9 @@
-import React from 'react';
+import React from 'react'
+import Achievement from '../models/Achievement'
 
 interface Props {
   player: any;
-  achievements: any[];
+  achievements: Achievement[];
   isCurrent: boolean;
   onUsernameChange(username: string, steamID?: string): void;
 }
