@@ -13,6 +13,14 @@ interface Props {
   loadGame(game: Game): void;
 }
 
+const getUsernameFromProfileUrl = (profileUrl: string) => {
+  const needle = '/id/';
+  const index = profileUrl.toLowerCase().indexOf(needle);
+  if (index > -1) {
+    return profileUrl.slice(index + needle.length).replace(/\/+$/, '');
+  }
+}
+
 const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => {
   const [ownedGames, setOwnedGames] = useState<any>({})
   const [steamID, setSteamID] = useState<string | null>(null)
@@ -22,14 +30,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   const [gamesError, setGamesError] = useState(false)
   const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
   const [friends, setFriends] = useState<any[] | null>(null)
-
-  const getUsernameFromProfileUrl = (profileUrl: string) => {
-    const needle = '/id/';
-    const index = profileUrl.toLowerCase().indexOf(needle);
-    if (index > -1) {
-      return profileUrl.slice(index + needle.length).replace(/\/+$/, '');
-    }
-  }
+  const selectedSteamIDs = Object.keys(ownedGames)
 
   const updateSharedGames = (gamesBySteamId: { [steamID: string]: any }) => {
     gamesBySteamId = gamesBySteamId || ownedGames;
@@ -59,121 +60,146 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       updateSharedGames(newOwnedGames);
       setOwnedGames(newOwnedGames)
     }
-    fetchFriendGames(selectedFriends, newOwnedGames);
-  }
-
-  const fetchGames = async (steamIDToFetch: string) => {
-    const games = LocalStorage.get('steam-games');
-    const newOwnedGames = Object.assign({}, ownedGames)
-    if (typeof games === 'object') {
-      newOwnedGames[steamIDToFetch] = games;
-      setOwnedGames(newOwnedGames)
-      updateSharedGames(newOwnedGames)
-      return
-    }
-
-    let playedGames
-    try {
-      playedGames = await SteamApi.getOwnedPlayedGames(steamIDToFetch)
-    } catch (err) {
-      console.error('failed to fetch Steam games for ' + steamIDToFetch, err);
-      setGamesError(true)
-      return
-    }
-
-    LocalStorage.set('steam-games', playedGames)
-    newOwnedGames[steamIDToFetch] = playedGames
-    setOwnedGames(newOwnedGames)
-    setGamesError(false)
-    updateSharedGames(newOwnedGames)
-  }
-
-  const fetchFriendGames = async (selectedFriends: any[], knownOwnedGames: any[]) => {
-    const newOwnedGames = Object.assign({}, knownOwnedGames)
     const knownFriends = [];
     for (const friendSteamID in ownedGames) {
       if (ownedGames[friendSteamID].length > 0) {
         knownFriends.push(friendSteamID);
       }
     }
-    for (const friendSteamID of selectedFriends) {
-      if (knownFriends.indexOf(friendSteamID) < 0) {
-        let friendGames
-        try {
-          friendGames = await SteamApi.getOwnedGames(friendSteamID)
-        } catch (err) {
-          console.error('failed to fetch Steam games for friend ' + friendSteamID, err);
-          delete newOwnedGames[friendSteamID]
-          setOwnedGames(newOwnedGames)
-          updateSharedGames(newOwnedGames)
-          continue
-        }
-        newOwnedGames[friendSteamID] = friendGames
+    const fetchKnownFriendGames = async (steamIDToFetch: string) => {
+      let friendGames
+      try {
+        friendGames = await SteamApi.getOwnedGames(steamIDToFetch)
+      } catch (err) {
+        console.error('failed to fetch Steam games for friend ' + steamIDToFetch, err);
+        delete newOwnedGames[steamIDToFetch]
         setOwnedGames(newOwnedGames)
         updateSharedGames(newOwnedGames)
+        return
+      }
+      newOwnedGames[steamIDToFetch] = friendGames
+      setOwnedGames(newOwnedGames)
+      updateSharedGames(newOwnedGames)
+    }
+    for (const friendSteamID of selectedFriends) {
+      if (knownFriends.indexOf(friendSteamID) < 0) {
+        fetchKnownFriendGames(friendSteamID)
       }
     }
   }
 
-  const fetchFriends = async (steamID: string) => {
-    let data: any
-    try {
-      data = await SteamApi.getFriends(steamID)
-    } catch (err) {
-      console.error('failed to fetch Steam friends', err);
-      setFriendsError(true)
-      return
-    }
-
-    const friendIds = data.friendslist.friends.map((f: any) => f.steamid).concat([steamID]);
-    let summaries: any
-    try {
-      summaries = await SteamApi.getPlayerSummaries(friendIds)
-      setFriendsError(false)
-    } catch (err) {
-      console.error('failed to fetch friend summaries', err);
-      return
-    }
-
-    // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
-    // communityvisibilitystate 3 means the profile is public.
-    // Need public profiles to see owned/played games for comparison.
-    const publicFriends = summaries.filter((p: any) => p.communityvisibilitystate === 3 && p.steamid !== steamID);
-    const loadedPlayerSummary = summaries.filter((p: any) => p.steamid === steamID)[0];
-    loadedPlayerSummary.username = getUsernameFromProfileUrl(loadedPlayerSummary.profileurl) || steamUsername;
-    setPlayerSummary(loadedPlayerSummary)
-    setFriends(publicFriends)
-    if (loadedPlayerSummary.username !== steamUsername) {
-      onUsernameChange(loadedPlayerSummary.username)
-    }
-  }
-
-  const fetchStoredFriendGames = () => {
-    const friendIds = LocalStorage.get('steam-selected-friends');
-    if (typeof friendIds !== 'object') {
-      return;
-    }
-    fetchFriendGames(friendIds, ownedGames)
-  }
-
-  const fetchSteamID = async () => {
-    let data
-    try {
-      data = await SteamApi.getSteamId(steamUsername);
-      setSteamIDError(false)
-    } catch (err) {
-      console.error('failed to fetch Steam ID from username', err);
-      setSteamIDError(true)
-      return
-    }
-    var fetchedSteamID = data.response.steamid;
-    LocalStorage.set('steam-id', fetchedSteamID);
-    setSteamID(fetchedSteamID)
-    fetchFriends(fetchedSteamID);
-    fetchGames(fetchedSteamID);
-  }
-
   useEffect(() => {
+    const fetchGames = async (steamIDToFetch: string) => {
+      const games = LocalStorage.get('steam-games');
+      const newOwnedGames = Object.assign({}, ownedGames)
+      if (typeof games === 'object') {
+        newOwnedGames[steamIDToFetch] = games;
+        setOwnedGames(newOwnedGames)
+        updateSharedGames(newOwnedGames)
+        return
+      }
+
+      let playedGames
+      try {
+        playedGames = await SteamApi.getOwnedPlayedGames(steamIDToFetch)
+      } catch (err) {
+        console.error('failed to fetch Steam games for ' + steamIDToFetch, err);
+        setGamesError(true)
+        return
+      }
+
+      LocalStorage.set('steam-games', playedGames)
+      newOwnedGames[steamIDToFetch] = playedGames
+      setOwnedGames(newOwnedGames)
+      setGamesError(false)
+      updateSharedGames(newOwnedGames)
+    }
+
+    const fetchFriendGames = async (selectedFriends: any[], knownOwnedGames: any[]) => {
+      const newOwnedGames = Object.assign({}, knownOwnedGames)
+      const knownFriends = [];
+      for (const friendSteamID in ownedGames) {
+        if (ownedGames[friendSteamID].length > 0) {
+          knownFriends.push(friendSteamID);
+        }
+      }
+      for (const friendSteamID of selectedFriends) {
+        if (knownFriends.indexOf(friendSteamID) < 0) {
+          let friendGames
+          try {
+            friendGames = await SteamApi.getOwnedGames(friendSteamID)
+          } catch (err) {
+            console.error('failed to fetch Steam games for friend ' + friendSteamID, err);
+            delete newOwnedGames[friendSteamID]
+            setOwnedGames(newOwnedGames)
+            updateSharedGames(newOwnedGames)
+            continue
+          }
+          newOwnedGames[friendSteamID] = friendGames
+          setOwnedGames(newOwnedGames)
+          updateSharedGames(newOwnedGames)
+        }
+      }
+    }
+
+    const fetchFriends = async (steamID: string) => {
+      let data: any
+      try {
+        data = await SteamApi.getFriends(steamID)
+      } catch (err) {
+        console.error('failed to fetch Steam friends', err);
+        setFriendsError(true)
+        return
+      }
+
+      const friendIds = data.friendslist.friends.map((f: any) => f.steamid).concat([steamID]);
+      let summaries: any
+      try {
+        summaries = await SteamApi.getPlayerSummaries(friendIds)
+        setFriendsError(false)
+      } catch (err) {
+        console.error('failed to fetch friend summaries', err);
+        return
+      }
+
+      // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
+      // communityvisibilitystate 3 means the profile is public.
+      // Need public profiles to see owned/played games for comparison.
+      const publicFriends = summaries.filter((p: any) => p.communityvisibilitystate === 3 && p.steamid !== steamID);
+      const loadedPlayerSummary = summaries.filter((p: any) => p.steamid === steamID)[0];
+      loadedPlayerSummary.username = getUsernameFromProfileUrl(loadedPlayerSummary.profileurl) || steamUsername;
+      setPlayerSummary(loadedPlayerSummary)
+      setFriends(publicFriends)
+      if (loadedPlayerSummary.username !== steamUsername) {
+        onUsernameChange(loadedPlayerSummary.username)
+      }
+    }
+
+    const fetchStoredFriendGames = () => {
+      const friendIds = LocalStorage.get('steam-selected-friends');
+      if (typeof friendIds !== 'object') {
+        return;
+      }
+      fetchFriendGames(friendIds, ownedGames)
+    }
+
+    const fetchSteamID = async () => {
+      let data
+      try {
+        data = await SteamApi.getSteamId(steamUsername);
+        setSteamIDError(false)
+      } catch (err) {
+        console.error('failed to fetch Steam ID from username', err);
+        setSteamIDError(true)
+        return
+      }
+      var fetchedSteamID = data.response.steamid;
+      LocalStorage.set('steam-id', fetchedSteamID);
+      setSteamID(fetchedSteamID)
+      fetchFriends(fetchedSteamID);
+      fetchGames(fetchedSteamID);
+    }
+
     const selectedFriends = LocalStorage.get('steam-selected-friends');
     if (typeof selectedFriends === 'object') {
       const newOwnedGames: any[] = []
@@ -192,9 +218,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       fetchStoredFriendGames();
       setSteamID(rememberedSteamID)
     }
-  }, [setSteamIDError, fetchSteamID, fetchFriends, fetchGames, fetchStoredFriendGames, setOwnedGames, setSteamID])
-
-  const selectedSteamIds = Object.keys(ownedGames)
+  }, [setSteamIDError, steamUsername, onUsernameChange, updateSharedGames, ownedGames, setOwnedGames, setSteamID])
 
   return <div>
     <SteamUserPageHeader playerSummary={playerSummary} steamUsername={steamUsername}
@@ -208,7 +232,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     {steamID && friends && games ? <p>
       Choose some other players and a game to compare your achievements!
     </p> : null}
-    {steamID && friends ? <FriendsList initiallySelectedIDs={selectedSteamIds}
+    {steamID && friends ? <FriendsList initiallySelectedIDs={selectedSteamIDs}
       steamUsername={steamUsername} friends={friends}
       onSelectionChange={(sf: any[]) => onFriendSelectionChanged(sf)}
     /> : steamID ? friendsError
