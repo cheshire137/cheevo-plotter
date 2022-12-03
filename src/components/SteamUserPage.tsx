@@ -5,6 +5,7 @@ import SteamApi from '../models/SteamApi'
 import PlayedGamesList from './PlayedGamesList'
 import FriendsList from './FriendsList'
 import PlayerSummary from '../models/PlayerSummary'
+import SteamUserPageHeader from './SteamUserPageHeader'
 
 interface Props {
   steamUsername: string;
@@ -21,11 +22,6 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   const [gamesError, setGamesError] = useState(false)
   const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
   const [friends, setFriends] = useState<any[]>([])
-
-  const clearSteamUsername = (event: React.MouseEvent) => {
-    event.preventDefault();
-    onUsernameChange('')
-  }
 
   const getUsernameFromProfileUrl = (profileUrl: string) => {
     const needle = '/id/';
@@ -67,9 +63,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   }
 
   const fetchGames = async (steamIDToFetch: string) => {
-    console.log('fetchGames', steamIDToFetch)
     const games = LocalStorage.get('steam-games');
-    console.log('games from local storage', games)
     const newOwnedGames = Object.assign({}, ownedGames)
     if (typeof games === 'object') {
       newOwnedGames[steamIDToFetch] = games;
@@ -204,20 +198,10 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   const haveSteamId = typeof steamID !== 'undefined'
   const haveGamesList = typeof games === 'object'
   const haveFriendsList = typeof friends === 'object'
-  const haveRealName = playerSummary && playerSummary.realname.length > 0
-  const profileUrl = playerSummary ? playerSummary.profileurl : 'https://steamcommunity.com/id/' +
-    encodeURIComponent(steamUsername) + '/'
 
   return <div>
-    <h1>
-      <button onClick={e => clearSteamUsername(e)}>&laquo;</button>
-      Steam <span> / </span>
-      {playerSummary ? <a href={profileUrl} rel="noreferrer" target="_blank">
-        <img src={playerSummary.avatarmedium} alt={playerSummary.steamid} />
-        <span> {playerSummary.personaname} </span>
-        {haveRealName ? <span>{playerSummary.realname}</span> : null}
-      </a> : <a href={profileUrl} rel="noreferrer" target="_blank">{steamUsername}</a>}
-    </h1>
+    <SteamUserPageHeader playerSummary={playerSummary} steamUsername={steamUsername}
+      onUsernameChange={onUsernameChange} />
     {steamIDError ? <div>
       <p>Could not find Steam ID for that username.</p>
       <p>Try setting your custom URL in Steam:</p>
