@@ -80,7 +80,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
 
     let playedGames
     try {
-      playedGames = SteamApi.getOwnedPlayedGames(steamIDToFetch)
+      playedGames = await SteamApi.getOwnedPlayedGames(steamIDToFetch)
     } catch (err) {
       console.error('failed to fetch Steam games for ' + steamIDToFetch, err);
       setGamesError(true)
@@ -134,7 +134,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     const friendIds = data.friendslist.friends.map((f: any) => f.steamid).concat([steamID]);
     let summaries: any
     try {
-      summaries = SteamApi.getPlayerSummaries(friendIds)
+      summaries = await SteamApi.getPlayerSummaries(friendIds)
       setFriendsError(false)
     } catch (err) {
       console.error('failed to fetch friend summaries', err);
