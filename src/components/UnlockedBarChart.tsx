@@ -1,5 +1,5 @@
 import React from 'react';
-import d3 from 'd3';
+import * as d3 from 'd3';
 
 type StringKeyAnyValue = { [key: string]: any };
 type StringKeyNumberValue = { [key: string]: number };
@@ -44,10 +44,10 @@ const UnlockedBarChart = ({ achievements, players }: Props) => {
   const margin = {top: 10, right: 0, bottom: 30, left: 43}
   const width = Math.min(960, 150 * playerCount) - margin.left - margin.right
   const height = 230 - margin.top - margin.bottom
-  const x = d3.scale.ordinal().rangeRoundBands([0, width], .1)
-  const y = d3.scale.linear().range([height, 0])
-  const xAxis = d3.svg.axis().scale(x).orient('bottom')
-  const yAxis = d3.svg.axis().scale(y).orient('left').ticks(5)
+  const x = d3.scaleBand().rangeRound([0, width]).padding(0.1)
+  const y = d3.scaleLinear().range([height, 0])
+  const xAxis = d3.axisBottom(x)
+  const yAxis = d3.axisLeft(y).ticks(5)
   const data = getUnlockedCounts(countsByPlayer, players)
   const svg = d3.select('#unlockedBarChart').append('svg')
     .attr('width', width + margin.left + margin.right)
@@ -62,7 +62,7 @@ const UnlockedBarChart = ({ achievements, players }: Props) => {
     .style('text-anchor', 'end').text('# Unlocked')
   svg.selectAll('.bar').data(data).enter().append('rect')
     .attr('x', d => x(d.label))
-    .attr('width', x.rangeBand())
+    .attr('width', x.bandwidth())
     .attr('y', d => y(d.value))
     .attr('height', d => height - y(d.value))
   svg.selectAll('.bar').data(data).enter().append('text')
