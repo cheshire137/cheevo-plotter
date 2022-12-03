@@ -15,13 +15,13 @@ interface Props {
 
 const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => {
   const [ownedGames, setOwnedGames] = useState<any>({})
-  const [steamID, setSteamID] = useState("")
+  const [steamID, setSteamID] = useState<string | null>(null)
   const [steamIDError, setSteamIDError] = useState(false)
   const [friendsError, setFriendsError] = useState(false)
-  const [games, setGames] = useState<any[]>([])
+  const [games, setGames] = useState<Game[] | null>(null)
   const [gamesError, setGamesError] = useState(false)
   const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
-  const [friends, setFriends] = useState<any[]>([])
+  const [friends, setFriends] = useState<any[] | null>(null)
 
   const getUsernameFromProfileUrl = (profileUrl: string) => {
     const needle = '/id/';
@@ -195,9 +195,6 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   }, [setSteamIDError, fetchSteamID, fetchFriends, fetchGames, fetchStoredFriendGames, setOwnedGames, setSteamID])
 
   const selectedSteamIds = Object.keys(ownedGames)
-  const haveSteamId = typeof steamID !== 'undefined'
-  const haveGamesList = typeof games === 'object'
-  const haveFriendsList = typeof friends === 'object'
 
   return <div>
     <SteamUserPageHeader playerSummary={playerSummary} steamUsername={steamUsername}
@@ -208,17 +205,17 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       <p><img src={require('./steam-edit-profile.jpg')} width="640" height="321" alt="Edit Steam profile" /></p>
       <p>Then, search here for the name you set in that custom URL.</p>
     </div> : null}
-    {haveSteamId && haveFriendsList && haveGamesList ? <p>
+    {steamID && friends && games ? <p>
       Choose some other players and a game to compare your achievements!
     </p> : null}
-    {haveSteamId && haveFriendsList ? <FriendsList initiallySelectedIDs={selectedSteamIds}
+    {steamID && friends ? <FriendsList initiallySelectedIDs={selectedSteamIds}
       steamUsername={steamUsername} friends={friends}
       onSelectionChange={(sf: any[]) => onFriendSelectionChanged(sf)}
-    /> : haveSteamId ? friendsError
+    /> : steamID ? friendsError
       ? <p>There was an error loading the friends list.</p>
       : <p>Loading friends list...</p> : null}
-    {haveFriendsList && haveGamesList ? <hr /> : null}
-    {haveSteamId ? haveGamesList ? (
+    {friends && games ? <hr /> : null}
+    {steamID ? games ? (
       <PlayedGamesList games={games} loadGame={loadGame} />
     ) : gamesError ? (
       <p>There was an error loading the list of games <strong>{steamUsername}</strong> owns.</p>
