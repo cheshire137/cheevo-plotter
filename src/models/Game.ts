@@ -5,10 +5,14 @@ class Game {
   achievements: Achievement[];
   appId: number;
 
-  constructor(iconUri: string, achievements: Achievement[], appId: number) {
+  constructor(iconUri: string, appId: number) {
     this.iconUri = iconUri;
-    this.achievements = achievements;
+    this.achievements = [];
     this.appId = appId;
+  }
+
+  setAchievements(achievements: Achievement[]) {
+    this.achievements = achievements;
   }
 }
 

@@ -86,7 +86,9 @@ class SteamApi {
         return new Achievement(isUnlocked, achievementIconUri, achievementName, achievementKey)
       })
       const gameIconUri = rawResult.playerstats.game[0].gameIcon[0]
-      return new Game(gameIconUri, achievements, appID)
+      const game = new Game(gameIconUri, appID)
+      game.setAchievements(achievements)
+      return game
     } catch (err) {
       console.error('failed to get XML achievements for user ' + steamID + ', app ' + appID + ': ' + err)
       return this.getJsonAchievements(steamID, appID)
@@ -113,7 +115,9 @@ class SteamApi {
       return new Achievement(isUnlocked, achievementIconUri, achievementName, achievementKey)
     });
     // TODO: somehow get game iconUri from JSON API
-    return new Game('', achievements, appID)
+    const game = new Game('', appID)
+    game.setAchievements(achievements)
+    return game
   }
 
   static async getGameSchema(appID: number) {
