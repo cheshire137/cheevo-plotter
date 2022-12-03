@@ -249,13 +249,9 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       ? <p>There was an error loading the friends list.</p>
       : <p>Loading friends list...</p> : null}
     {friends && games ? <hr /> : null}
-    {steamID ? games ? (
-      <PlayedGamesList games={games} loadGame={loadGame} />
-    ) : gamesError ? (
+    {steamID ? games ? <PlayedGamesList games={games} loadGame={loadGame} /> : gamesError ?
       <p>There was an error loading the list of games <strong>{steamUsername}</strong> owns.</p>
-    ) : (
-      <p>Loading games list...</p>
-    ) : steamIDError ? null : <p>Loading...</p>}
+     : <p>Loading games list...</p> : steamIDError ? null : <p>Loading...</p>}
   </div>
 }
 
