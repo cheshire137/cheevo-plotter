@@ -12,13 +12,13 @@ interface Props {
 const getCountsByPlayer = (achievements: any[]) => {
   const countsByPlayer: StringKeyNumberValue = {}
   for (const achievement of achievements) {
-    for (var steamId in achievement.players) {
-      var status = achievement.players[steamId]
-      if (typeof countsByPlayer[steamId] === 'undefined') {
-        countsByPlayer[steamId] = 0
+    for (const steamID in achievement.players) {
+      const status = achievement.players[steamID]
+      if (typeof countsByPlayer[steamID] === 'undefined') {
+        countsByPlayer[steamID] = 0
       }
       if (status.isUnlocked) {
-        countsByPlayer[steamId]++
+        countsByPlayer[steamID]++
       }
     }
   }
@@ -27,12 +27,12 @@ const getCountsByPlayer = (achievements: any[]) => {
 
 const getUnlockedCounts = (countsByPlayer: StringKeyNumberValue, players: StringKeyAnyValue) => {
   const data = []
-  for (const steamId in countsByPlayer) {
-    let label = players[steamId].personaname
+  for (const steamID in countsByPlayer) {
+    let label = players[steamID].personaname
     if (label.length > 17) {
       label = label.slice(0, 14) + '...'
     }
-    data.push({ label: label, value: countsByPlayer[steamId] })
+    data.push({ label: label, value: countsByPlayer[steamID] })
   }
   data.sort((a, b) => a.value < b.value ? 1 : a.value > b.value ? -1 : 0)
   return data
