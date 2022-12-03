@@ -26,15 +26,15 @@ class SteamApi {
     throw new Error(message);
   }
 
-  static async getPlayerSummaries(steamIds: string[]) {
+  static async getPlayerSummaries(steamIDs: string[]) {
     const batches = [];
     // see https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
     const batchSize = 100;
     let index = 0;
-    while (index < steamIds.length) {
+    while (index < steamIDs.length) {
       var batch = [];
-      while (batch.length < batchSize && index < steamIds.length) {
-        batch.push(steamIds[index]);
+      while (batch.length < batchSize && index < steamIDs.length) {
+        batch.push(steamIDs[index]);
         index++;
       }
       batches.push(batch);
@@ -55,26 +55,26 @@ class SteamApi {
     return summaries;
   }
 
-  static async getFriends(steamId: string) {
-    const data = await this.get('/api/steam?format=json&path=/ISteamUser/GetFriendList/v0001/&steamid=' + steamId +
+  static async getFriends(steamID: string) {
+    const data = await this.get('/api/steam?format=json&path=/ISteamUser/GetFriendList/v0001/&steamid=' + steamID +
       '&relationship=friend');
     if (data.friendslist) {
       return data;
     }
-    throw new Error('Failed to get friends for ' + steamId + '; may not be a public profile.');
+    throw new Error('Failed to get friends for ' + steamID + '; may not be a public profile.');
   }
 
-  static async getOwnedGames(steamId: string) {
+  static async getOwnedGames(steamID: string) {
     const data = await this.get('/api/steam?format=json&path=/IPlayerService/GetOwnedGames/v0001/&steamid=' +
-      steamId);
+      steamID);
     if (data.response.games) {
       return data;
     }
-    throw new Error('Could not get Steam games for ID ' + steamId + '; may not be a public profile.');
+    throw new Error('Could not get Steam games for ID ' + steamID + '; may not be a public profile.');
   }
 
-  static async getAchievements(steamId: string, appId: number) {
-    const xml = await this.get('/api/steam?path=/profiles/' + steamId + '/stats/' + appId + '/achievements/&xml=1',
+  static async getAchievements(steamID: string, appID: number) {
+    const xml = await this.get('/api/steam?path=/profiles/' + steamID + '/stats/' + appID + '/achievements/&xml=1',
       ResponseType.XML);
     try {
       const rawResult = await parseStringPromise(xml)
@@ -86,20 +86,20 @@ class SteamApi {
         return new Achievement(isUnlocked, achievementIconUri, achievementName, achievementKey)
       })
       const gameIconUri = rawResult.playerstats.game[0].gameIcon[0]
-      return new Game(gameIconUri, achievements)
+      return new Game(gameIconUri, achievements, appID)
     } catch (err) {
-      console.error('failed to get XML achievements for user ' + steamId + ', app ' + appId + ': ' + err)
-      return this.getJsonAchievements(steamId, appId)
+      console.error('failed to get XML achievements for user ' + steamID + ', app ' + appID + ': ' + err)
+      return this.getJsonAchievements(steamID, appID)
     }
   }
 
-  static async getJsonAchievements(steamId: string, appId: number) {
-    const rawResult = await this.get('/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/&appid=' + appId +
-      '&steamid=' + steamId + '&format=json');
+  static async getJsonAchievements(steamID: string, appID: number) {
+    const rawResult = await this.get('/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/&appid=' + appID +
+      '&steamid=' + steamID + '&format=json');
     if (typeof rawResult.playerstats.error === 'string') {
       throw new Error(rawResult.playerstats.error);
     }
-    const schema = await this.getGameSchema(appId);
+    const schema = await this.getGameSchema(appID);
     const achievementInfo: { [name: string]: any } = {}
     for (const schemaAchievement of schema.game.availableGameStats.achievements) {
       achievementInfo[schemaAchievement.name] = schemaAchievement;
@@ -113,11 +113,11 @@ class SteamApi {
       return new Achievement(isUnlocked, achievementIconUri, achievementName, achievementKey)
     });
     // TODO: somehow get game iconUri from JSON API
-    return new Game('', achievements)
+    return new Game('', achievements, appID)
   }
 
-  static async getGameSchema(appId: number) {
-    return this.get('/api/steam?format=json&path=/ISteamUserStats/GetSchemaForGame/v2/&appid=' + appId);
+  static async getGameSchema(appID: number) {
+    return this.get('/api/steam?format=json&path=/ISteamUserStats/GetSchemaForGame/v2/&appid=' + appID);
   }
 
   static async get(path: string, type?: ResponseType) {
