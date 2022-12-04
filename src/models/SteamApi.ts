@@ -66,16 +66,15 @@ class SteamApi {
 
   static async getOwnedGames(steamID: string): Promise<Game[]> {
     const data = await this.get('/api/steam?format=json&path=/IPlayerService/GetOwnedGames/v0001/&steamid=' +
-      steamID);
-    if (data.response.games) {
-      console.log('getOwnedGames', data)
+      steamID)
+    if (data && data.response && data.response.games) {
       return data.response.games.map((g: any) => new Game({
         appID: g.appid,
         totalPlaytime: g.playtime_forever,
         timeLastPlayed: g.rtime_last_played,
       }))
     }
-    throw new Error('Could not get Steam games for ID ' + steamID + '; may not be a public profile.');
+    throw new Error('Could not get Steam games for ID ' + steamID + '; may not be a public profile.')
   }
 
   static async getOwnedPlayedGames(steamID: string) {
