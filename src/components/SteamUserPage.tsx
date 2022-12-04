@@ -7,6 +7,7 @@ import FriendsList from './FriendsList'
 import PlayerSummary from '../models/PlayerSummary'
 import SteamUserPageHeader from './SteamUserPageHeader'
 import SteamUserError from './SteamUserError'
+import useGetPlayerSummaries from '../hooks/use-get-player-summaries'
 
 interface Props {
   steamUsername: string;
@@ -26,13 +27,28 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   const [ownedGames, setOwnedGames] = useState<any>({})
   const [steamID, setSteamID] = useState<string | null>(null)
   const [steamIDError, setSteamIDError] = useState(false)
-  const [friendsError, setFriendsError] = useState(false)
   const [games, setGames] = useState<Game[] | null>(null)
   const [gamesError, setGamesError] = useState(false)
-  const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
-  const [friends, setFriends] = useState<any[] | null>(null)
+  const [loadedPlayerSummary, setLoadedPlayerSummary] = useState<PlayerSummary | null>(null)
   const [friendGamesError, setFriendGamesError] = useState(false)
+  const [friendSteamIDs, setFriendSteamIDs] = useState<string[]>([])
+  let idsToLoadPlayerSummaries = [...friendSteamIDs]
+  if (steamID) {
+    idsToLoadPlayerSummaries.push(steamID)
+  }
+  const { playerSummaries, error: playerSummariesError, fetching: loadingPlayerSummaries } = useGetPlayerSummaries(idsToLoadPlayerSummaries)
   const selectedSteamIDs = Object.keys(ownedGames)
+
+  useEffect(() => {
+    if (!loadingPlayerSummaries && playerSummaries) {
+      const playerSummary = playerSummaries.filter((p: any) => p.steamid === steamID)[0];
+      playerSummary.username = getUsernameFromProfileUrl(playerSummary.profileurl) || steamUsername;
+      setLoadedPlayerSummary(playerSummary)
+      if (playerSummary.username !== steamUsername) {
+        onUsernameChange(playerSummary.username)
+      }
+    }
+  }, [loadingPlayerSummaries, playerSummaries, steamID, steamUsername, onUsernameChange])
 
   const updateSharedGames = (gamesBySteamId: { [steamID: string]: any }) => {
     gamesBySteamId = gamesBySteamId || ownedGames;
@@ -155,41 +171,6 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       }
     }
 
-    const fetchFriends = async (steamID: string) => {
-      if (friendsError) return
-
-      let data: any
-      try {
-        data = await SteamApi.getFriends(steamID)
-      } catch (err) {
-        console.error('failed to fetch Steam friends', err);
-        setFriendsError(true)
-        return
-      }
-
-      const friendIds = data.friendslist.friends.map((f: any) => f.steamid).concat([steamID]);
-      let summaries: any
-      try {
-        summaries = await SteamApi.getPlayerSummaries(friendIds)
-        setFriendsError(false)
-      } catch (err) {
-        console.error('failed to fetch friend summaries', err);
-        return
-      }
-
-      // See https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
-      // communityvisibilitystate 3 means the profile is public.
-      // Need public profiles to see owned/played games for comparison.
-      const publicFriends = summaries.filter((p: any) => p.communityvisibilitystate === 3 && p.steamid !== steamID);
-      const loadedPlayerSummary = summaries.filter((p: any) => p.steamid === steamID)[0];
-      loadedPlayerSummary.username = getUsernameFromProfileUrl(loadedPlayerSummary.profileurl) || steamUsername;
-      setPlayerSummary(loadedPlayerSummary)
-      setFriends(publicFriends)
-      if (loadedPlayerSummary.username !== steamUsername) {
-        onUsernameChange(loadedPlayerSummary.username)
-      }
-    }
-
     const fetchStoredFriendGames = () => {
       const friendIds = LocalStorage.get('steam-selected-friends');
       if (typeof friendIds !== 'object') {
@@ -211,7 +192,6 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       var fetchedSteamID = data.response.steamid;
       LocalStorage.set('steam-id', fetchedSteamID);
       setSteamID(fetchedSteamID)
-      fetchFriends(fetchedSteamID);
       fetchGames(fetchedSteamID);
     }
 
@@ -228,27 +208,24 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     if (typeof rememberedSteamID === 'undefined' || rememberedSteamID.length < 1) {
       fetchSteamID();
     } else {
-      fetchFriends(rememberedSteamID);
       fetchGames(rememberedSteamID);
       fetchStoredFriendGames();
       setSteamID(rememberedSteamID)
     }
-  }, [setSteamIDError, steamUsername, onUsernameChange, friendGamesError, friendsError, gamesError, updateSharedGames, ownedGames, setOwnedGames, setSteamID])
+  }, [setSteamIDError, steamUsername, onUsernameChange, friendGamesError, gamesError, updateSharedGames, ownedGames, setOwnedGames, setSteamID])
 
   return <div>
-    <SteamUserPageHeader playerSummary={playerSummary} steamUsername={steamUsername}
+    <SteamUserPageHeader playerSummary={loadedPlayerSummary} steamUsername={steamUsername}
       onUsernameChange={onUsernameChange} />
     {steamIDError && <SteamUserError />}
-    {steamID && friends && games ? <p>
+    {steamID && friendSteamIDs && games && <p>
       Choose some other players and a game to compare your achievements!
-    </p> : null}
-    {steamID && friends ? <FriendsList initiallySelectedIDs={selectedSteamIDs}
-      steamUsername={steamUsername} friends={friends}
+    </p>}
+    {steamID && <FriendsList initiallySelectedIDs={selectedSteamIDs}
+      steamUsername={steamUsername} steamID={steamID} onFriendSteamIDsLoaded={ids => setFriendSteamIDs(ids)}
       onSelectionChange={(sf: any[]) => onFriendSelectionChanged(sf)}
-    /> : steamID ? friendsError
-      ? <p>There was an error loading the friends list.</p>
-      : <p>Loading friends list...</p> : null}
-    {friends && games ? <hr /> : null}
+    />}
+    {games ? <hr /> : null}
     {steamID ? games ? <PlayedGamesList games={games} loadGame={loadGame} /> : gamesError ?
       <p>There was an error loading the list of games <strong>{steamUsername}</strong> owns.</p>
      : <p>Loading games list...</p> : steamIDError ? null : <p>Loading...</p>}
