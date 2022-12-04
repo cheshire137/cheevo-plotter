@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import FriendListItem from './FriendListItem'
 import useGetFriends from '../hooks/use-get-friends'
-import useGetPlayerSummaries from '../hooks/use-get-player-summaries'
 
 interface Props {
   steamID: string;
@@ -82,8 +81,8 @@ const FriendsList = ({ steamID, steamUsername, initiallySelectedIDs, onSelection
       {friends && <span>({friends.length})</span>}
     </h2>
     <ul>
-      {friends && friends.map((friend: any) => <FriendListItem
-        key={friend.steamid} friend={friend} isSelected={selectedIDs.indexOf(friend.steamid) > -1}
+      {friends && friends.map(friend => <FriendListItem
+        key={friend.steamID} friend={friend} isSelected={selectedIDs.indexOf(friend.steamID) > -1}
         onToggle={(id: string, checked: boolean) => onFriendToggled(id, checked)} />
       )}
     </ul>

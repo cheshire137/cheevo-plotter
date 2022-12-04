@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import SteamApi from '../models/SteamApi'
 import LocalStorage from '../models/LocalStorage'
+import Friend from '../models/Friend'
 
 interface Results {
-  friends?: any[];
+  friends?: Friend[];
   fetching: boolean;
   error?: string;
 }

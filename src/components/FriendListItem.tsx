@@ -1,18 +1,19 @@
-import React from 'react';
+import React from 'react'
+import Friend from '../models/Friend'
 
 interface Props {
   onToggle(steamID: string, isChecked: boolean): void;
   isSelected: boolean;
-  friend: any;
+  friend: Friend;
 }
 
 const FriendListItem = ({ onToggle, isSelected, friend }: Props) => {
-  const domId = 'friend-' + friend.steamid;
+  const domId = 'friend-' + friend.steamID;
   return <li>
     <input checked={isSelected} type="checkbox" id={domId}
-      onChange={e => onToggle(friend.steamid, e.target.checked)} />
+      onChange={e => onToggle(friend.steamID, e.target.checked)} />
     <label htmlFor={domId}>
-      <img src={friend.avatar} alt={friend.steamid} />
+      <img src={friend.avatar} alt={friend.steamID} />
       <span>{friend.personaname}</span>
     </label>
   </li>
