@@ -12,11 +12,15 @@ const FriendListItem = ({ onToggle, isSelected, friend }: Props) => {
   return <li>
     <input checked={isSelected} type="checkbox" id={domId}
       onChange={e => onToggle(friend.steamID, e.target.checked)} />
-    <label htmlFor={domId}>
-      <img src={friend.avatar} alt={friend.steamID} />
-      <span>{friend.personaname}</span>
-    </label>
+    {friend.playerSummary ? (
+      <label htmlFor={domId}>
+        <img src={friend.playerSummary.avatarmedium} alt={friend.steamID} />
+        <span>{friend.playerSummary.personaname}</span>
+      </label>
+    ) : (
+      <label htmlFor={domId}>{friend.steamID}</label>
+    )}
   </li>
 }
 
-export default FriendListItem;
+export default FriendListItem
