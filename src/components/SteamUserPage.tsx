@@ -17,14 +17,6 @@ interface Props {
   loadGame(game: Game): void;
 }
 
-const getUsernameFromProfileUrl = (profileUrl: string) => {
-  const needle = '/id/';
-  const index = profileUrl.toLowerCase().indexOf(needle);
-  if (index > -1) {
-    return profileUrl.slice(index + needle.length).replace(/\/+$/, '');
-  }
-}
-
 const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => {
   const [ownedGames, setOwnedGames] = useState<any>({})
   const { steamID, error: steamIDError, fetching: loadingSteamID } = useGetSteamID(steamUsername)
@@ -41,10 +33,8 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
 
   useEffect(() => {
     if (!loadingPlayerSummaries && playerSummaries) {
-      const playerSummary = playerSummaries.filter((p: any) => p.steamid === steamID)[0];
-      playerSummary.username = getUsernameFromProfileUrl(playerSummary.profileurl) || steamUsername;
       setLoadedPlayerSummary(playerSummary)
-      if (playerSummary.username !== steamUsername) {
+      if (playerSummary.username && playerSummary.username !== steamUsername) {
         onUsernameChange(playerSummary.username)
       }
     }

@@ -8,6 +8,14 @@ interface PlayerSummaryData {
   username?: string;
 }
 
+const getUsernameFromProfileUrl = (profileUrl: string) => {
+  const needle = '/id/'
+  const index = profileUrl.toLowerCase().indexOf(needle)
+  if (index > -1) {
+    return profileUrl.slice(index + needle.length).replace(/\/+$/, '')
+  }
+}
+
 class PlayerSummary {
   realname: string | null;
   avatarmedium: string;
@@ -22,7 +30,11 @@ class PlayerSummary {
     this.steamid = data.steamid
     this.profileurl = data.profileurl
     this.personaname = data.personaname
-    this.username = data.username || null
+    if (data.username) {
+      this.username = data.username
+    } else {
+      this.username = getUsernameFromProfileUrl(data.profileurl) || null
+    }
   }
 }
 
