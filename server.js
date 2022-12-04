@@ -46,9 +46,20 @@ app.get('/api/steam', async (req, res, next) => {
     url = 'http://api.steampowered.com' + url + joiner + 'key=' + steamApiKey;
   }
   const response = await fetch(url);
-  const data = isXml ? await response.text() : await response.json();
   if (isXml) {
     res.set('Content-Type', 'text/xml');
+  }
+  let data
+  try {
+    data = isXml ? await response.text() : await response.json();
+  } catch (e) {
+    res.status(400)
+    console.error('Error parsing response for', req.query.path, e);
+    if (isXml) {
+      data = '<?xml version="1.0" encoding="UTF-8" standalone="no" ?><error>' + e.message + '</error>'
+    } else {
+      data = { error: e.message }
+    }
   }
   res.send(data);
 });
