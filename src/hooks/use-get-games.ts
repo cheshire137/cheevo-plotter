@@ -47,7 +47,7 @@ function useGetGames(steamID?: string | null): Results {
       }
 
       if (!steamID) {
-        setResults({ fetching: false, games: [] })
+        setResults({ fetching: false, error: 'Cannot load owned, played games without a Steam ID' })
         return
       }
 
