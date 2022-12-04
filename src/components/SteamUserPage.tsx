@@ -21,6 +21,7 @@ interface Props {
 const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => {
   const { steamID, error: steamIDError, fetching: loadingSteamID } = useGetSteamID(steamUsername)
   const { games, error: gamesError, fetching: loadingGames } = useGetGames(steamID)
+  const [selectedFriendSteamIDs, setSelectedFriendSteamIDs] = useState<string[]>(LocalStorage.get('steam-selected-friends') || [])
   const [gamesByAppID, setGamesByAppID] = useState<{ [appID: string]: Game }>({})
   const [ownedGamesByOwnerSteamID, setOwnedGamesByOwnerSteamID] = useState<{ [steamID: string]: Game[] }>({})
   const [loadedPlayerSummary, setLoadedPlayerSummary] = useState<PlayerSummary | null>(null)
@@ -84,8 +85,9 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     }
   }, [loadingPlayerSummaries, playerSummariesBySteamID, friends])
 
-  const onFriendSelectionChanged = (selectedFriendSteamIDs: string[]) => {
-    LocalStorage.set('steam-selected-friends', selectedFriendSteamIDs);
+  const onFriendSelectionChanged = (steamIDs: string[]) => {
+    LocalStorage.set('steam-selected-friends', steamIDs)
+    setSelectedFriendSteamIDs(steamIDs)
   }
 
   const onFriendGamesLoaded = (friendSteamID: string, friendGames: Game[]) => {
@@ -101,7 +103,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     {steamID && friends.length > 0 && games && <p>
       Choose some other players and a game to compare your achievements!
     </p>}
-    {steamID && <FriendsList onFriendGamesLoaded={onFriendGamesLoaded}
+    {steamID && <FriendsList onFriendGamesLoaded={onFriendGamesLoaded} selectedIDs={selectedFriendSteamIDs}
       steamUsername={steamUsername} steamID={steamID} onFriendsLoaded={list => setFriends(list)}
       onSelectionChange={list => onFriendSelectionChanged(list)}
     />}

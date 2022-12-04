@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import FriendListItem from './FriendListItem'
 import Friend from '../models/Friend'
 import Game from '../models/Game'
@@ -7,14 +7,13 @@ import useGetFriends from '../hooks/use-get-friends'
 interface Props {
   steamID: string;
   steamUsername: string;
-  selectedIDs?: string[];
+  selectedIDs: string[];
   onSelectionChange(selectedFriendSteamIDs: string[]): void;
   onFriendsLoaded(friends: Friend[]): void;
   onFriendGamesLoaded(steamID: string, games: Game[]): void;
 }
 
-const FriendsList = ({ steamID, steamUsername, selectedIDs: initiallySelectedIDs, onSelectionChange, onFriendsLoaded, onFriendGamesLoaded }: Props) => {
-  const [selectedIDs, setSelectedIDs] = useState<string[]>(initiallySelectedIDs || [])
+const FriendsList = ({ steamID, steamUsername, selectedIDs, onSelectionChange, onFriendsLoaded, onFriendGamesLoaded }: Props) => {
   const { friends, error: friendsError, fetching: loadingFriends } = useGetFriends(steamID)
 
   useEffect(() => {
@@ -31,7 +30,6 @@ const FriendsList = ({ steamID, steamUsername, selectedIDs: initiallySelectedIDs
     } else if (!isSelected && index > -1) {
       newSelectedIDs = newSelectedIDs.slice(0, index).concat(newSelectedIDs.slice(index + 1))
     }
-    setSelectedIDs(newSelectedIDs)
     onSelectionChange(newSelectedIDs)
   }
 
