@@ -83,9 +83,7 @@ const FriendsList = ({ steamID, steamUsername, initiallySelectedIDs, onSelection
     </h2>
     <ul>
       {friends && friends.map((friend: any) => <FriendListItem
-        key={friend.steamid}
-        friend={friend}
-        isSelected={selectedIDs.indexOf(friend.steamid) > -1}
+        key={friend.steamid} friend={friend} isSelected={selectedIDs.indexOf(friend.steamid) > -1}
         onToggle={(id: string, checked: boolean) => onFriendToggled(id, checked)} />
       )}
     </ul>
