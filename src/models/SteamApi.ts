@@ -58,8 +58,8 @@ class SteamApi {
   static async getFriends(steamID: string) {
     const data = await this.get('/api/steam?format=json&path=/ISteamUser/GetFriendList/v0001/&steamid=' + steamID +
       '&relationship=friend');
-    if (data.friendslist) {
-      return data;
+    if (data.friendslist && data.friendslist.friends) {
+      return data.friendslist.friends;
     }
     throw new Error('Failed to get friends for ' + steamID + '; may not be a public profile.');
   }
