@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import LocalStorage from '../models/LocalStorage'
 import Game from '../models/Game'
-import SteamApi from '../models/SteamApi'
 import Friend from '../models/Friend'
 import PlayedGamesList from './PlayedGamesList'
 import FriendsList from './FriendsList'
@@ -11,6 +10,7 @@ import SteamUserError from './SteamUserError'
 import useGetPlayerSummaries from '../hooks/use-get-player-summaries'
 import useGetGames from '../hooks/use-get-games'
 import useGetSteamID from '../hooks/use-get-steam-id'
+import {Flash} from '@primer/react'
 
 interface Props {
   steamUsername: string;
@@ -100,6 +100,8 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     <SteamUserPageHeader playerSummary={loadedPlayerSummary} steamUsername={steamUsername}
       onUsernameChange={onUsernameChange} />
     {steamIDError && <SteamUserError />}
+    {playerSummariesError && <Flash variant="warning">There was an error loading Steam user data.</Flash>}
+    {loadingSteamID && <div>Loading...</div>}
     {steamID && friends.length > 0 && games && <p>
       Choose some other players and a game to compare your achievements!
     </p>}
@@ -108,7 +110,9 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       onSelectionChange={list => onFriendSelectionChanged(list)}
     />}
     {games && games.length > 0 && <hr />}
-    {gamesError && <p>There was an error loading the list of games <strong>{steamUsername}</strong> owns.</p>}
+    {gamesError && <Flash variant="warning">
+      There was an error loading the list of games <strong>{steamUsername}</strong> owns.
+    </Flash>}
     {loadingGames && <p>Loading {steamUsername}'s games list...</p>}
     {steamID && games && <PlayedGamesList games={games} loadGame={loadGame} />}
   </div>
