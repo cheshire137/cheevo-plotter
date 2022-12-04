@@ -1,6 +1,7 @@
 import {parseStringPromise} from 'xml2js';
 import Achievement from './Achievement';
 import Game from './Game';
+import PlayerSummary from './PlayerSummary';
 
 enum ResponseType {
   JSON = "json",
@@ -52,7 +53,7 @@ class SteamApi {
       const bName = b.personaname.toLowerCase();
       return aName.localeCompare(bName);
     });
-    return summaries;
+    return summaries.map(ps => new PlayerSummary(ps));
   }
 
   static async getFriends(steamID: string) {

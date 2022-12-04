@@ -1,16 +1,25 @@
+// https://partner.steamgames.com/doc/webapi/ISteamUser#GetPlayerSummaries
+interface PlayerSummaryData {
+  realname?: string;
+  avatarmedium: string;
+  steamid: string;
+  profileurl: string;
+  personaname: string;
+}
+
 class PlayerSummary {
-  realname: string;
+  realname: string | null;
   avatarmedium: string;
   steamid: string;
   profileurl: string;
   personaname: string;
 
-  constructor(realname: string, avatarmedium: string, steamid: string, profileurl: string, personaname: string) {
-    this.realname = realname;
-    this.avatarmedium = avatarmedium;
-    this.steamid = steamid;
-    this.profileurl = profileurl;
-    this.personaname = personaname;
+  constructor(data: PlayerSummaryData) {
+    this.realname = data.realname || null
+    this.avatarmedium = data.avatarmedium
+    this.steamid = data.steamid
+    this.profileurl = data.profileurl
+    this.personaname = data.personaname
   }
 }
 
