@@ -8,7 +8,7 @@ interface Results {
   error?: string;
 }
 
-function useGetFriends(steamID: string): Results {
+function useGetFriends(steamID?: string | null): Results {
   const [results, setResults] = useState<Results>({ fetching: true })
 
   useEffect(() => {
@@ -16,6 +16,11 @@ function useGetFriends(steamID: string): Results {
       const cachedFriends = LocalStorage.get('friends')
       if (typeof cachedFriends === 'object') {
         setResults({ friends: cachedFriends, fetching: false })
+        return
+      }
+
+      if (!steamID) {
+        setResults({ fetching: false, error: 'Cannot load friends without a Steam ID' })
         return
       }
 
