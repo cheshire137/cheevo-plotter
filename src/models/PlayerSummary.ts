@@ -5,6 +5,7 @@ interface PlayerSummaryData {
   steamid: string;
   profileurl: string;
   personaname: string;
+  username?: string;
 }
 
 class PlayerSummary {
@@ -13,6 +14,7 @@ class PlayerSummary {
   steamid: string;
   profileurl: string;
   personaname: string;
+  username: string | null;
 
   constructor(data: PlayerSummaryData) {
     this.realname = data.realname || null
@@ -20,6 +22,7 @@ class PlayerSummary {
     this.steamid = data.steamid
     this.profileurl = data.profileurl
     this.personaname = data.personaname
+    this.username = data.username || null
   }
 }
 
