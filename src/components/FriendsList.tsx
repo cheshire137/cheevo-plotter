@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import FriendListItem from './FriendListItem'
+import Friend from '../models/Friend'
 import useGetFriends from '../hooks/use-get-friends'
 
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
   steamUsername: string;
   initiallySelectedIDs: string[];
   onSelectionChange(selectedFriendSteamIDs: string[]): void;
-  onFriendSteamIDsLoaded(friendSteamIDs: string[]): void;
+  onFriendsLoaded(friends: Friend[]): void;
 }
 
 // const fetchFriends = async (steamID: string) => {
@@ -45,21 +46,21 @@ interface Props {
 //   }
 // }
 
-const FriendsList = ({ steamID, steamUsername, initiallySelectedIDs, onSelectionChange, onFriendSteamIDsLoaded }: Props) => {
+const FriendsList = ({ steamID, steamUsername, initiallySelectedIDs, onSelectionChange, onFriendsLoaded }: Props) => {
   const [selectedIDs, setSelectedIDs] = useState<string[]>(initiallySelectedIDs)
   const { friends, error: friendsError, fetching: loadingFriends } = useGetFriends(steamID)
 
   useEffect(() => {
     if (!loadingFriends && friends) {
-      onFriendSteamIDsLoaded(friends.map((f: any) => f.steamid))
+      onFriendsLoaded(friends)
     }
-  }, [friends, loadingFriends, onFriendSteamIDsLoaded])
+  }, [friends, loadingFriends, onFriendsLoaded])
 
-  const onFriendToggled = (steamId: string, isSelected: boolean) => {
+  const onFriendToggled = (toggledSteamID: string, isSelected: boolean) => {
     let newSelectedIDs = [...selectedIDs]
-    const index = newSelectedIDs.indexOf(steamId)
+    const index = newSelectedIDs.indexOf(toggledSteamID)
     if (isSelected && index < 0) {
-      newSelectedIDs.push(steamId)
+      newSelectedIDs.push(toggledSteamID)
     } else if (!isSelected && index > -1) {
       newSelectedIDs = newSelectedIDs.slice(0, index).concat(newSelectedIDs.slice(index + 1))
     }
@@ -76,10 +77,7 @@ const FriendsList = ({ steamID, steamUsername, initiallySelectedIDs, onSelection
   }
 
   return <section>
-    <h2>
-      {steamUsername}'s Friends
-      {friends && <span>({friends.length})</span>}
-    </h2>
+    <h2>{steamUsername}'s Friends {friends && <span>({friends.length})</span>}</h2>
     <ul>
       {friends && friends.map(friend => <FriendListItem
         key={friend.steamID} friend={friend} isSelected={selectedIDs.indexOf(friend.steamID) > -1}
