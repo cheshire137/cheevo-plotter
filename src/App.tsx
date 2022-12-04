@@ -8,14 +8,15 @@ import './App.css'
 
 const persistUsernameChange = (username: string, steamID?: string) => {
   if (typeof steamID === 'string') {
-    LocalStorage.set('steam-id', steamID);
+    LocalStorage.set('steam-id', steamID)
   } else {
-    LocalStorage.delete('steam-id');
+    LocalStorage.delete('steam-id')
   }
-  LocalStorage.delete('steam-games');
-  LocalStorage.delete('steam-selected-friends');
+  LocalStorage.delete('steam-games')
+  LocalStorage.delete('steam-selected-friends')
+  LocalStorage.delete('steam-friends')
   if (username.length < 1) {
-    LocalStorage.delete('steam-username');
+    LocalStorage.delete('steam-username')
   } else {
     LocalStorage.set('steam-username', username)
   }
@@ -41,4 +42,4 @@ function App() {
   return <SteamUserPage loadGame={g => setGame(g)} steamUsername={username} onUsernameChange={onUsernameChange} />
 }
 
-export default App;
+export default App
