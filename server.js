@@ -38,12 +38,12 @@ app.get('/api/steam', async (req, res, next) => {
       isXml = true;
     }
   }
+  console.log('Steam API request:', isXml ? 'XML' : 'JSON', url);
   if (isXml) {
     url = 'http://steamcommunity.com' + url;
   } else {
-    url = 'http://api.steampowered.com' + url +
-          (url.indexOf('?') > -1 ? '&' : '?') + 'key=' +
-          steamApiKey;
+    const joiner = url.indexOf('?') > -1 ? '&' : '?'
+    url = 'http://api.steampowered.com' + url + joiner + 'key=' + steamApiKey;
   }
   const response = await fetch(url);
   const data = isXml ? await response.text() : await response.json();
