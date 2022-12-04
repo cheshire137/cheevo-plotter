@@ -21,7 +21,12 @@ function useGetPlayerSummaries(steamIDs: string[]): Results {
         setResults({ fetching: false, error: err.message })
       }
     }
-    fetchPlayerSummaries()
+
+    if (steamIDs.length > 0) {
+      fetchPlayerSummaries()
+    } else {
+      setResults({ fetching: false, playerSummaries: [] })
+    }
   }, [steamIDs])
 
   return results
