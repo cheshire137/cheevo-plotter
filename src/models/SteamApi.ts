@@ -12,19 +12,16 @@ const serverUrl = 'http://localhost:8080';
 
 class SteamApi {
   // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
-  static async getSteamId(username: string) {
+  static async getSteamID(username: string): Promise<string> {
     const data = await this.get('/api/steam?format=json&path=/ISteamUser/ResolveVanityURL/v0001/&vanityurl=' +
-      encodeURIComponent(username));
-    if (data.response.steamid) {
-      return data;
+      encodeURIComponent(username))
+    if (data && data.response && data.response.steamid) {
+      return data.response.steamid
     }
-    var message;
-    if (data.response.message) {
-      message = data.response.message;
-    } else {
-      message = 'Failed to get Steam ID.'
+    if (data && data.response && data.response.message) {
+      throw new Error(data.response.message)
     }
-    throw new Error(message);
+    throw new Error('Failed to get Steam ID.')
   }
 
   static async getPlayerSummaries(steamIDs: string[]) {
