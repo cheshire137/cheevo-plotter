@@ -8,33 +8,7 @@ interface Results {
   fetching: boolean;
   error?: string;
 }
-// const fetchGames = async (steamIDToFetch: string) => {
-//   if (gamesError) return
 
-//   const games = LocalStorage.get('steam-games');
-//   const newOwnedGames = Object.assign({}, ownedGames)
-//   if (typeof games === 'object') {
-//     newOwnedGames[steamID] = games;
-//     setOwnedGames(newOwnedGames)
-//     updateSharedGames(newOwnedGames)
-//     return
-//   }
-
-//   let playedGames
-//   try {
-//     playedGames = await SteamApi.getOwnedPlayedGames(steamID)
-//   } catch (err) {
-//     console.error('failed to fetch Steam games for ' + steamID, err);
-//     setGamesError(true)
-//     return
-//   }
-
-//   LocalStorage.set('steam-games', playedGames)
-//   newOwnedGames[steamID] = playedGames
-//   setOwnedGames(newOwnedGames)
-//   setGamesError(false)
-//   updateSharedGames(newOwnedGames)
-// }
 function useGetGames(steamID?: string | null): Results {
   const [results, setResults] = useState<Results>({ fetching: true })
 
@@ -47,7 +21,7 @@ function useGetGames(steamID?: string | null): Results {
       }
 
       if (!steamID) {
-        setResults({ fetching: false, error: 'Cannot load owned, played games without a Steam ID' })
+        setResults({ fetching: false })
         return
       }
 
