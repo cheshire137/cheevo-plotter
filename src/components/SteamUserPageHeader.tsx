@@ -8,7 +8,6 @@ interface Props {
 }
 
 const SteamUserPageHeader = ({ playerSummary, steamUsername, onUsernameChange }: Props) => {
-  const haveRealName = playerSummary && playerSummary.realname.length > 0
   const profileUrl = playerSummary ? playerSummary.profileurl : 'https://steamcommunity.com/id/' +
     encodeURIComponent(steamUsername) + '/'
 
@@ -18,12 +17,11 @@ const SteamUserPageHeader = ({ playerSummary, steamUsername, onUsernameChange }:
   }
 
   return <h1>
-    <button onClick={e => clearSteamUsername(e)}>&laquo;</button>
-    Steam <span> / </span>
+    <button type="button" onClick={e => clearSteamUsername(e)}>&laquo;</button>
+    Steam <span>/ </span>
     {playerSummary ? <a href={profileUrl} rel="noreferrer" target="_blank">
       <img src={playerSummary.avatarmedium} alt={playerSummary.steamid} />
-      <span> {playerSummary.personaname} </span>
-      {haveRealName ? <span>{playerSummary.realname}</span> : null}
+      <span>{playerSummary.personaname}</span> {playerSummary.realname && <span> {playerSummary.realname}</span>}
     </a> : <a href={profileUrl} rel="noreferrer" target="_blank">{steamUsername}</a>}
   </h1>
 }
