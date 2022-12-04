@@ -2,19 +2,19 @@ import { useState, useEffect } from "react"
 import SteamApi from '../models/SteamApi'
 
 interface Results {
-  friends?: any;
+  steamIDs?: string[];
   fetching: boolean;
   error?: string;
 }
 
-function useGetFriends(steamID: string): Results {
+function useGetFriendSteamIDs(steamID: string): Results {
   const [results, setResults] = useState<Results>({ fetching: true })
 
   useEffect(() => {
     async function fetchFriends() {
       try {
-        const friends = await SteamApi.getFriends(steamID)
-        setResults({ friends, fetching: false })
+        const steamIDs = await SteamApi.getFriendSteamIDs(steamID)
+        setResults({ steamIDs, fetching: false })
       } catch (err: any) {
         console.error('failed to fetch Steam friends', err)
         setResults({ fetching: false, error: err.message })
@@ -26,4 +26,4 @@ function useGetFriends(steamID: string): Results {
   return results
 }
 
-export default useGetFriends
+export default useGetFriendSteamIDs
