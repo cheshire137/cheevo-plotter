@@ -61,12 +61,14 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
   }, [onUsernameChange, playerSummariesBySteamID, steamID, steamUsername])
 
   useEffect(() => {
-    if (!loadingPlayerSummaries && playerSummaries && friends.length > 0) {
+    if (!loadingPlayerSummaries && playerSummariesBySteamID && friends.length > 0) {
       for (const friend of friends) {
-
+        if (playerSummariesBySteamID.hasOwnProperty(friend.steamID)) {
+          friend.playerSummary = playerSummariesBySteamID[friend.steamID]
+        }
       }
     }
-  }, [loadingPlayerSummaries, playerSummaries, friends])
+  }, [loadingPlayerSummaries, playerSummariesBySteamID, friends])
 
   const updateSharedGames = (gamesBySteamId: { [steamID: string]: any }) => {
     gamesBySteamId = gamesBySteamId || ownedGames;
@@ -84,12 +86,12 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     // setGames(sharedGames)
   }
 
-  const onFriendSelectionChanged = (selectedFriends: any[]) => {
-    LocalStorage.set('steam-selected-friends', selectedFriends);
+  const onFriendSelectionChanged = (selectedFriendSteamIDs: string[]) => {
+    LocalStorage.set('steam-selected-friends', selectedFriendSteamIDs);
     const newOwnedGames = Object.assign({}, ownedGames)
     if (typeof steamID !== 'undefined') {
       for (var friendSteamID in ownedGames) {
-        if (selectedFriends.indexOf(friendSteamID) < 0 && friendSteamID !== steamID) {
+        if (selectedFriendSteamIDs.indexOf(friendSteamID) < 0 && friendSteamID !== steamID) {
           delete newOwnedGames[friendSteamID];
         }
       }
@@ -121,7 +123,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       updateSharedGames(newOwnedGames)
       setFriendGamesError(false)
     }
-    for (const friendSteamID of selectedFriends) {
+    for (const friendSteamID of selectedFriendSteamIDs) {
       if (knownFriends.indexOf(friendSteamID) < 0) {
         fetchKnownFriendGames(friendSteamID)
       }
@@ -241,9 +243,9 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     </p>}
     {steamID && <FriendsList initiallySelectedIDs={selectedSteamIDs}
       steamUsername={steamUsername} steamID={steamID} onFriendsLoaded={list => setFriends(list)}
-      onSelectionChange={(sf: any[]) => onFriendSelectionChanged(sf)}
+      onSelectionChange={list => onFriendSelectionChanged(list)}
     />}
-    {games ? <hr /> : null}
+    {games && games.length > 0 && <hr />}
     {steamID ? games ? <PlayedGamesList games={games} loadGame={loadGame} /> : gamesError ?
       <p>There was an error loading the list of games <strong>{steamUsername}</strong> owns.</p>
      : <p>Loading games list...</p> : steamIDError ? null : <p>Loading...</p>}
