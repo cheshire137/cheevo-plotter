@@ -19,9 +19,9 @@ const SteamLookupPage = ({ onUsernameChange }: Props) => {
     </PageLayout.Header>
     <PageLayout.Content>
       <form onSubmit={e => onSubmit(e)}>
-        <FormControl id="steam-username">
+        <FormControl required={true} id="steam-username">
           <FormControl.Label>Steam user name:</FormControl.Label>
-          <TextInput value={username} autoFocus={true} autoComplete="off" required={true}
+          <TextInput value={username} autoFocus={true} autoComplete="off"
             placeholder="e.g., cheshire137" onChange={e => setUsername(e.target.value.trim())} />
           <Text as="p" fontSize="1" color="fg.subtle">The Steam profile must be public.</Text>
         </FormControl>
