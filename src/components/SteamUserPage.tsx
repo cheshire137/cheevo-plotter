@@ -102,25 +102,27 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
       <SteamUserPageHeader playerSummary={loadedPlayerSummary} steamUsername={steamUsername}
         onUsernameChange={onUsernameChange} />
     </PageLayout.Header>
-    {steamIDError && <SteamUserError />}
-    {playerSummariesError && <Flash variant="warning">There was an error loading Steam user data.</Flash>}
-    {loadingSteamID && <Spinner />}
-    {steamID && friends.length > 0 && games && <p>
-      Choose some other players and a game to compare your achievements!
-    </p>}
-    {steamID && <FriendsList onFriendGamesLoaded={onFriendGamesLoaded} selectedIDs={selectedFriendSteamIDs}
-      steamUsername={steamUsername} steamID={steamID} onFriendsLoaded={list => setFriends(list)}
-      onSelectionChange={list => onFriendSelectionChanged(list)}
-    />}
-    {games && games.length > 0 && <hr />}
-    {gamesError && <Flash variant="warning">
-      There was an error loading the list of games <strong>{steamUsername}</strong> owns.
-    </Flash>}
-    {loadingGames && <div>
-      <Spinner />
-      <p>Loading {steamUsername}'s games list...</p>
-    </div>}
-    {steamID && games && <PlayedGamesList games={games} loadGame={loadGame} />}
+    <PageLayout.Content>
+      {steamIDError && <SteamUserError />}
+      {playerSummariesError && <Flash variant="warning">There was an error loading Steam user data.</Flash>}
+      {loadingSteamID && <Spinner />}
+      {steamID && friends.length > 0 && games && <p>
+        Choose some other players and a game to compare your achievements!
+      </p>}
+      {steamID && <FriendsList onFriendGamesLoaded={onFriendGamesLoaded} selectedIDs={selectedFriendSteamIDs}
+        steamUsername={steamUsername} steamID={steamID} onFriendsLoaded={list => setFriends(list)}
+        onSelectionChange={list => onFriendSelectionChanged(list)}
+      />}
+      {games && games.length > 0 && <hr />}
+      {gamesError && <Flash variant="warning">
+        There was an error loading the list of games <strong>{steamUsername}</strong> owns.
+      </Flash>}
+      {loadingGames && <div>
+        <Spinner />
+        <p>Loading {steamUsername}'s games list...</p>
+      </div>}
+      {steamID && games && <PlayedGamesList games={games} loadGame={loadGame} />}
+    </PageLayout.Content>
   </PageLayout>
 }
 
