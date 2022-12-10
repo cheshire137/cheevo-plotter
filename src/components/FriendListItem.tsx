@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import Friend from '../models/Friend'
 import useGetGames from '../hooks/use-get-games'
 import Game from '../models/Game'
+import { Avatar, Flash, FormControl, Checkbox } from '@primer/react'
 
 interface Props {
   onToggle(steamID: string, isChecked: boolean): void;
@@ -20,15 +21,17 @@ const FriendListItem = ({ onToggle, isSelected, friend, onFriendGamesLoaded }: P
     }
   }, [friend.steamID, games, loadingGames, onFriendGamesLoaded])
 
-  return <li>
-    <input checked={isSelected} type="checkbox" id={domId}
-      onChange={e => onToggle(friend.steamID, e.target.checked)} />
-    {friend.playerSummary ? <label htmlFor={domId}>
-      <img src={friend.playerSummary.avatarmedium} alt={friend.steamID} />
-      <span>{friend.playerSummary.personaname}</span>
-    </label> : <label htmlFor={domId}>{friend.steamID}</label>}
-    {gamesError && <span>Could not load games</span>}
-  </li>
+  return <FormControl id={domId}>
+    <Checkbox checked={isSelected} type="checkbox" onChange={e => onToggle(friend.steamID, e.target.checked)} />
+    <FormControl.Label>
+      {friend.playerSummary ? <>
+        <Avatar sx={{ mr: 1 }} src={friend.playerSummary.avatarmedium} alt={friend.steamID} />
+        {friend.playerSummary.personaname}
+      </> : <>{friend.steamID}</>}
+    </FormControl.Label>
+    {gamesError && <Flash variant="warning">Could not load games</Flash>}
+    {!loadingGames && games && <span>{games.length} games</span>}
+  </FormControl>
 }
 
 export default FriendListItem
