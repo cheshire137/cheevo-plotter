@@ -11,6 +11,7 @@ import useGetPlayerSummaries from '../hooks/use-get-player-summaries'
 import useGetGames from '../hooks/use-get-games'
 import useGetSteamID from '../hooks/use-get-steam-id'
 import {Flash} from '@primer/react'
+import { PageLayout, Spinner } from '@primer/react'
 
 interface Props {
   steamUsername: string;
@@ -96,12 +97,14 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     setOwnedGamesByOwnerSteamID(newHash)
   }
 
-  return <div>
-    <SteamUserPageHeader playerSummary={loadedPlayerSummary} steamUsername={steamUsername}
-      onUsernameChange={onUsernameChange} />
+  return <PageLayout>
+    <PageLayout.Header>
+      <SteamUserPageHeader playerSummary={loadedPlayerSummary} steamUsername={steamUsername}
+        onUsernameChange={onUsernameChange} />
+    </PageLayout.Header>
     {steamIDError && <SteamUserError />}
     {playerSummariesError && <Flash variant="warning">There was an error loading Steam user data.</Flash>}
-    {loadingSteamID && <div>Loading...</div>}
+    {loadingSteamID && <Spinner />}
     {steamID && friends.length > 0 && games && <p>
       Choose some other players and a game to compare your achievements!
     </p>}
@@ -113,9 +116,12 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
     {gamesError && <Flash variant="warning">
       There was an error loading the list of games <strong>{steamUsername}</strong> owns.
     </Flash>}
-    {loadingGames && <p>Loading {steamUsername}'s games list...</p>}
+    {loadingGames && <div>
+      <Spinner />
+      <p>Loading {steamUsername}'s games list...</p>
+    </div>}
     {steamID && games && <PlayedGamesList games={games} loadGame={loadGame} />}
-  </div>
+  </PageLayout>
 }
 
 export default SteamUserPage;
