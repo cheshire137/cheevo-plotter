@@ -36,6 +36,17 @@ class PlayerSummary {
       this.username = getUsernameFromProfileUrl(data.profileurl) || null
     }
   }
+
+  compare(otherPlayerSummary: PlayerSummary) {
+    if (this.steamid === otherPlayerSummary.steamid) {
+      return 0
+    }
+    return this.getNormalizedPersonaName().localeCompare(otherPlayerSummary.getNormalizedPersonaName())
+  }
+
+  getNormalizedPersonaName() {
+    return this.personaname.toLowerCase().replace(/^-/g, '').replace(/-$/g, '').replace(/[.'"-_]+/g, '')
+  }
 }
 
 export default PlayerSummary

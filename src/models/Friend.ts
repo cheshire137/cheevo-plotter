@@ -32,6 +32,20 @@ class Friend {
     }
     this.playerSummary = null;
   }
+
+  compare(otherFriend: Friend) {
+    if (this.steamID === otherFriend.steamID) {
+      return 0
+    }
+    if (this.playerSummary && otherFriend.playerSummary) {
+      return this.playerSummary.compare(otherFriend.playerSummary)
+    }
+    if (this.friendSince && otherFriend.friendSince) {
+      if (this.friendSince < otherFriend.friendSince) return -1
+      return this.friendSince > otherFriend.friendSince ? 1 : 0
+    }
+    return this.steamID.localeCompare(otherFriend.steamID)
+  }
 }
 
 export default Friend

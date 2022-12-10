@@ -83,6 +83,7 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, loadGame }: Props) => 
           friend.playerSummary = playerSummariesBySteamID[friend.steamID]
         }
       }
+      friends.sort((a, b) => a.compare(b))
     }
   }, [loadingPlayerSummaries, playerSummariesBySteamID, friends])
 
