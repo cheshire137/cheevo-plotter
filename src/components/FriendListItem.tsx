@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Friend from '../models/Friend'
 import useGetGames from '../hooks/use-get-games'
 import Game from '../models/Game'
-import { Avatar, Flash, FormControl, Checkbox } from '@primer/react'
+import { Avatar, Flash, FormControl, Checkbox, Text } from '@primer/react'
 
 interface Props {
   onToggle(steamID: string, isChecked: boolean): void;
@@ -28,9 +28,11 @@ const FriendListItem = ({ onToggle, isSelected, friend, onFriendGamesLoaded }: P
         <Avatar sx={{ mr: 1 }} src={friend.playerSummary.avatarmedium} alt={friend.steamID} />
         {friend.playerSummary.personaname}
       </> : <>{friend.steamID}</>}
+      {!loadingGames && games && <Text color="fg.subtle" fontSize="1" sx={{ ml: 2 }}>
+        {games.length} {games.length === 1 ? 'game' : 'games'}
+      </Text>}
     </FormControl.Label>
     {gamesError && <Flash variant="warning">Could not load games</Flash>}
-    {!loadingGames && games && <span>{games.length} games</span>}
   </FormControl>
 }
 
