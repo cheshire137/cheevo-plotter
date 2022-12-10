@@ -11,6 +11,8 @@ enum ResponseType {
 
 const serverUrl = 'http://localhost:8080';
 
+type AchievementsResult = { iconUri?: string, achievements: Achievement[] };
+
 class SteamApi {
   // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
   static async getSteamID(username: string): Promise<string> {
@@ -82,7 +84,7 @@ class SteamApi {
     return ownedGames.filter(game => game.totalPlaytime > 0)
   }
 
-  static async getAchievements(steamID: string, appID: number) {
+  static async getAchievements(steamID: string, appID: number): Promise<AchievementsResult> {
     const xml = await this.get('/api/steam?path=/profiles/' + steamID + '/stats/' + appID + '/achievements/&xml=1',
       ResponseType.XML);
     try {
@@ -95,14 +97,14 @@ class SteamApi {
         return new Achievement(isUnlocked, achievementIconUri, achievementName, achievementKey)
       })
       const gameIconUri = rawResult.playerstats.game[0].gameIcon[0]
-      return new Game({ iconUri: gameIconUri, appID, achievements })
+      return { iconUri: gameIconUri, achievements }
     } catch (err) {
       console.error('failed to get XML achievements for user ' + steamID + ', app ' + appID + ': ' + err)
       return this.getJsonAchievements(steamID, appID)
     }
   }
 
-  static async getJsonAchievements(steamID: string, appID: number) {
+  static async getJsonAchievements(steamID: string, appID: number): Promise<AchievementsResult> {
     const rawResult = await this.get('/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/&appid=' + appID +
       '&steamid=' + steamID + '&format=json');
     if (typeof rawResult.playerstats.error === 'string') {
@@ -122,7 +124,7 @@ class SteamApi {
       return new Achievement(isUnlocked, achievementIconUri, achievementName, achievementKey)
     });
     // TODO: somehow get game iconUri from JSON API
-    return new Game({ iconUri: '', appID, achievements })
+    return { achievements }
   }
 
   static async getGameSchema(appID: number) {
