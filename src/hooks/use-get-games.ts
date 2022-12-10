@@ -14,8 +14,9 @@ function useGetGames(steamID?: string | null): Results {
 
   useEffect(() => {
     async function fetchGames() {
-      const cachedGames = LocalStorage.get('steam-games');
-      if (typeof cachedGames === 'object') {
+      const cachedSteamID = LocalStorage.get('steam-id')
+      const cachedGames = LocalStorage.get('steam-games')
+      if (typeof cachedSteamID === 'string' && typeof cachedGames === 'object' && cachedSteamID === steamID) {
         setResults({ games: cachedGames, fetching: false })
         return
       }
@@ -28,7 +29,9 @@ function useGetGames(steamID?: string | null): Results {
       try {
         const playedGames = await SteamApi.getOwnedPlayedGames(steamID)
         setResults({ games: playedGames, fetching: false })
-        LocalStorage.set('steam-games', playedGames)
+        if (typeof cachedSteamID === 'string' && cachedSteamID === steamID) {
+          LocalStorage.set('steam-games', playedGames)
+        }
       } catch (err: any) {
         console.error('failed to fetch Steam games for ' + steamID, err)
         setResults({ fetching: false, error: err.message })
