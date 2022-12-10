@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { PageLayout } from '@primer/react'
+import { Button, PageLayout, FormControl, TextInput, Text } from '@primer/react'
 
 interface Props {
   onUsernameChange(newUsername: string): void;
@@ -19,10 +19,15 @@ const SteamLookupPage = ({ onUsernameChange }: Props) => {
     </PageLayout.Header>
     <PageLayout.Content>
       <form onSubmit={e => onSubmit(e)}>
-        <label htmlFor="steam-username">Steam user name:</label>
-        <input type="text" value={username} id="steam-username" autoFocus={true}
-          placeholder="e.g., cheshire137" onChange={e => setUsername(e.target.value.trim())} />
-        <p>The Steam profile must be public.</p>
+        <FormControl id="steam-username">
+          <FormControl.Label>Steam user name:</FormControl.Label>
+          <TextInput value={username} autoFocus={true} autoComplete="off" required={true}
+            placeholder="e.g., cheshire137" onChange={e => setUsername(e.target.value.trim())} />
+          <Text as="p" fontSize="1" color="fg.subtle">The Steam profile must be public.</Text>
+        </FormControl>
+        <Button
+          type="submit"
+        >Find user</Button>
       </form>
     </PageLayout.Content>
   </PageLayout>

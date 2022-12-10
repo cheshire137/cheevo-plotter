@@ -4,8 +4,7 @@ import SteamUserPage from './components/SteamUserPage'
 import SteamGamePage from './components/SteamGamePage'
 import LocalStorage from './models/LocalStorage'
 import Game from './models/Game'
-import { ThemeProvider } from "styled-components"
-import { theme as primer } from "@primer/react"
+import { ThemeProvider, theme as primer } from "@primer/react"
 import './App.css'
 
 const persistUsernameChange = (username: string, steamID?: string) => {
@@ -42,7 +41,7 @@ function App() {
     currentPage = <SteamUserPage loadGame={g => setGame(g)} steamUsername={username} onUsernameChange={onUsernameChange} />
   }
 
-  return <ThemeProvider theme={primer}>
+  return <ThemeProvider theme={primer} colorMode="auto">
     {currentPage}
   </ThemeProvider>
 }
