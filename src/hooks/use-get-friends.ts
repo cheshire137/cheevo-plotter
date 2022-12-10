@@ -14,8 +14,9 @@ function useGetFriends(steamID: string): Results {
 
   useEffect(() => {
     async function fetchFriends() {
-      const cachedFriends = LocalStorage.get('steam-friends')
-      if (typeof cachedFriends === 'object') {
+      const cachedFriendsData = LocalStorage.get('steam-friends')
+      if (typeof cachedFriendsData === 'object') {
+        const cachedFriends: Friend[] = cachedFriendsData.map((data: any) => new Friend(data))
         setResults({ friends: cachedFriends, fetching: false })
         return
       }
