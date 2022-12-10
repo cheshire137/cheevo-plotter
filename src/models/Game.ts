@@ -16,7 +16,7 @@ interface GameData {
 }
 
 class Game {
-  iconUri: string;
+  iconUri: string | null;
   achievements: Achievement[];
   appID: number;
   totalPlaytime: number;
@@ -25,7 +25,11 @@ class Game {
   url: string;
 
   constructor(data: GameData) {
-    this.iconUri = data.iconUri || ''
+    if (data.iconUri) {
+      this.iconUri = data.iconUri
+    } else {
+      this.iconUri = null
+    }
     this.achievements = data.achievements || []
     this.appID = data.appID
     this.totalPlaytime = data.totalPlaytime || 0
