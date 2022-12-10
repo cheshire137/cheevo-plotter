@@ -21,7 +21,7 @@ const FriendListItem = ({ onToggle, isSelected, friend, onFriendGamesLoaded }: P
     }
   }, [friend.steamID, games, loadingGames, onFriendGamesLoaded])
 
-  return <FormControl id={domId}>
+  return <FormControl id={domId} sx={{ my: 1, mr: 3, display: 'flex', alignItems: 'center' }}>
     <Checkbox checked={isSelected} type="checkbox" onChange={e => onToggle(friend.steamID, e.target.checked)} />
     <FormControl.Label>
       {friend.playerSummary ? <>

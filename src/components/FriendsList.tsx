@@ -3,7 +3,7 @@ import FriendListItem from './FriendListItem'
 import Friend from '../models/Friend'
 import Game from '../models/Game'
 import useGetFriends from '../hooks/use-get-friends'
-import { CheckboxGroup } from '@primer/react'
+import { Box, CheckboxGroup } from '@primer/react'
 
 interface Props {
   steamID: string;
@@ -44,10 +44,12 @@ const FriendsList = ({ steamID, steamUsername, selectedIDs, onSelectionChange, o
 
   return <CheckboxGroup>
     <CheckboxGroup.Label>{steamUsername}'s Friends {friends && <span>({friends.length})</span>}</CheckboxGroup.Label>
-    {friends && friends.map(friend => <FriendListItem onFriendGamesLoaded={onFriendGamesLoaded}
-      key={friend.steamID} friend={friend} isSelected={selectedIDs.indexOf(friend.steamID) > -1}
-      onToggle={(id: string, checked: boolean) => onFriendToggled(id, checked)} />
-    )}
+    <Box display="flex" flexWrap="wrap">
+      {friends && friends.map(friend => <FriendListItem onFriendGamesLoaded={onFriendGamesLoaded}
+        key={friend.steamID} friend={friend} isSelected={selectedIDs.indexOf(friend.steamID) > -1}
+        onToggle={(id: string, checked: boolean) => onFriendToggled(id, checked)} />
+      )}
+    </Box>
   </CheckboxGroup>
 }
 
