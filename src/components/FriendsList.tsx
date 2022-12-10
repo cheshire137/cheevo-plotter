@@ -4,6 +4,7 @@ import Friend from '../models/Friend'
 import Game from '../models/Game'
 import useGetFriends from '../hooks/use-get-friends'
 import { Box, CheckboxGroup } from '@primer/react'
+import { Box, CheckboxGroup, Flash, Spinner } from '@primer/react'
 
 interface Props {
   steamID: string;
@@ -35,11 +36,14 @@ const FriendsList = ({ steamID, steamUsername, selectedIDs, onSelectionChange, o
   }
 
   if (loadingFriends) {
-    return <p>Loading friends list...</p>
+    return <Box>
+      <Spinner />
+      <p>Loading friends list...</p>
+    </Box>
   }
 
   if (friendsError) {
-    return <p>There was an error loading the friends list: {friendsError}.</p>
+    return <Flash variant="danger">There was an error loading the friends list: {friendsError}.</Flash>
   }
 
   return <CheckboxGroup>
