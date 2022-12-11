@@ -5,102 +5,45 @@ import Filters from './Filters'
 import Player from '../models/Player'
 import Achievement from '../models/Achievement'
 
-type AchievementsBySteamID = { [steamID: string]: Achievement[] };
-
 interface Props {
-  initialPlayers: Player[];
-  achievementsBySteamID: AchievementsBySteamID;
+  players: Player[];
+  achievements: Achievement[];
 }
 
-const getInitialHashOfPlayers = (initialPlayers: Player[]) => {
-  const players: { [key: string]: Player } = {};
-  for (const player of initialPlayers) {
-    players[player.steamid] = player
-  }
-  return players
+enum AchievementFilter {
+  AllUnlocked = 'allUnlocked',
+  NoneUnlocked = 'noneUnlocked'
 }
 
-const getMasterListOfAchievements = (achievementsBySteamID: AchievementsBySteamID) => {
-  const achievements = []
-  for (var steamID in achievementsBySteamID) {
-    for (var i = 0; i < achievementsBySteamID[steamID].length; i++) {
-      var achievement = achievementsBySteamID[steamID][i]
-      var inList = false
-      for (var j = 0; j < achievements.length; j++) {
-        if (achievements[j].key === achievement.key) {
-          inList = true
-          achievements[j].players[steamID] = { isUnlocked: achievement.isUnlocked, iconUri: achievement.iconUri }
-          break
-        }
-      }
-      if (!inList) {
-        const players: any = {}
-        players[steamID] = { isUnlocked: achievement.isUnlocked, iconUri: achievement.iconUri }
-        achievements.push({ key: achievement.key, name: achievement.name, players: players })
-      }
-    }
-  }
-  return achievements
-}
+const AchievementsComparison = ({ players, achievements }: Props) => {
+  const [filters, setFilters] = useState<AchievementFilter[]>([])
 
-const setIconUriOnAchievements = (achievements: any[]) => {
-  for (var i = 0; i < achievements.length; i++) {
-    var achievement = achievements[i];
-    var isUnlocked = false, unlockedUri, lockedUri;
-    for (var steamId in achievement.players) {
-      if (achievement.players[steamId].isUnlocked) {
-        isUnlocked = true;
-        unlockedUri = achievement.players[steamId].iconUri;
-      } else {
-        lockedUri = achievement.players[steamId].iconUri;
-      }
-    }
-    achievement.isUnlocked = isUnlocked;
-    if (isUnlocked) {
-      achievement.iconUri = unlockedUri;
-    } else {
-      achievement.iconUri = lockedUri;
-    }
-  }
-}
-
-const getInitialListOfAchievements = (achievementsBySteamID: AchievementsBySteamID) => {
-  var achievements = getMasterListOfAchievements(achievementsBySteamID);
-  setIconUriOnAchievements(achievements);
-  return achievements;
-}
-
-const AchievementsComparison = ({ initialPlayers, achievementsBySteamID }: Props) => {
-  const [filters, setFilters] = useState<string[]>([])
-  const players = getInitialHashOfPlayers(initialPlayers)
-  const achievements = getInitialListOfAchievements(achievementsBySteamID)
-
-  const onFilterChange = (activeFilters: string[]) => {
+  const onFilterChange = (activeFilters: AchievementFilter[]) => {
     setFilters(activeFilters)
   }
 
-  const includeAchievement = (achievement: any) => {
+  const includeAchievement = (achievement: Achievement) => {
     if (filters.length < 1) {
-      return true;
+      return true
     }
-    var allUnlocked = true, noneUnlocked = true;
-    for (var steamId in achievement.players) {
-      if (achievement.players[steamId].isUnlocked) {
-        noneUnlocked = false;
+    let allUnlocked = true, noneUnlocked = true
+    for (const player of players) {
+      if (player.hasAchievement(achievement.key)) {
+        noneUnlocked = false
       } else {
-        allUnlocked = false;
+        allUnlocked = false
       }
       if (!allUnlocked && !noneUnlocked) {
-        break;
+        break
       }
     }
-    if (filters.indexOf('allUnlocked') > -1 && !allUnlocked) {
-      return false;
+    if (filters.includes(AchievementFilter.AllUnlocked) && !allUnlocked) {
+      return false
     }
-    if (filters.indexOf('noneUnlocked') > -1 && !noneUnlocked) {
-      return false;
+    if (filters.includes(AchievementFilter.NoneUnlocked) && !noneUnlocked) {
+      return false
     }
-    return true;
+    return true
   }
 
   const haveAchievements = achievements.length > 0
