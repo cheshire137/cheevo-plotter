@@ -1,8 +1,10 @@
 import {parseStringPromise} from 'xml2js';
 import Achievement from './Achievement';
 import Game from './Game';
+import LocalStorage from './LocalStorage';
 import Friend from './Friend';
 import PlayerSummary from './PlayerSummary';
+import { hashString } from './Utils'
 
 enum ResponseType {
   JSON = "json",
@@ -12,6 +14,8 @@ enum ResponseType {
 const serverUrl = 'http://localhost:8080';
 
 type AchievementsResult = { iconUri?: string, achievements: Achievement[] };
+
+const maxCacheAgeInSeconds = 86400; // 24 hours
 
 class SteamApi {
   // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
@@ -134,10 +138,27 @@ class SteamApi {
 
   static async get(path: string, type?: ResponseType) {
     type = type || ResponseType.JSON;
+
+    const cacheKey = hashString(`${type}-${path}`).toString()
+    if (LocalStorage.hasKey(cacheKey)) {
+      if (LocalStorage.getAgeOfKeyInSeconds(cacheKey) < maxCacheAgeInSeconds) {
+        return LocalStorage.get(cacheKey)
+      }
+      LocalStorage.delete(cacheKey) // too old
+    }
+
     const response = await fetch(serverUrl + path);
     if (response.status >= 200 && response.status < 300) {
-      return type === ResponseType.JSON ? await response.json() : await response.text();
+      let result
+      if (type === ResponseType.JSON) {
+        result = await response.json()
+      } else {
+        result = await response.text()
+      }
+      LocalStorage.set(cacheKey, result, true)
+      return result
     }
+
     throw new Error(response.statusText);
   }
 }
