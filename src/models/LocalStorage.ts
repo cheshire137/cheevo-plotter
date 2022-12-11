@@ -1,4 +1,4 @@
-const localStorageKey = "cheevo-plotter";
+const localStorageKey = "cheevo-plotter"
 
 class LocalStorage {
   static getJSON() {
@@ -11,6 +11,13 @@ class LocalStorage {
     }
     var appData = window.localStorage.getItem(localStorageKey) || '{}'
     return JSON.parse(appData)
+  }
+
+  static totalSize() {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return -1
+    }
+    return new Blob(Object.values(window.localStorage)).size
   }
 
   static get(key: string) {
