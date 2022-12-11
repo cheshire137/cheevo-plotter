@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import SteamApi from '../models/SteamApi'
+import Player from '../models/Player'
 import Achievement from '../models/Achievement'
 
 interface Results {
@@ -9,26 +10,26 @@ interface Results {
   error?: string;
 }
 
-function useGetAchievements(steamID: string, appID: number): Results {
+function useGetAchievements(player: Player, appID: number): Results {
   const [results, setResults] = useState<Results>({ fetching: true })
 
   useEffect(() => {
     async function fetchAchievements() {
       try {
-        const result = await SteamApi.getAchievements(steamID, appID)
+        const result = await SteamApi.getAchievements(player, appID)
         setResults({ achievements: result.achievements, iconUri: result.iconUri, fetching: false })
       } catch (err: any) {
-        console.error('failed to fetch Steam player summaries', err)
+        console.error(`failed to fetch Steam achievements for ${player.personaname}, ${appID}`, err)
         setResults({ fetching: false, error: err.message })
       }
     }
 
-    if (steamID.length > 0 && appID > 0) {
+    if (appID > 0) {
       fetchAchievements()
     } else {
       setResults({ fetching: false, achievements: [] })
     }
-  }, [steamID, appID])
+  }, [player, appID])
 
   return results
 }
