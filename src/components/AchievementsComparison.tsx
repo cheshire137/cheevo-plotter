@@ -108,8 +108,10 @@ const AchievementsComparison = ({ initialPlayers, achievementsBySteamID }: Props
 
   return <div>
     {haveAchievements ? <UnlockedBarChart achievements={achievements} players={players} /> : <p>No achievements</p>}
-    {haveAchievements ? <hr /> : null}
-    {haveAchievements ? <Filters onChange={onFilterChange} filteredCount={filteredAchievements.length} /> : null}
+    {haveAchievements && <>
+      <hr />
+      <Filters onChange={onFilterChange} filteredCount={filteredAchievements.length} />
+    </>}
     <ul>
       {filteredAchievements.map(achievement => <AchievementComparison players={players}
         achievement={achievement} key={achievement.key} />

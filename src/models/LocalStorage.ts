@@ -1,4 +1,4 @@
-const localStorageKey = "cheevo-plotter"
+const localStorageKey = 'cheevo-plotter'
 const timestampsKey = 'timestamps'
 
 class LocalStorage {
@@ -11,7 +11,7 @@ class LocalStorage {
       console.error('browser does not support local storage')
       return {}
     }
-    var appData = window.localStorage.getItem(localStorageKey) || '{}'
+    const appData = window.localStorage.getItem(localStorageKey) || '{}'
     return JSON.parse(appData)
   }
 
