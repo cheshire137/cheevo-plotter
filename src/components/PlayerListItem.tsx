@@ -50,7 +50,12 @@ const PlayerListItem = ({ player, isCurrent, game, onAchievementsLoaded, onUsern
   }
 
   if (achievementsError) {
-    return <Flash variant="danger">Failed to load {player.personaname}'s achievements for {game.name}.</Flash>
+    if (achievementsError.match(/app has no stats/i)) {
+      return <p>{player.personaname} hasn't played {game.name}.</p>
+    }
+    return <Flash variant="danger">
+      Failed to load {player.personaname}'s achievements for {game.name}: {achievementsError}.
+    </Flash>
   }
 
   return <li>
