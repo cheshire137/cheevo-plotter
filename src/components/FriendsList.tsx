@@ -34,8 +34,8 @@ const FriendsList = ({ steamID, steamUsername, selectedIDs, onPlayerSelectionCha
       newSelectedFriends = newSelectedFriends.slice(0, index).concat(newSelectedFriends.slice(index + 1))
     }
     setSelectedFriends(newSelectedFriends)
-    onPlayerSelectionChange(newSelectedFriends.map(friend =>
-      new Player(friend.steamID, friend.playerSummary ? friend.playerSummary.personaname : friend.steamID)
+    onPlayerSelectionChange(newSelectedFriends.filter(f => f.playerSummary).map(friend =>
+      new Player(friend.steamID, friend.playerSummary!)
     ))
   }
 

@@ -15,7 +15,7 @@ const AchievementComparison = ({ players, achievement }: Props) => {
     <div>
       <h2>{achievement.name}</h2>
       <ul>
-        {playersWithAchievement.map(player => <li key={player.personaname}>{player.personaname}</li>)}
+        {playersWithAchievement.map(player => <li key={player.steamid}>{player.playerSummary.personaname}</li>)}
       </ul>
     </div>
   </li>

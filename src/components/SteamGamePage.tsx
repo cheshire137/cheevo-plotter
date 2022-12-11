@@ -35,16 +35,16 @@ const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlay
 
   useEffect(() => {
     if (!loadingAchievements && loadedPlayerUnlockedAchievements) {
-      const newLoadedPlayer = new Player(loadedPlayer.steamid, loadedPlayer.personaname)
+      const newLoadedPlayer = new Player(loadedPlayer.steamid, loadedPlayer.playerSummary)
       for (const unlockedAchievement of loadedPlayerUnlockedAchievements) {
         newLoadedPlayer.addUnlockedAchievement(unlockedAchievement)
       }
       onPlayerChange(newLoadedPlayer)
     }
-  }, [loadingAchievements, onPlayerChange, loadedPlayer.personaname, loadedPlayer.steamid, loadedPlayerUnlockedAchievements])
+  }, [loadingAchievements, onPlayerChange, loadedPlayer.playerSummary, loadedPlayer.steamid, loadedPlayerUnlockedAchievements])
 
   const onPlayerUnlockedAchievementsLoaded = (player: Player, unlockedAchievements: Achievement[]) => {
-    const newPlayer = new Player(player.steamid, player.personaname)
+    const newPlayer = new Player(player.steamid, player.playerSummary)
     for (const achievement of unlockedAchievements) {
       newPlayer.addUnlockedAchievement(achievement)
     }

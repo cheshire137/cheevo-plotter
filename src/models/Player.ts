@@ -1,13 +1,14 @@
 import Achievement from "./Achievement"
+import PlayerSummary from "./PlayerSummary"
 
 class Player {
   steamid: string;
-  personaname: string;
   unlockedAchievements: Achievement[];
+  playerSummary: PlayerSummary;
 
-  constructor(steamid: string, personaname: string) {
+  constructor(steamid: string, playerSummary: PlayerSummary) {
     this.steamid = steamid;
-    this.personaname = personaname;
+    this.playerSummary = playerSummary;
     this.unlockedAchievements = [];
   }
 

@@ -42,7 +42,7 @@ function App() {
 
   useEffect(() => {
     if (!loadingSteamID && steamID && playerSummary) {
-      setLoadedPlayer(new Player(steamID, playerSummary.personaname))
+      setLoadedPlayer(new Player(steamID, playerSummary))
     }
   }, [steamID, loadingSteamID, playerSummary])
 
@@ -53,7 +53,7 @@ function App() {
   }
 
   const onPlayerChange = (newPlayer: Player) => {
-    console.log('onPlayerChange', newPlayer.personaname, newPlayer.unlockedAchievements)
+    console.log('onPlayerChange', newPlayer.playerSummary, newPlayer.unlockedAchievements)
     if (loadedPlayer && newPlayer.steamid === loadedPlayer.steamid) {
       setLoadedPlayer(newPlayer)
     }

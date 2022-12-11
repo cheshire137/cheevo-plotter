@@ -19,7 +19,8 @@ const PlayersList = ({ players, game, onPlayerUnlockedAchievementsLoaded, curren
       game={game}
       onUsernameChange={onUsernameChange}
       key={player.steamid}
-      player={player}
+      steamID={player.steamid}
+      playerSummary={player.playerSummary}
       onUnlockedAchievementsLoaded={unlockedAchievements =>
         onPlayerUnlockedAchievementsLoaded(player, unlockedAchievements)}
       isCurrent={currentSteamID === player.steamid} />)}
