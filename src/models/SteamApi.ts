@@ -85,7 +85,9 @@ class SteamApi {
 
   static async getOwnedPlayedGames(steamID: string, username?: string) {
     const ownedGames = await this.getOwnedGames(steamID, username)
-    return ownedGames.filter(game => game.totalPlaytime > 0)
+    const playedGames = ownedGames.filter(game => game.totalPlaytime > 0)
+    playedGames.sort((a, b) => a.compare(b))
+    return playedGames
   }
 
   static async getAchievements(steamID: string, appID: number): Promise<AchievementsResult> {

@@ -15,8 +15,10 @@ function useGetGames(steamID?: string | null, username?: string): Results {
   useEffect(() => {
     async function fetchGames() {
       const cachedSteamID = LocalStorage.get('steam-id')
-      const cachedGames = LocalStorage.get('steam-games')
-      if (typeof cachedSteamID === 'string' && typeof cachedGames === 'object' && cachedSteamID === steamID) {
+      const cachedGameData = LocalStorage.get('steam-games')
+      if (typeof cachedSteamID === 'string' && typeof cachedGameData === 'object' && cachedSteamID === steamID) {
+        const cachedGames = (cachedGameData as any[]).map(data => new Game(data))
+        cachedGames.sort((a, b) => a.compare(b))
         setResults({ games: cachedGames, fetching: false })
         return
       }
