@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Game from '../models/Game'
 import Player from '../models/Player'
 import Achievement from '../models/Achievement'
@@ -7,9 +7,7 @@ import AchievementsList from './AchievementsList'
 import AchievementsComparison from './AchievementsComparison'
 import PlayersList from './PlayersList'
 import SteamGamePageHeader from './SteamGamePageHeader'
-import useGetSteamID from '../hooks/use-get-steam-id'
-import SteamUserError from './SteamUserError'
-import { PageLayout, Spinner } from '@primer/react'
+import { PageLayout } from '@primer/react'
 
 interface Props {
   steamUsername: string;
@@ -19,11 +17,10 @@ interface Props {
   playerSummary: PlayerSummary;
   onUsernameChange(newUsername: string): void;
   onGameChange(newGame: Game | null): void;
+  steamID: string;
 }
 
-const SteamGamePage = ({ playerSummary, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange }: Props) => {
-  const { steamID, error: steamIDError, fetching: loadingSteamID } = useGetSteamID(steamUsername)
-  const [achievementsBySteamID, setAchievementsBySteamID] = useState<{ [steamID: string]: Achievement[] }>({})
+const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange, onPlayerChange }: Props) => {
 
   const onGameIconUriChange = (newIconUri: string | null) => {
     const newGameData = Object.assign({}, game) as any
@@ -41,9 +38,7 @@ const SteamGamePage = ({ playerSummary, steamUsername, game, loadedPlayer, selec
         onGameChange={onGameChange} />
     </PageLayout.Header>
     <PageLayout.Content>
-      {loadingSteamID && <Spinner />}
-      {steamIDError && <SteamUserError />}
-      {selectedPlayers.length > 0 && !loadingSteamID && steamID && <PlayersList
+      {selectedPlayers.length > 0 && steamID && <PlayersList
         players={selectedPlayers}
         game={game}
         currentSteamID={steamID}

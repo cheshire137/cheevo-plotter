@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import SteamLookupPage from './components/SteamLookupPage'
 import SteamUserPage from './components/SteamUserPage'
 import SteamGamePage from './components/SteamGamePage'
+import SteamUserError from './components/SteamUserError'
 import LocalStorage from './models/LocalStorage'
 import useGetSteamID from './hooks/use-get-steam-id'
 import Game from './models/Game'
 import Player from './models/Player'
 import PlayerSummary from './models/PlayerSummary'
-import { ThemeProvider, theme as primer } from "@primer/react"
+import { ThemeProvider, theme as primer, Spinner } from "@primer/react"
 import './App.css'
 
 const persistUsernameChange = (username: string, steamID?: string) => {
@@ -57,7 +58,11 @@ function App() {
   let currentPage
   if (username.length < 1) {
     currentPage = <SteamLookupPage onUsernameChange={onUsernameChange} />
-  } else if (game !== null && playerSummary !== null && loadedPlayer !== null) {
+  } else if (loadingSteamID) {
+    currentPage = <Spinner size='large' />
+  } else if (steamIDError) {
+    currentPage = <SteamUserError />
+  } else if (game !== null && playerSummary !== null && loadedPlayer !== null && steamID) {
     currentPage = <SteamGamePage
       steamUsername={username}
       game={game}
@@ -66,6 +71,7 @@ function App() {
       playerSummary={playerSummary}
       onGameChange={g => setGame(g)}
       selectedPlayers={players}
+      steamID={steamID}
     />
   } else {
     currentPage = <SteamUserPage
