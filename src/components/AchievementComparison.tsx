@@ -1,17 +1,17 @@
 import React from 'react'
 import Player from '../models/Player'
+import Achievement from '../models/Achievement'
 
 interface Props {
   players: { [key: string]: Player };
-  achievement: any;
+  achievement: Achievement;
 }
 
 const AchievementComparison = ({ players, achievement }: Props) => {
   const playerIds: string[] = Object.keys(achievement.players);
 
   return <li>
-    {typeof achievement.iconUri === 'string' ? <img src={achievement.iconUri} alt={achievement.name}
-      width="64" height="64" /> : null}
+    <img src={achievement.iconUri} alt={achievement.name} width="64" height="64" />
     <div>
       <h2>{achievement.name}</h2>
       <ul>
