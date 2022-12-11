@@ -45,6 +45,15 @@ class Game {
     this.url = 'https://steamcommunity.com/app/' + this.appID;
   }
 
+  compare(otherGame: Game) {
+    if (this.appID === otherGame.appID) return 0
+    if (this.timeLastPlayed && otherGame.timeLastPlayed) {
+      if (this.timeLastPlayed === otherGame.timeLastPlayed) return 0
+      return this.timeLastPlayed > otherGame.timeLastPlayed ? -1 : 1
+    }
+    return this.getNormalizedName().localeCompare(otherGame.getNormalizedName())
+  }
+
   getNormalizedName() {
     let normalizedName = this.name.toLowerCase()
     if (normalizedName.indexOf('the ') === 0) {
