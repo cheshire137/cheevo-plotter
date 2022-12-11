@@ -1,8 +1,10 @@
 const localStorageKey = "cheevo-plotter"
+const timestampsKey = 'timestamps'
 
 class LocalStorage {
   static getJSON() {
     if (typeof window === 'undefined') {
+      console.error("don't have a window to access local storage")
       return {}
     }
     if (!window.localStorage) {
@@ -14,9 +16,7 @@ class LocalStorage {
   }
 
   static totalSize() {
-    if (typeof window === 'undefined' || !window.localStorage) {
-      return -1
-    }
+    if (typeof window === 'undefined' || !window.localStorage) return -1
     return new Blob(Object.values(window.localStorage)).size
   }
 
@@ -30,20 +30,37 @@ class LocalStorage {
     return key in appData
   }
 
-  static set(key: string, value: any) {
-    var appData = this.getJSON()
-    appData[key] = value
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(localStorageKey, JSON.stringify(appData))
+  static getAgeOfKeyInSeconds(key: string) {
+    const timestamps = this.get(timestampsKey) || {}
+    const now = new Date().getTime()
+    const then = timestamps[key] || now
+    return Math.abs(now - then) / 1000
+  }
+
+  static set(key: string, value: any, recordTimestamp?: boolean) {
+    if (typeof window === 'undefined' || !window.localStorage) return
+
+    const appData = this.getJSON()
+
+    if (recordTimestamp) {
+      const timestamps = appData[timestampsKey] || {}
+      timestamps[key] = new Date().getTime()
+      appData[timestampsKey] = timestamps
     }
+
+    appData[key] = value
+    window.localStorage.setItem(localStorageKey, JSON.stringify(appData))
   }
 
   static delete(key: string) {
+    if (typeof window === 'undefined' || !window.localStorage) return
+
     const appData = this.getJSON()
     delete appData[key]
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(localStorageKey, JSON.stringify(appData))
-    }
+    const timestamps = appData[timestampsKey] || {}
+    delete timestamps[key]
+    appData[timestampsKey] = timestamps
+    window.localStorage.setItem(localStorageKey, JSON.stringify(appData))
   }
 }
 
