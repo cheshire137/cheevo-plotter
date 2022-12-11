@@ -11,17 +11,25 @@ import { ThemeProvider, theme as primer } from "@primer/react"
 import './App.css'
 
 const persistUsernameChange = (username: string, steamID?: string) => {
-  if (typeof steamID === 'string') {
-    LocalStorage.set('steam-id', steamID)
-  } else {
+  const existingUsername = LocalStorage.get('steam-username')
+  const existingSteamID = LocalStorage.get('steam-id')
+  const isNewUsername = existingUsername !== username
+
+  if (typeof steamID === 'string' && steamID.length > 0) {
+    if (existingSteamID !== steamID) {
+      LocalStorage.set('steam-id', steamID)
+    }
+  } else if (isNewUsername) {
     LocalStorage.delete('steam-id')
   }
-  LocalStorage.delete('steam-games')
-  LocalStorage.delete('steam-selected-friends')
-  LocalStorage.delete('steam-friends')
+  if (isNewUsername) {
+    LocalStorage.delete('steam-games')
+    LocalStorage.delete('steam-selected-friends')
+    LocalStorage.delete('steam-friends')
+  }
   if (username.length < 1) {
     LocalStorage.delete('steam-username')
-  } else {
+  } else if (isNewUsername) {
     LocalStorage.set('steam-username', username)
   }
 }
@@ -34,7 +42,7 @@ function App() {
   const [players, setPlayers] = useState<Player[]>([])
 
   const onUsernameChange = (newUsername: string) => {
-    persistUsernameChange(newUsername)
+    persistUsernameChange(newUsername, steamID)
     setUsername(newUsername)
     setPlayerSummary(null)
   }
