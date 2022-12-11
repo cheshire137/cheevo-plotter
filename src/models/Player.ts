@@ -14,6 +14,10 @@ class Player {
   addUnlockedAchievement(achievement: Achievement) {
     this.unlockedAchievements.push(achievement)
   }
+
+  hasAchievement(achievementKey: string) {
+    return this.unlockedAchievements.some(a => a.key === achievementKey)
+  }
 }
 
 export default Player;
