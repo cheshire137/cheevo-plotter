@@ -66,7 +66,7 @@ class SteamApi {
     throw new Error('Failed to get friends for ' + steamID + '; may not be a public profile.');
   }
 
-  static async getOwnedGames(steamID: string): Promise<Game[]> {
+  static async getOwnedGames(steamID: string, username?: string): Promise<Game[]> {
     const data = await this.get('/api/steam?format=json&path=/IPlayerService/GetOwnedGames/v0001/&steamid=' +
       steamID)
     if (data && data.response && data.response.games) {
@@ -76,11 +76,12 @@ class SteamApi {
         timeLastPlayed: g.rtime_last_played,
       }))
     }
-    throw new Error('Could not get Steam games for ID ' + steamID + '; may not be a public profile.')
+    const userDesc = username ? username : `ID ${steamID}`
+    throw new Error(`Couldn't load Steam games for ${userDesc}; may not be a public profile.`)
   }
 
-  static async getOwnedPlayedGames(steamID: string) {
-    const ownedGames = await this.getOwnedGames(steamID)
+  static async getOwnedPlayedGames(steamID: string, username?: string) {
+    const ownedGames = await this.getOwnedGames(steamID, username)
     return ownedGames.filter(game => game.totalPlaytime > 0)
   }
 

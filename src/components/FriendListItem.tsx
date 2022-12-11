@@ -12,7 +12,7 @@ interface Props {
 }
 
 const FriendListItem = ({ onToggle, isSelected, friend, onFriendGamesLoaded }: Props) => {
-  const { games, error: gamesError, fetching: loadingGames } = useGetGames(isSelected ? friend.steamID : null)
+  const { games, error: gamesError, fetching: loadingGames } = useGetGames(isSelected ? friend.steamID : null, friend.playerSummary?.personaname)
   const domId = 'friend-' + friend.steamID
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const FriendListItem = ({ onToggle, isSelected, friend, onFriendGamesLoaded }: P
 
   return <FormControl id={domId} sx={{ my: 1, mr: 3, display: 'flex', alignItems: 'center' }}>
     <Checkbox checked={isSelected} type="checkbox" onChange={e => onToggle(e.target.checked)} />
-    <FormControl.Label>
+    <FormControl.Label sx={{ display: 'flex', alignItems: 'center' }}>
       {friend.playerSummary ? <>
         <Avatar sx={{ mr: 1 }} src={friend.playerSummary.avatarmedium} alt={friend.steamID} />
         {friend.playerSummary.personaname}
@@ -31,8 +31,8 @@ const FriendListItem = ({ onToggle, isSelected, friend, onFriendGamesLoaded }: P
       {!loadingGames && games && <Text color="fg.subtle" fontSize="1" sx={{ ml: 2 }}>
         {games.length} {games.length === 1 ? 'game' : 'games'}
       </Text>}
+      {gamesError && <Flash variant="danger" sx={{ ml: 2, fontWeight: 'normal', p: 1, fontSize: 1 }}>{gamesError}</Flash>}
     </FormControl.Label>
-    {gamesError && <Flash variant="warning">Could not load games</Flash>}
   </FormControl>
 }
 

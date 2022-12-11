@@ -9,7 +9,7 @@ interface Results {
   error?: string;
 }
 
-function useGetGames(steamID?: string | null): Results {
+function useGetGames(steamID?: string | null, username?: string): Results {
   const [results, setResults] = useState<Results>({ fetching: true })
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function useGetGames(steamID?: string | null): Results {
       }
 
       try {
-        const playedGames = await SteamApi.getOwnedPlayedGames(steamID)
+        const playedGames = await SteamApi.getOwnedPlayedGames(steamID, username)
         setResults({ games: playedGames, fetching: false })
         if (typeof cachedSteamID === 'string' && cachedSteamID === steamID) {
           LocalStorage.set('steam-games', playedGames)
@@ -39,7 +39,7 @@ function useGetGames(steamID?: string | null): Results {
     }
 
     fetchGames()
-  }, [steamID])
+  }, [steamID, username])
 
   return results
 }
