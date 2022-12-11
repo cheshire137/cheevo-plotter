@@ -59,7 +59,7 @@ function App() {
     />
   }
 
-  return <ThemeProvider theme={primer} colorMode="auto">
+  return <ThemeProvider theme={primer}>
     {currentPage}
   </ThemeProvider>
 }
