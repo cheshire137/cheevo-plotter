@@ -25,7 +25,6 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, onPlayerSummaryChange,
   const { steamID, error: steamIDError, fetching: loadingSteamID } = useGetSteamID(steamUsername)
   const { games, error: gamesError, fetching: loadingGames } = useGetGames(steamID)
   const [selectedFriendSteamIDs, setSelectedFriendSteamIDs] = useState<string[]>(LocalStorage.get('steam-selected-friends') || [])
-  const [gamesByAppID, setGamesByAppID] = useState<{ [appID: string]: Game }>({})
   const [ownedGamesByOwnerSteamID, setOwnedGamesByOwnerSteamID] = useState<{ [steamID: string]: Game[] }>({})
   const [loadedPlayerSummary, setLoadedPlayerSummary] = useState<PlayerSummary | null>(null)
   const [friends, setFriends] = useState<Friend[]>([])
@@ -44,17 +43,10 @@ const SteamUserPage = ({ steamUsername, onUsernameChange, onPlayerSummaryChange,
   }, [friends, steamID])
 
   useEffect(() => {
-    if (!loadingGames && games) {
-      setGamesByAppID(games.reduce((acc: { [appID: string]: Game }, game: Game) => {
-        acc[game.appID] = game
-        return acc
-      }, {}))
-
-      if (steamID) {
-        const newHash = Object.assign({}, ownedGamesByOwnerSteamID)
-        newHash[steamID] = games
-        setOwnedGamesByOwnerSteamID(newHash)
-      }
+    if (!loadingGames && games && steamID) {
+      const newHash = Object.assign({}, ownedGamesByOwnerSteamID)
+      newHash[steamID] = games
+      setOwnedGamesByOwnerSteamID(newHash)
     }
   }, [games, loadingGames, steamID, ownedGamesByOwnerSteamID])
 
