@@ -1,22 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import FriendListItem from './FriendListItem'
 import Friend from '../models/Friend'
 import Game from '../models/Game'
+import Player from '../models/Player'
 import useGetFriends from '../hooks/use-get-friends'
-import { Box, CheckboxGroup } from '@primer/react'
 import { Box, CheckboxGroup, Flash, Spinner } from '@primer/react'
 
 interface Props {
   steamID: string;
   steamUsername: string;
   selectedIDs: string[];
-  onSelectionChange(selectedFriendSteamIDs: string[]): void;
+  onPlayerSelectionChange(selectedPlayers: Player[]): void;
   onFriendsLoaded(friends: Friend[]): void;
   onFriendGamesLoaded(steamID: string, games: Game[]): void;
 }
 
-const FriendsList = ({ steamID, steamUsername, selectedIDs, onSelectionChange, onFriendsLoaded, onFriendGamesLoaded }: Props) => {
+const FriendsList = ({ steamID, steamUsername, selectedIDs, onPlayerSelectionChange, onFriendsLoaded, onFriendGamesLoaded }: Props) => {
   const { friends, error: friendsError, fetching: loadingFriends } = useGetFriends(steamID)
+  const [selectedFriends, setSelectedFriends] = useState<Friend[]>([])
 
   useEffect(() => {
     if (!loadingFriends && friends) {
@@ -24,15 +25,18 @@ const FriendsList = ({ steamID, steamUsername, selectedIDs, onSelectionChange, o
     }
   }, [friends, loadingFriends, onFriendsLoaded])
 
-  const onFriendToggled = (toggledSteamID: string, isSelected: boolean) => {
-    let newSelectedIDs = [...selectedIDs]
-    const index = newSelectedIDs.indexOf(toggledSteamID)
+  const onFriendToggled = (toggledFriend: Friend, isSelected: boolean) => {
+    let newSelectedFriends = [...selectedFriends]
+    const index = selectedIDs.indexOf(toggledFriend.steamID)
     if (isSelected && index < 0) {
-      newSelectedIDs.push(toggledSteamID)
+      newSelectedFriends.push(toggledFriend)
     } else if (!isSelected && index > -1) {
-      newSelectedIDs = newSelectedIDs.slice(0, index).concat(newSelectedIDs.slice(index + 1))
+      newSelectedFriends = newSelectedFriends.slice(0, index).concat(newSelectedFriends.slice(index + 1))
     }
-    onSelectionChange(newSelectedIDs)
+    setSelectedFriends(newSelectedFriends)
+    onPlayerSelectionChange(newSelectedFriends.map(friend =>
+      new Player(friend.steamID, friend.playerSummary ? friend.playerSummary.personaname : friend.steamID)
+    ))
   }
 
   if (loadingFriends) {
@@ -51,7 +55,7 @@ const FriendsList = ({ steamID, steamUsername, selectedIDs, onSelectionChange, o
     <Box display="flex" flexWrap="wrap">
       {friends && friends.map(friend => <FriendListItem onFriendGamesLoaded={onFriendGamesLoaded}
         key={friend.steamID} friend={friend} isSelected={selectedIDs.indexOf(friend.steamID) > -1}
-        onToggle={(id: string, checked: boolean) => onFriendToggled(id, checked)} />
+        onToggle={(checked: boolean) => onFriendToggled(friend, checked)} />
       )}
     </Box>
   </CheckboxGroup>

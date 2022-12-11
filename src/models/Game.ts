@@ -13,6 +13,7 @@ interface GameData {
   achievements?: Achievement[];
   totalPlaytime?: number;
   timeLastPlayed?: number;
+  dateLastPlayed?: Date;
 }
 
 class Game {
@@ -33,7 +34,13 @@ class Game {
     this.achievements = data.achievements || []
     this.appID = data.appID
     this.totalPlaytime = data.totalPlaytime || 0
-    this.timeLastPlayed = data.timeLastPlayed ? new Date(data.timeLastPlayed * 1000) : null
+    if (data.timeLastPlayed) {
+      this.timeLastPlayed = new Date(data.timeLastPlayed * 1000)
+    } else if (data.dateLastPlayed) {
+      this.timeLastPlayed = data.dateLastPlayed
+    } else {
+      this.timeLastPlayed = null
+    }
     this.name = gameNamesByID[this.appID] || 'unknown'
     this.url = 'https://steamcommunity.com/app/' + this.appID;
   }

@@ -1,14 +1,33 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Achievement from '../models/Achievement'
+import Game from '../models/Game'
+import useGetAchievements from '../hooks/use-get-achievements'
+import { Flash, Spinner } from '@primer/react'
 
 interface Props {
   player: any;
-  achievements: Achievement[];
   isCurrent: boolean;
+  game: Game;
   onUsernameChange(username: string, steamID?: string): void;
+  onGameIconUriChange(uri: string | null): void;
+  onAchievementsLoaded(achievements: Achievement[]): void;
 }
 
-const PlayerListItem = ({ player, achievements, isCurrent, onUsernameChange }: Props) => {
+const PlayerListItem = ({ player, isCurrent, game, onAchievementsLoaded, onUsernameChange, onGameIconUriChange }: Props) => {
+  const { achievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(player.steamid, game.appID)
+
+  useEffect(() => {
+    if (!loadingAchievements) {
+      onGameIconUriChange(gameIconUri || null)
+    }
+  }, [onGameIconUriChange, gameIconUri, loadingAchievements])
+
+  useEffect(() => {
+    if (!loadingAchievements && achievements) {
+      onAchievementsLoaded(achievements)
+    }
+  }, [loadingAchievements, achievements, onAchievementsLoaded])
+
   const getUnlockPercentageText = () => {
     if (typeof achievements !== 'object') {
       return '--';
@@ -23,7 +42,16 @@ const PlayerListItem = ({ player, achievements, isCurrent, onUsernameChange }: P
     return Math.round((unlockCount / total) * 100) + '%';
   }
 
-  const haveAchievements = typeof achievements === 'object' && achievements.length > 0;
+  if (loadingAchievements) {
+    return <div>
+      <Spinner />
+      <p>Loading {player.personaname}'s achievements for {game.name}...</p>
+    </div>
+  }
+
+  if (achievementsError) {
+    return <Flash variant="danger">Failed to load {player.personaname}'s achievements for {game.name}.</Flash>
+  }
 
   return <li>
     {isCurrent ? <span>
@@ -35,7 +63,7 @@ const PlayerListItem = ({ player, achievements, isCurrent, onUsernameChange }: P
         <span>{player.personaname}</span>
       </button>
     }
-    {haveAchievements ? <span>{getUnlockPercentageText()}</span> : null}
+    <span>{getUnlockPercentageText()}</span>
   </li>
 }
 

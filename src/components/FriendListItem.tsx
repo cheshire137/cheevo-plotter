@@ -5,7 +5,7 @@ import Game from '../models/Game'
 import { Avatar, Flash, FormControl, Checkbox, Text } from '@primer/react'
 
 interface Props {
-  onToggle(steamID: string, isChecked: boolean): void;
+  onToggle(isSelected: boolean): void;
   isSelected: boolean;
   friend: Friend;
   onFriendGamesLoaded(steamID: string, games: Game[]): void;
@@ -22,7 +22,7 @@ const FriendListItem = ({ onToggle, isSelected, friend, onFriendGamesLoaded }: P
   }, [friend.steamID, games, loadingGames, onFriendGamesLoaded])
 
   return <FormControl id={domId} sx={{ my: 1, mr: 3, display: 'flex', alignItems: 'center' }}>
-    <Checkbox checked={isSelected} type="checkbox" onChange={e => onToggle(friend.steamID, e.target.checked)} />
+    <Checkbox checked={isSelected} type="checkbox" onChange={e => onToggle(e.target.checked)} />
     <FormControl.Label>
       {friend.playerSummary ? <>
         <Avatar sx={{ mr: 1 }} src={friend.playerSummary.avatarmedium} alt={friend.steamID} />
