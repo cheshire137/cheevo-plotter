@@ -9,12 +9,12 @@ interface Props {
   playerSummary: PlayerSummary | null;
   onGameChange(newGame: Game | null): void;
   game: Game;
+  totalAchievements: number;
 }
 
-const SteamGamePageHeader = ({ game, playerSummary, steamUsername, onGameChange }: Props) => {
+const SteamGamePageHeader = ({ game, totalAchievements, playerSummary, steamUsername, onGameChange }: Props) => {
   const profileUrl = playerSummary ? playerSummary.profileurl : 'https://steamcommunity.com/id/' +
     encodeURIComponent(steamUsername) + '/'
-  const totalAchievements = game.achievements.length
 
   const clearSteamGame = (event: React.MouseEvent) => {
     event.preventDefault();

@@ -35,7 +35,7 @@ const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlay
   return <PageLayout>
     <PageLayout.Header>
       <SteamGamePageHeader playerSummary={playerSummary} game={game} steamUsername={steamUsername}
-        onGameChange={onGameChange} />
+        onGameChange={onGameChange} totalAchievements={achievements.length} />
     </PageLayout.Header>
     <PageLayout.Content>
       {selectedPlayers.length > 0 && steamID && <PlayersList
