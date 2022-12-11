@@ -15,14 +15,13 @@ interface Props {
   game: Game;
   loadedPlayer: Player;
   selectedPlayers: Player[];
-  playerSummary: PlayerSummary;
   onUsernameChange(newUsername: string): void;
   onGameChange(newGame: Game | null): void;
   onPlayerChange(newPlayer: Player): void;
   steamID: string;
 }
 
-const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange, onPlayerChange }: Props) => {
+const SteamGamePage = ({ steamID, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange, onPlayerChange }: Props) => {
   const { achievements, unlockedAchievements: loadedPlayerUnlockedAchievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(steamID, game.appID)
 
   useEffect(() => {
@@ -68,7 +67,7 @@ const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlay
 
   return <PageLayout>
     <PageLayout.Header>
-      <SteamGamePageHeader playerSummary={playerSummary} game={game} steamUsername={steamUsername}
+      <SteamGamePageHeader playerSummary={loadedPlayer.playerSummary} game={game} steamUsername={steamUsername}
         onGameChange={onGameChange} totalAchievements={(achievements || []).length} />
     </PageLayout.Header>
     <PageLayout.Content>
@@ -79,8 +78,7 @@ const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlay
         onUsernameChange={onUsernameChange}
         onPlayerUnlockedAchievementsLoaded={onPlayerUnlockedAchievementsLoaded}
       />}
-      <AchievementsList achievements={achievements} game={game}
-        unlockedCount={loadedPlayer.unlockedAchievements.length} />
+      <AchievementsList achievements={achievements} game={game} loadedPlayer={loadedPlayer} />
       {achievements.length > 0 && selectedPlayers.length > 0 && <AchievementsComparison
         achievements={achievements}
         players={selectedPlayers.concat([loadedPlayer])}

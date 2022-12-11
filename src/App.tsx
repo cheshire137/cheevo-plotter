@@ -78,7 +78,6 @@ function App() {
       game={game}
       loadedPlayer={loadedPlayer}
       onUsernameChange={onUsernameChange}
-      playerSummary={playerSummary}
       onGameChange={g => setGame(g)}
       selectedPlayers={players}
       onPlayerChange={onPlayerChange}
