@@ -14,13 +14,14 @@ import { PageLayout, Spinner } from '@primer/react'
 interface Props {
   steamUsername: string;
   game: Game;
-  players: Player[];
+  loadedPlayer: Player;
+  selectedPlayers: Player[];
   playerSummary: PlayerSummary;
   onUsernameChange(newUsername: string): void;
   onGameChange(newGame: Game | null): void;
 }
 
-const SteamGamePage = ({ playerSummary, steamUsername, game, players, onUsernameChange, onGameChange }: Props) => {
+const SteamGamePage = ({ playerSummary, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange }: Props) => {
   const { steamID, error: steamIDError, fetching: loadingSteamID } = useGetSteamID(steamUsername)
   const [achievementsBySteamID, setAchievementsBySteamID] = useState<{ [steamID: string]: Achievement[] }>({})
 
@@ -42,18 +43,18 @@ const SteamGamePage = ({ playerSummary, steamUsername, game, players, onUsername
     <PageLayout.Content>
       {loadingSteamID && <Spinner />}
       {steamIDError && <SteamUserError />}
-      {players.length > 1 && !loadingSteamID && steamID && <PlayersList
-        players={players}
+      {selectedPlayers.length > 0 && !loadingSteamID && steamID && <PlayersList
+        players={selectedPlayers}
         game={game}
         currentSteamID={steamID}
         onUsernameChange={onUsernameChange}
         onGameIconUriChange={onGameIconUriChange}
         onPlayerAchievementsLoaded={onPlayerAchievementsLoaded}
       />}
-      {players.length < 1 ? <AchievementsList
+      {selectedPlayers.length < 1 ? <AchievementsList
         achievements={game.achievements}
       /> : <AchievementsComparison
-        initialPlayers={players}
+        initialPlayers={selectedPlayers.concat([loadedPlayer])}
         achievementsBySteamID={achievementsBySteamID}
       />}
     </PageLayout.Content>

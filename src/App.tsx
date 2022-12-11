@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SteamLookupPage from './components/SteamLookupPage'
 import SteamUserPage from './components/SteamUserPage'
 import SteamGamePage from './components/SteamGamePage'
@@ -40,6 +40,13 @@ function App() {
   const { steamID, error: steamIDError, fetching: loadingSteamID } = useGetSteamID(username)
   const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
   const [players, setPlayers] = useState<Player[]>([])
+  const [loadedPlayer, setLoadedPlayer] = useState<Player | null>(null)
+
+  useEffect(() => {
+    if (!loadingSteamID && steamID && playerSummary) {
+      setLoadedPlayer(new Player(steamID, playerSummary.personaname))
+    }
+  }, [steamID, loadingSteamID, playerSummary])
 
   const onUsernameChange = (newUsername: string) => {
     persistUsernameChange(newUsername, steamID)
@@ -50,14 +57,15 @@ function App() {
   let currentPage
   if (username.length < 1) {
     currentPage = <SteamLookupPage onUsernameChange={onUsernameChange} />
-  } else if (game !== null && playerSummary !== null) {
+  } else if (game !== null && playerSummary !== null && loadedPlayer !== null) {
     currentPage = <SteamGamePage
       steamUsername={username}
       game={game}
+      loadedPlayer={loadedPlayer}
       onUsernameChange={onUsernameChange}
       playerSummary={playerSummary}
       onGameChange={g => setGame(g)}
-      players={players}
+      selectedPlayers={players}
     />
   } else {
     currentPage = <SteamUserPage
