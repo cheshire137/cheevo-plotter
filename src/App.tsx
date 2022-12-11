@@ -16,17 +16,14 @@ const persistUsernameChange = (username: string, steamID?: string) => {
   const existingSteamID = LocalStorage.get('steam-id')
   const isNewUsername = existingUsername !== username
 
-  if (typeof steamID === 'string' && steamID.length > 0) {
-    if (existingSteamID !== steamID) {
-      LocalStorage.set('steam-id', steamID)
-    }
-  } else if (isNewUsername) {
-    LocalStorage.delete('steam-id')
-  }
   if (isNewUsername) {
+    LocalStorage.delete('steam-id')
     LocalStorage.delete('steam-games')
     LocalStorage.delete('steam-selected-friends')
     LocalStorage.delete('steam-friends')
+    LocalStorage.clearTimestampedKeys()
+  } else if (typeof steamID === 'string' && steamID.length > 0 && existingSteamID !== steamID) {
+    LocalStorage.set('steam-id', steamID)
   }
   if (username.length < 1) {
     LocalStorage.delete('steam-username')
