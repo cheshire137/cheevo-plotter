@@ -3,6 +3,7 @@ import SteamLookupPage from './components/SteamLookupPage'
 import SteamUserPage from './components/SteamUserPage'
 import SteamGamePage from './components/SteamGamePage'
 import LocalStorage from './models/LocalStorage'
+import useGetSteamID from './hooks/use-get-steam-id'
 import Game from './models/Game'
 import Player from './models/Player'
 import PlayerSummary from './models/PlayerSummary'
@@ -28,6 +29,7 @@ const persistUsernameChange = (username: string, steamID?: string) => {
 function App() {
   const [game, setGame] = useState<Game | null>(null)
   const [username, setUsername] = useState<string>(LocalStorage.get('steam-username') || "")
+  const { steamID, error: steamIDError, fetching: loadingSteamID } = useGetSteamID(username)
   const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
   const [players, setPlayers] = useState<Player[]>([])
 
