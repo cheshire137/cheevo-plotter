@@ -20,6 +20,18 @@ class LocalStorage {
     return new Blob(Object.values(window.localStorage)).size
   }
 
+  static clearTimestampedKeys() {
+    if (typeof window === 'undefined' || !window.localStorage) return
+
+    const appData = this.getJSON()
+    const timestamps = appData[timestampsKey] || {}
+    for (const key in timestamps) {
+      delete appData[key]
+    }
+    delete appData[timestampsKey]
+    window.localStorage.setItem(localStorageKey, JSON.stringify(appData))
+  }
+
   static get(key: string) {
     const appData = this.getJSON()
     return appData[key]
