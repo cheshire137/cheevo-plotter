@@ -2,7 +2,6 @@ import Achievement from './Achievement'
 import Game from './Game'
 import LocalStorage from './LocalStorage'
 import Friend from './Friend'
-import Player from './Player'
 import PlayerSummary from './PlayerSummary'
 import { hashString } from './Utils'
 
@@ -91,9 +90,9 @@ class SteamApi {
   }
 
   // https://partner.steamgames.com/doc/webapi/ISteamUserStats#GetPlayerAchievements
-  static async getAchievements(player: Player, appID: number): Promise<AchievementsResult> {
+  static async getAchievements(steamID: string, appID: number): Promise<AchievementsResult> {
     const rawResult = await this.get(`/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v1/&appid=${appID}` +
-      `&steamid=${player.steamid}&format=json`)
+      `&steamid=${steamID}&format=json`)
     if (typeof rawResult.playerstats.error === 'string') {
       throw new Error(rawResult.playerstats.error)
     }

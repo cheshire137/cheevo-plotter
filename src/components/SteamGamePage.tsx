@@ -23,7 +23,7 @@ interface Props {
 }
 
 const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange, onPlayerChange }: Props) => {
-  const { achievements, unlockedAchievements: loadedPlayerUnlockedAchievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(loadedPlayer, game.appID)
+  const { achievements, unlockedAchievements: loadedPlayerUnlockedAchievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(steamID, game.appID)
 
   useEffect(() => {
     if (!loadingAchievements) {
