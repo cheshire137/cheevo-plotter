@@ -6,6 +6,7 @@ import Achievement from '../models/Achievement'
 interface Results {
   iconUri?: string;
   achievements?: Achievement[];
+  unlockedAchievements?: Achievement[];
   fetching: boolean;
   error?: string;
 }
@@ -17,7 +18,12 @@ function useGetAchievements(player: Player, appID: number): Results {
     async function fetchAchievements() {
       try {
         const result = await SteamApi.getAchievements(player, appID)
-        setResults({ achievements: result.achievements, iconUri: result.iconUri, fetching: false })
+        setResults({
+          achievements: result.achievements,
+          unlockedAchievements: result.unlockedAchievements,
+          iconUri: result.iconUri,
+          fetching: false,
+        })
       } catch (err: any) {
         console.error(`failed to fetch Steam achievements for ${player.personaname}, ${appID}`, err)
         setResults({ fetching: false, error: err.message })
@@ -27,7 +33,7 @@ function useGetAchievements(player: Player, appID: number): Results {
     if (appID > 0) {
       fetchAchievements()
     } else {
-      setResults({ fetching: false, achievements: [] })
+      setResults({ fetching: false, achievements: [], unlockedAchievements: [] })
     }
   }, [player, appID])
 
