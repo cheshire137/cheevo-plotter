@@ -1,10 +1,9 @@
-import {parseStringPromise} from 'xml2js';
-import Achievement from './Achievement';
-import Game from './Game';
-import LocalStorage from './LocalStorage';
-import Friend from './Friend';
-import Player from './Player';
-import PlayerSummary from './PlayerSummary';
+import Achievement from './Achievement'
+import Game from './Game'
+import LocalStorage from './LocalStorage'
+import Friend from './Friend'
+import Player from './Player'
+import PlayerSummary from './PlayerSummary'
 import { hashString } from './Utils'
 
 enum ResponseType {
@@ -91,40 +90,14 @@ class SteamApi {
     return playedGames
   }
 
+  // https://partner.steamgames.com/doc/webapi/ISteamUserStats#GetPlayerAchievements
   static async getAchievements(player: Player, appID: number): Promise<AchievementsResult> {
-    const xml = await this.get(`/api/steam?path=/profiles/${player.steamid}/stats/${appID}/achievements/&xml=1`,
-      ResponseType.XML)
-
-    try {
-      const rawResult = await parseStringPromise(xml)
-      const unlockedAchievements: Achievement[] = []
-
-      const achievements: Achievement[] = rawResult.playerstats.achievements[0].achievement.map((a: any) => {
-        const isUnlocked = typeof a.unlockTimestamp !== 'undefined'
-        const achievementIconUri = isUnlocked ? a.iconClosed[0] : a.iconOpen[0]
-        const achievementName = a.name[0]
-        const achievementKey = a.apiname[0]
-        const achievement = new Achievement(achievementIconUri, achievementName, achievementKey)
-        if (isUnlocked) {
-          unlockedAchievements.push(achievement)
-        }
-        return achievement
-      })
-
-      const gameIconUri = rawResult.playerstats.game[0].gameIcon[0]
-      return { iconUri: gameIconUri, achievements, unlockedAchievements }
-    } catch (err) {
-      console.error(`failed to get XML achievements for user ${player.personaname}, app ${appID}: ${err}`)
-      return this.getJsonAchievements(player, appID)
-    }
-  }
-
-  static async getJsonAchievements(player: Player, appID: number): Promise<AchievementsResult> {
-    const rawResult = await this.get(`/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v0001/&appid=${appID}` +
+    const rawResult = await this.get(`/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v1/&appid=${appID}` +
       `&steamid=${player.steamid}&format=json`)
     if (typeof rawResult.playerstats.error === 'string') {
       throw new Error(rawResult.playerstats.error)
     }
+    console.log('json achievements', rawResult)
 
     const schema = await this.getGameSchema(appID)
     const achievementInfo: { [name: string]: any } = {}
@@ -173,6 +146,7 @@ class SteamApi {
       } else {
         result = await response.text()
       }
+      console.log('total local storage size', LocalStorage.totalSize())
       LocalStorage.set(cacheKey, result, true)
       return result
     }
