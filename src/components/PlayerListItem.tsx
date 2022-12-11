@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Achievement from '../models/Achievement'
 import Game from '../models/Game'
 import useGetAchievements from '../hooks/use-get-achievements'
-import { Flash, Spinner } from '@primer/react'
+import { Avatar, Button, Flash, Spinner } from '@primer/react'
 
 interface Props {
   player: any;
@@ -11,10 +11,11 @@ interface Props {
   onUsernameChange(username: string, steamID?: string): void;
   onGameIconUriChange(uri: string | null): void;
   onAchievementsLoaded(achievements: Achievement[]): void;
+  onUnlockedAchievementsLoaded(achievements: Achievement[]): void;
 }
 
-const PlayerListItem = ({ player, isCurrent, game, onAchievementsLoaded, onUsernameChange, onGameIconUriChange }: Props) => {
-  const { achievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(player.steamid, game.appID)
+const PlayerListItem = ({ player, isCurrent, game, onAchievementsLoaded, onUnlockedAchievementsLoaded, onUsernameChange, onGameIconUriChange }: Props) => {
+  const { achievements, unlockedAchievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(player, game.appID)
 
   useEffect(() => {
     if (!loadingAchievements) {
@@ -23,24 +24,16 @@ const PlayerListItem = ({ player, isCurrent, game, onAchievementsLoaded, onUsern
   }, [onGameIconUriChange, gameIconUri, loadingAchievements])
 
   useEffect(() => {
+    if (!loadingAchievements && unlockedAchievements) {
+      onUnlockedAchievementsLoaded(unlockedAchievements)
+    }
+  }, [loadingAchievements, unlockedAchievements, onUnlockedAchievementsLoaded])
+
+  useEffect(() => {
     if (!loadingAchievements && achievements) {
       onAchievementsLoaded(achievements)
     }
-  }, [loadingAchievements, achievements, onAchievementsLoaded])
-
-  const getUnlockPercentageText = () => {
-    if (typeof achievements !== 'object') {
-      return '--';
-    }
-    var unlockCount = 0;
-    const total = achievements.length;
-    for (var i = 0; i < total; i++) {
-      if (achievements[i].isUnlocked) {
-        unlockCount++;
-      }
-    }
-    return Math.round((unlockCount / total) * 100) + '%';
-  }
+  }, [onAchievementsLoaded, achievements, loadingAchievements])
 
   if (loadingAchievements) {
     return <div>
@@ -58,17 +51,18 @@ const PlayerListItem = ({ player, isCurrent, game, onAchievementsLoaded, onUsern
     </Flash>
   }
 
+  if (!achievements || !unlockedAchievements) {
+    return <Flash variant="danger">Couldn't load achievements for {game.name}.</Flash>
+  }
+
   return <li>
-    {isCurrent ? <span>
-      <img src={player.avatar} alt={player.steamid} />
+    {isCurrent ? <>
+      <Avatar src={player.avatar} alt={player.steamid} />
       <span>{player.personaname}</span>
-    </span> :
-      <button type="button" onClick={e => onUsernameChange(player.personaname, player.steamid)}>
-        <img src={player.avatar} alt={player.steamid} />
-        <span>{player.personaname}</span>
-      </button>
-    }
-    <span>{getUnlockPercentageText()}</span>
+    </> : <Button type="button" onClick={e => onUsernameChange(player.personaname, player.steamid)}>
+      <Avatar src={player.avatar} alt={player.steamid} /> {player.personaname}
+    </Button>}
+    <span>{Math.round((unlockedAchievements.length / achievements.length) * 100) + '%'}</span>
   </li>
 }
 

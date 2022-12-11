@@ -10,10 +10,11 @@ interface Props {
   game: Game;
   onUsernameChange(username: string, steamID?: string): void;
   onGameIconUriChange(uri: string | null): void;
-  onPlayerAchievementsLoaded(player: Player, achievements: Achievement[]): void;
+  onAchievementsLoaded(achievements: Achievement[]): void;
+  onPlayerUnlockedAchievementsLoaded(player: Player, unlockedAchievements: Achievement[]): void;
 }
 
-const PlayersList = ({ players, game, onPlayerAchievementsLoaded, currentSteamID, onGameIconUriChange, onUsernameChange }: Props) => <div>
+const PlayersList = ({ players, game, onAchievementsLoaded, onPlayerUnlockedAchievementsLoaded, currentSteamID, onGameIconUriChange, onUsernameChange }: Props) => <div>
   <span>Comparing:</span>
   <ul>
     {players.map(player => <PlayerListItem
@@ -22,7 +23,9 @@ const PlayersList = ({ players, game, onPlayerAchievementsLoaded, currentSteamID
       key={player.steamid}
       player={player}
       onGameIconUriChange={onGameIconUriChange}
-      onAchievementsLoaded={achievements => onPlayerAchievementsLoaded(player, achievements)}
+      onAchievementsLoaded={onAchievementsLoaded}
+      onUnlockedAchievementsLoaded={unlockedAchievements =>
+        onPlayerUnlockedAchievementsLoaded(player, unlockedAchievements)}
       isCurrent={currentSteamID === player.steamid} />)}
   </ul>
 </div>

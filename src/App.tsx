@@ -55,6 +55,19 @@ function App() {
     setPlayerSummary(null)
   }
 
+  const onPlayerChange = (newPlayer: Player) => {
+    console.log('onPlayerChange', newPlayer.personaname, newPlayer.unlockedAchievements)
+    if (loadedPlayer && newPlayer.steamid === loadedPlayer.steamid) {
+      setLoadedPlayer(newPlayer)
+    }
+    const index = players.map(p => p.steamid).indexOf(newPlayer.steamid)
+    if (index > -1) {
+      const newPlayers = [...players]
+      newPlayers[index] = newPlayer
+      setPlayers(newPlayers)
+    }
+  }
+
   let currentPage
   if (username.length < 1) {
     currentPage = <SteamLookupPage onUsernameChange={onUsernameChange} />
@@ -71,6 +84,7 @@ function App() {
       playerSummary={playerSummary}
       onGameChange={g => setGame(g)}
       selectedPlayers={players}
+      onPlayerChange={onPlayerChange}
       steamID={steamID}
     />
   } else {

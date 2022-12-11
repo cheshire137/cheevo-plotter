@@ -17,10 +17,12 @@ interface Props {
   playerSummary: PlayerSummary;
   onUsernameChange(newUsername: string): void;
   onGameChange(newGame: Game | null): void;
+  onPlayerChange(newPlayer: Player): void;
   steamID: string;
 }
 
 const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange, onPlayerChange }: Props) => {
+  const [achievements, setAchievements] = useState<Achievement[]>([])
 
   const onGameIconUriChange = (newIconUri: string | null) => {
     const newGameData = Object.assign({}, game) as any
@@ -28,8 +30,12 @@ const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlay
     onGameChange(new Game(newGameData))
   }
 
-  const onPlayerAchievementsLoaded = (player: Player, achievements: Achievement[]) => {
-    setAchievementsBySteamID(Object.assign({}, achievementsBySteamID, { [player.steamid]: achievements }))
+  const onPlayerUnlockedAchievementsLoaded = (player: Player, unlockedAchievements: Achievement[]) => {
+    const newPlayer = new Player(player.steamid, player.personaname)
+    for (const achievement of unlockedAchievements) {
+      newPlayer.addUnlockedAchievement(achievement)
+    }
+    onPlayerChange(newPlayer)
   }
 
   return <PageLayout>
@@ -44,13 +50,15 @@ const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlay
         currentSteamID={steamID}
         onUsernameChange={onUsernameChange}
         onGameIconUriChange={onGameIconUriChange}
-        onPlayerAchievementsLoaded={onPlayerAchievementsLoaded}
+        onAchievementsLoaded={setAchievements}
+        onPlayerUnlockedAchievementsLoaded={onPlayerUnlockedAchievementsLoaded}
       />}
-      {selectedPlayers.length < 1 ? <AchievementsList
-        achievements={game.achievements}
-      /> : <AchievementsComparison
-        initialPlayers={selectedPlayers.concat([loadedPlayer])}
-        achievementsBySteamID={achievementsBySteamID}
+      {selectedPlayers.length < 1 && achievements.length > 0 && <AchievementsList
+        achievements={achievements}
+      />}
+      {achievements.length > 0 && selectedPlayers.length > 0 && <AchievementsComparison
+        achievements={achievements}
+        players={selectedPlayers.concat([loadedPlayer])}
       />}
     </PageLayout.Content>
   </PageLayout>
