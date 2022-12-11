@@ -1,5 +1,4 @@
 import SteamAppsList from '../stores/steam-apps.json'
-import Achievement from "./Achievement"
 
 const appsList: any[] = (SteamAppsList as any).applist.apps
 const gameNamesByID: { [id: number]: string } = appsList.reduce((acc, app) => {
@@ -10,7 +9,6 @@ const gameNamesByID: { [id: number]: string } = appsList.reduce((acc, app) => {
 interface GameData {
   iconUri?: string;
   appID: number;
-  achievements?: Achievement[];
   totalPlaytime?: number;
   timeLastPlayed?: number | string;
   dateLastPlayed?: Date;
@@ -20,7 +18,6 @@ interface GameData {
 
 class Game {
   iconUri: string | null;
-  achievements: Achievement[];
   appID: number;
   totalPlaytime: number;
   timeLastPlayed: Date | null;
@@ -33,7 +30,6 @@ class Game {
     } else {
       this.iconUri = null
     }
-    this.achievements = data.achievements || []
     this.appID = data.appID
     this.totalPlaytime = data.totalPlaytime || 0
     if (typeof data.timeLastPlayed === 'number') {
