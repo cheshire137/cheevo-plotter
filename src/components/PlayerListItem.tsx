@@ -9,31 +9,17 @@ interface Props {
   isCurrent: boolean;
   game: Game;
   onUsernameChange(username: string, steamID?: string): void;
-  onGameIconUriChange(uri: string | null): void;
-  onAchievementsLoaded(achievements: Achievement[]): void;
   onUnlockedAchievementsLoaded(achievements: Achievement[]): void;
 }
 
-const PlayerListItem = ({ player, isCurrent, game, onAchievementsLoaded, onUnlockedAchievementsLoaded, onUsernameChange, onGameIconUriChange }: Props) => {
-  const { achievements, unlockedAchievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(player, game.appID)
-
-  useEffect(() => {
-    if (!loadingAchievements) {
-      onGameIconUriChange(gameIconUri || null)
-    }
-  }, [onGameIconUriChange, gameIconUri, loadingAchievements])
+const PlayerListItem = ({ player, isCurrent, game, onUnlockedAchievementsLoaded, onUsernameChange }: Props) => {
+  const { achievements, unlockedAchievements, error: achievementsError, fetching: loadingAchievements } = useGetAchievements(player, game.appID)
 
   useEffect(() => {
     if (!loadingAchievements && unlockedAchievements) {
       onUnlockedAchievementsLoaded(unlockedAchievements)
     }
   }, [loadingAchievements, unlockedAchievements, onUnlockedAchievementsLoaded])
-
-  useEffect(() => {
-    if (!loadingAchievements && achievements) {
-      onAchievementsLoaded(achievements)
-    }
-  }, [onAchievementsLoaded, achievements, loadingAchievements])
 
   if (loadingAchievements) {
     return <div>

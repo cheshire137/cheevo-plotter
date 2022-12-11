@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import Game from '../models/Game'
 import Player from '../models/Player'
 import Achievement from '../models/Achievement'
@@ -7,7 +7,8 @@ import AchievementsList from './AchievementsList'
 import AchievementsComparison from './AchievementsComparison'
 import PlayersList from './PlayersList'
 import SteamGamePageHeader from './SteamGamePageHeader'
-import { PageLayout } from '@primer/react'
+import useGetAchievements from '../hooks/use-get-achievements'
+import { Flash, PageLayout, Spinner } from '@primer/react'
 
 interface Props {
   steamUsername: string;
@@ -22,13 +23,25 @@ interface Props {
 }
 
 const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange, onPlayerChange }: Props) => {
-  const [achievements, setAchievements] = useState<Achievement[]>([])
+  const { achievements, unlockedAchievements: loadedPlayerUnlockedAchievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(loadedPlayer, game.appID)
 
-  const onGameIconUriChange = (newIconUri: string | null) => {
-    const newGameData = Object.assign({}, game) as any
-    newGameData.iconUri = newIconUri
-    onGameChange(new Game(newGameData))
-  }
+  useEffect(() => {
+    if (!loadingAchievements) {
+      const newGameData = Object.assign({}, game) as any
+      newGameData.iconUri = gameIconUri
+      onGameChange(new Game(newGameData))
+    }
+  }, [loadingAchievements, onGameChange, gameIconUri, game])
+
+  useEffect(() => {
+    if (!loadingAchievements && loadedPlayerUnlockedAchievements) {
+      const newLoadedPlayer = new Player(loadedPlayer.steamid, loadedPlayer.personaname)
+      for (const unlockedAchievement of loadedPlayerUnlockedAchievements) {
+        newLoadedPlayer.addUnlockedAchievement(unlockedAchievement)
+      }
+      onPlayerChange(newLoadedPlayer)
+    }
+  }, [loadingAchievements, onPlayerChange, loadedPlayer.personaname, loadedPlayer.steamid, loadedPlayerUnlockedAchievements])
 
   const onPlayerUnlockedAchievementsLoaded = (player: Player, unlockedAchievements: Achievement[]) => {
     const newPlayer = new Player(player.steamid, player.personaname)
@@ -38,24 +51,36 @@ const SteamGamePage = ({ playerSummary, steamID, steamUsername, game, loadedPlay
     onPlayerChange(newPlayer)
   }
 
+  if (loadingAchievements) {
+    return <div>
+      <Spinner size='large' />
+      <p>Loading {game.name}'s achievements...</p>
+    </div>
+  }
+
+  if (achievementsError) {
+    return <Flash variant='danger'>Could not load achievements for {game.name}: {achievementsError}.</Flash>
+  }
+
+  if (!achievements) {
+    return <Flash variant='danger'>Could not load achievements for {game.name}.</Flash>
+  }
+
   return <PageLayout>
     <PageLayout.Header>
       <SteamGamePageHeader playerSummary={playerSummary} game={game} steamUsername={steamUsername}
-        onGameChange={onGameChange} totalAchievements={achievements.length} />
+        onGameChange={onGameChange} totalAchievements={(achievements || []).length} />
     </PageLayout.Header>
     <PageLayout.Content>
-      {selectedPlayers.length > 0 && steamID && <PlayersList
+      {selectedPlayers.length > 0 && <PlayersList
         players={selectedPlayers}
         game={game}
         currentSteamID={steamID}
         onUsernameChange={onUsernameChange}
-        onGameIconUriChange={onGameIconUriChange}
-        onAchievementsLoaded={setAchievements}
         onPlayerUnlockedAchievementsLoaded={onPlayerUnlockedAchievementsLoaded}
       />}
-      {selectedPlayers.length < 1 && achievements.length > 0 && <AchievementsList
-        achievements={achievements}
-      />}
+      <AchievementsList achievements={achievements} game={game}
+        unlockedCount={loadedPlayer.unlockedAchievements.length} />
       {achievements.length > 0 && selectedPlayers.length > 0 && <AchievementsComparison
         achievements={achievements}
         players={selectedPlayers.concat([loadedPlayer])}

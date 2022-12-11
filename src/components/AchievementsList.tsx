@@ -1,26 +1,27 @@
-import React from 'react';
+import React from 'react'
+import Achievement from '../models/Achievement'
+import Game from '../models/Game'
+import { Avatar } from '@primer/react'
 
 interface Props {
-  achievements: any[];
+  achievements: Achievement[];
+  game: Game;
+  unlockedCount: number;
 }
 
-const AchievementsList = ({ achievements }: Props) => {
+const AchievementsList = ({ game, achievements, unlockedCount }: Props) => {
   if (achievements.length < 1) {
-    return <p>No achievements</p>
+    return <p>{game.name} has no achievements.</p>
   }
-
-  const unlockedCount = achievements.filter(a => a.isUnlocked).length
-  const percentage = Math.round((unlockedCount / achievements.length) * 100)
 
   return <div>
     <p>
       Unlocked {unlockedCount} of {achievements.length} &mdash;
-      <strong> {percentage}%</strong>
+      <strong> {Math.round((unlockedCount / achievements.length) * 100)}%</strong>
     </p>
     <ul>
       {achievements.map((achievement) => <li key={achievement.key}>
-        {typeof achievement.iconUri === 'string' ? <img src={achievement.iconUri} alt={achievement.name}
-          width="64" height="64" /> : null}
+        <Avatar square src={achievement.iconUri} alt={achievement.name} width="64" height="64" />
         <span>{achievement.name}</span>
       </li>)}
     </ul>
