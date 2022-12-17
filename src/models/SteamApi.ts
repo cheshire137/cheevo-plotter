@@ -10,7 +10,7 @@ enum ResponseType {
   XML = "xml"
 }
 
-const serverUrl = 'http://localhost:8080';
+export const backendUrl = 'http://localhost:8080';
 const maxCacheAgeInSeconds = 86400; // 24 hours
 
 type AchievementsResult = { iconUri?: string, achievements: Achievement[], unlockedAchievements: Achievement[] };
@@ -137,7 +137,7 @@ class SteamApi {
       LocalStorage.delete(cacheKey) // too old
     }
 
-    const response = await fetch(serverUrl + path);
+    const response = await fetch(backendUrl + path);
     if (response.status >= 200 && response.status < 300) {
       let result
       if (type === ResponseType.JSON) {

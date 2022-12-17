@@ -3,6 +3,7 @@ import SteamLookupPage from './components/SteamLookupPage'
 import SteamUserPage from './components/SteamUserPage'
 import SteamGamePage from './components/SteamGamePage'
 import SteamUserError from './components/SteamUserError'
+import SteamAuthPage from './components/SteamAuthPage'
 import LocalStorage from './models/LocalStorage'
 import useGetSteamID from './hooks/use-get-steam-id'
 import Game from './models/Game'
@@ -104,7 +105,7 @@ function App() {
   }
 
   return <ThemeProvider theme={primer}>
-    {currentPage}
+    <SteamAuthPage />
   </ThemeProvider>
 }
 

@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
 import Game from '../models/Game'
 import Player from '../models/Player'
-import Achievement from '../models/Achievement'
-import PlayerSummary from '../models/PlayerSummary'
 import AchievementsList from './AchievementsList'
 import AchievementsComparison from './AchievementsComparison'
 import PlayersList from './PlayersList'

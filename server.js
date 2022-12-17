@@ -2,12 +2,21 @@ const express = require('express')
 const cors = require('cors')
 const path = require('path')
 const app = express()
-const port = process.env.PORT || 8080
+const SteamAuth = require('node-steam-openid')
+const backendPort = process.env.PORT || 8080
 const steamApiKey = process.env.STEAM_API_KEY
+const backendUrl = `http://localhost:${backendPort}`
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000'
+const steamCallbackPath = '/auth/steam/callback'
+const steam = new SteamAuth({
+  realm: backendUrl,
+  returnUrl: `${backendUrl}${steamCallbackPath}`,
+  apiKey: steamApiKey,
+})
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-const allowedOrigins = ['http://localhost:3000']
+const allowedOrigins = [frontendUrl]
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -24,6 +33,24 @@ app.get('/ping', function (req, res) {
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
+
+app.get('/auth/steam', async (req, res) => {
+  console.log('Steam authentication started, redirecting...')
+  const redirectUrl = await steam.getRedirectUrl()
+  return res.redirect(redirectUrl)
+})
+
+app.get(steamCallbackPath, async (req, res) => {
+  console.log('Steam authentication callback...')
+  try {
+    const user = await steam.authenticate(req)
+    console.log('authenticated as Steam user', user.username)
+    res.send({ steamid: user.steamid, username: user.username, name: user.name, profile: user.profile,
+      avatar: user.avatar.medium })
+  } catch (error) {
+    console.error('Steam auth error:', error)
+  }
 })
 
 app.get('/api/steam', async (req, res, next) => {
@@ -49,10 +76,10 @@ app.get('/api/steam', async (req, res, next) => {
   res.send(data)
 })
 
-console.log("Starting server on port " + port)
+console.log("Starting server on port " + backendPort)
 if (typeof steamApiKey === 'undefined' || steamApiKey.length < 1) {
   console.error("No Steam API key found, set in STEAM_API_KEY")
 } else {
   console.log("Have Steam API key")
 }
-app.listen(port)
+app.listen(backendPort)
