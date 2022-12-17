@@ -17,7 +17,7 @@ const AchievementsList = ({ game, achievements, loadedPlayer }: Props) => {
     return <p>{game.name} has no achievements.</p>
   }
 
-  const unlockedCount = loadedPlayer.unlockedAchievements.length
+  const unlockedCount = loadedPlayer.totalUnlockedAchievements()
   return <div>
     <p>
       {loadedPlayer.playerSummary.personaname} has unlocked {unlockedCount} of {totalAchievements}

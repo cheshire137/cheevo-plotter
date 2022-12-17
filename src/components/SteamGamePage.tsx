@@ -17,11 +17,11 @@ interface Props {
   selectedPlayers: Player[];
   onUsernameChange(newUsername: string): void;
   onGameChange(newGame: Game | null): void;
-  onPlayerChange(newPlayer: Player): void;
+  setPlayerUnlockedAchievements(steamID: string, unlockedAchievementKeys: string[]): void;
   steamID: string;
 }
 
-const SteamGamePage = ({ steamID, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange, onPlayerChange }: Props) => {
+const SteamGamePage = ({ steamID, steamUsername, game, loadedPlayer, selectedPlayers, onUsernameChange, onGameChange, setPlayerUnlockedAchievements }: Props) => {
   const { achievements, unlockedAchievements: loadedPlayerUnlockedAchievements, error: achievementsError, fetching: loadingAchievements, iconUri: gameIconUri } = useGetAchievements(steamID, game.appID)
 
   useEffect(() => {
@@ -34,21 +34,9 @@ const SteamGamePage = ({ steamID, steamUsername, game, loadedPlayer, selectedPla
 
   useEffect(() => {
     if (!loadingAchievements && loadedPlayerUnlockedAchievements) {
-      const newLoadedPlayer = new Player(loadedPlayer.steamid, loadedPlayer.playerSummary)
-      for (const unlockedAchievement of loadedPlayerUnlockedAchievements) {
-        newLoadedPlayer.addUnlockedAchievement(unlockedAchievement)
-      }
-      onPlayerChange(newLoadedPlayer)
+      setPlayerUnlockedAchievements(loadedPlayer.steamid, loadedPlayerUnlockedAchievements.map(a => a.key))
     }
-  }, [loadingAchievements, onPlayerChange, loadedPlayer.playerSummary, loadedPlayer.steamid, loadedPlayerUnlockedAchievements])
-
-  const onPlayerUnlockedAchievementsLoaded = (player: Player, unlockedAchievements: Achievement[]) => {
-    const newPlayer = new Player(player.steamid, player.playerSummary)
-    for (const achievement of unlockedAchievements) {
-      newPlayer.addUnlockedAchievement(achievement)
-    }
-    onPlayerChange(newPlayer)
-  }
+  }, [loadingAchievements, loadedPlayer.steamid, loadedPlayer.playerSummary, setPlayerUnlockedAchievements, loadedPlayerUnlockedAchievements])
 
   if (loadingAchievements) {
     return <div>
@@ -76,7 +64,7 @@ const SteamGamePage = ({ steamID, steamUsername, game, loadedPlayer, selectedPla
         game={game}
         currentSteamID={steamID}
         onUsernameChange={onUsernameChange}
-        onPlayerUnlockedAchievementsLoaded={onPlayerUnlockedAchievementsLoaded}
+        onPlayerUnlockedAchievementsLoaded={setPlayerUnlockedAchievements}
       />}
       <AchievementsList achievements={achievements} game={game} loadedPlayer={loadedPlayer} />
       {achievements.length > 0 && selectedPlayers.length > 0 && <AchievementsComparison

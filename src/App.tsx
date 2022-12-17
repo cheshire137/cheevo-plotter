@@ -6,6 +6,7 @@ import SteamUserError from './components/SteamUserError'
 import LocalStorage from './models/LocalStorage'
 import useGetSteamID from './hooks/use-get-steam-id'
 import Game from './models/Game'
+import { areStringArraysEqual } from './models/Utils'
 import Player from './models/Player'
 import PlayerSummary from './models/PlayerSummary'
 import { ThemeProvider, theme as primer, Spinner } from "@primer/react"
@@ -52,16 +53,25 @@ function App() {
     setPlayerSummary(null)
   }
 
-  const onPlayerChange = (newPlayer: Player) => {
-    console.log('onPlayerChange', newPlayer.playerSummary, newPlayer.unlockedAchievements)
-    if (loadedPlayer && newPlayer.steamid === loadedPlayer.steamid) {
-      setLoadedPlayer(newPlayer)
+  const setPlayerUnlockedAchievements = (steamID: string, unlockedKeys: string[]) => {
+    if (loadedPlayer && steamID === loadedPlayer.steamid && !areStringArraysEqual(unlockedKeys, loadedPlayer.unlockedAchievementKeys)) {
+      const newLoadedPlayer = new Player(steamID, loadedPlayer.playerSummary)
+      newLoadedPlayer.setUnlockedAchievementKeys(unlockedKeys)
+      console.log('setLoadedPlayer', newLoadedPlayer)
+      setLoadedPlayer(newLoadedPlayer)
     }
-    const index = players.map(p => p.steamid).indexOf(newPlayer.steamid)
+    const index = players.map(p => p.steamid).indexOf(steamID)
     if (index > -1) {
-      const newPlayers = [...players]
-      newPlayers[index] = newPlayer
-      setPlayers(newPlayers)
+      const existingPlayer = players[index]
+
+      if (!areStringArraysEqual(unlockedKeys, existingPlayer.unlockedAchievementKeys)) {
+        const newPlayer = new Player(steamID, existingPlayer.playerSummary)
+        newPlayer.setUnlockedAchievementKeys(unlockedKeys)
+        const newPlayers = [...players]
+        newPlayers[index] = newPlayer
+        console.log('setPlayers', newPlayers)
+        setPlayers(newPlayers)
+      }
     }
   }
 
@@ -80,7 +90,7 @@ function App() {
       onUsernameChange={onUsernameChange}
       onGameChange={g => setGame(g)}
       selectedPlayers={players}
-      onPlayerChange={onPlayerChange}
+      setPlayerUnlockedAchievements={setPlayerUnlockedAchievements}
       steamID={steamID}
     />
   } else {

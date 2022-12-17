@@ -1,23 +1,26 @@
-import Achievement from "./Achievement"
 import PlayerSummary from "./PlayerSummary"
 
 class Player {
   steamid: string;
-  unlockedAchievements: Achievement[];
+  unlockedAchievementKeys: string[];
   playerSummary: PlayerSummary;
 
   constructor(steamid: string, playerSummary: PlayerSummary) {
     this.steamid = steamid;
     this.playerSummary = playerSummary;
-    this.unlockedAchievements = [];
+    this.unlockedAchievementKeys = [];
   }
 
-  addUnlockedAchievement(achievement: Achievement) {
-    this.unlockedAchievements.push(achievement)
+  setUnlockedAchievementKeys(keys: string[]) {
+    this.unlockedAchievementKeys = keys
   }
 
   hasAchievement(achievementKey: string) {
-    return this.unlockedAchievements.some(a => a.key === achievementKey)
+    return this.unlockedAchievementKeys.includes(achievementKey)
+  }
+
+  totalUnlockedAchievements() {
+    return this.unlockedAchievementKeys.length
   }
 }
 
