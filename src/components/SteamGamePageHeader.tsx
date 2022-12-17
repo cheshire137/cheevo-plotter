@@ -34,7 +34,7 @@ const SteamGamePageHeader = ({ game, totalAchievements, playerSummary, steamUser
     <Text color="fg.subtle" fontWeight="normal" sx={{ ml: 2 }}>/</Text>
     {playerSummary ? <Link sx={{ display: 'flex', alignItems: 'center' }} href={profileUrl} rel="noreferrer" target="_blank">
       <Avatar size={48} sx={{ mx: 2 }} src={playerSummary.avatarmedium} alt={playerSummary.steamid} />
-      <span>{playerSummary.personaname}</span> {playerSummary.realname && <Text fontWeight="normal" sx={{ ml: 2 }}> {playerSummary.realname}</Text>}
+      <span>{playerSummary.personaname}</span>
     </Link> : <Link sx={{ ml: 2 }} href={profileUrl} rel="noreferrer" target="_blank">{steamUsername}</Link>}
     <Text color="fg.subtle" fontWeight="normal" sx={{ mx: 2 }}>/</Text>
     <Link href={game.url} rel="noreferrer" target="_blank">
