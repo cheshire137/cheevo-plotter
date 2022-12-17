@@ -19,11 +19,6 @@ function useGetSteamID(username: string): Results {
         return
       }
 
-      if (username.length < 1) {
-        setResults({ fetching: false, error: 'Cannot look up Steam ID for blank username' })
-        return
-      }
-
       try {
         const steamID = await SteamApi.getSteamID(username)
         setResults({ steamID, fetching: false })
@@ -34,7 +29,11 @@ function useGetSteamID(username: string): Results {
       }
     }
 
-    fetchSteamID()
+    if (username.length > 0) {
+      fetchSteamID()
+    } else {
+      setResults({ fetching: false })
+    }
   }, [username])
 
   return results
