@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
+const session = require('express-session')
 const app = express()
 const SteamAuth = require('node-steam-openid')
 const backendPort = process.env.PORT || 8080
@@ -14,6 +15,13 @@ const steam = new SteamAuth({
   apiKey: steamApiKey,
 })
 
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {secure: true}
+}))
 app.use(express.static(path.join(__dirname, 'public')))
 
 const allowedOrigins = [frontendUrl]
@@ -46,10 +54,18 @@ app.get(steamCallbackPath, async (req, res) => {
   try {
     const user = await steam.authenticate(req)
     console.log('authenticated as Steam user', user.username)
-    res.send({ steamid: user.steamid, username: user.username, name: user.name, profile: user.profile,
-      avatar: user.avatar.medium })
+    req.session.user = user
+    return res.redirect(`${frontendUrl}?steamid=${user.steamid}`)
   } catch (error) {
     console.error('Steam auth error:', error)
+  }
+})
+
+app.get('/api/steam/user', (req, res, next) => {
+  if (req.session.user) {
+    res.send(req.session.user)
+  } else {
+    res.status(401).send({ error: 'Not logged in' })
   }
 })
 

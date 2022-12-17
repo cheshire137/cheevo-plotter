@@ -16,7 +16,7 @@ I'm using the following tool versions:
 Get a [Steam Web API Key](http://steamcommunity.com/dev/apikey).
 
     npm install
-    STEAM_API_KEY="your API key here" node server.js
+    STEAM_API_KEY="your API key here" SESSION_SECRET="some fun string you make up" node server.js
     npm start
 
 Visit [localhost:3000](http://localhost:3000/).
