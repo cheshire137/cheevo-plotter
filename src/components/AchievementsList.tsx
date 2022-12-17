@@ -3,6 +3,7 @@ import Achievement from '../models/Achievement'
 import Game from '../models/Game'
 import Player from '../models/Player'
 import { Avatar } from '@primer/react'
+import AchievementListItem from './AchievementListItem'
 
 interface Props {
   achievements: Achievement[];
@@ -25,10 +26,7 @@ const AchievementsList = ({ game, achievements, loadedPlayer }: Props) => {
       <strong> {Math.round((unlockedCount / totalAchievements) * 100)}%</strong>
     </p>
     <ul>
-      {achievements.map((achievement) => <li key={achievement.key}>
-        <Avatar square src={achievement.iconUri} alt={achievement.name} width="64" height="64" />
-        <span>{achievement.name}</span>
-      </li>)}
+      {achievements.map(achievement => <AchievementListItem key={achievement.key} achievement={achievement} />)}
     </ul>
   </div>
 }
