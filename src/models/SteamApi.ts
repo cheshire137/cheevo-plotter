@@ -16,6 +16,14 @@ const maxCacheAgeInSeconds = 86400; // 24 hours
 type AchievementsResult = { iconUri?: string, achievements: Achievement[], unlockedAchievements: Achievement[] };
 
 class SteamApi {
+  static async getAuthenticatedUser() {
+    const user = await this.get('/api/steam/user')
+    if (user && user.steamid) {
+      return user
+    }
+    return null
+  }
+
   // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
   static async getSteamID(username: string): Promise<string> {
     const data = await this.get('/api/steam?format=json&path=/ISteamUser/ResolveVanityURL/v0001/&vanityurl=' +
