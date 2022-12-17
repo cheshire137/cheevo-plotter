@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Button, PageLayout, FormControl, TextInput, Text } from '@primer/react'
+import { backendUrl } from '../models/SteamApi'
+import { Button, PageLayout, FormControl, Link, TextInput, Text } from '@primer/react'
 
 interface Props {
   onUsernameChange(newUsername: string): void;
@@ -29,6 +30,9 @@ const SteamLookupPage = ({ onUsernameChange }: Props) => {
           type="submit"
         >Find user</Button>
       </form>
+      <p>
+        Or <Link href={`${backendUrl}/auth/steam`}>Sign in with Steam</Link>
+      </p>
     </PageLayout.Content>
   </PageLayout>
 }
