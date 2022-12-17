@@ -29,7 +29,7 @@ function useGetAchievements(steamID: string, appID: number): Results {
       }
     }
 
-    if (appID > 0) {
+    if (steamID.length > 0 && appID > 0) {
       fetchAchievements()
     } else {
       setResults({ fetching: false, achievements: [], unlockedAchievements: [] })
