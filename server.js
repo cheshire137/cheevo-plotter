@@ -10,10 +10,10 @@ app.use(express.static(path.join(__dirname, 'public')))
 const allowedOrigins = ['http://localhost:3000']
 app.use(cors({
   origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true)
     } else {
-      callback(new Error())
+      callback(new Error(`Origin ${origin} not allowed by CORS`))
     }
   }
 }))
