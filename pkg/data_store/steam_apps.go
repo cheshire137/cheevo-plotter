@@ -1,6 +1,7 @@
 package data_store
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -22,15 +23,24 @@ func NewSteamApp(data map[string]interface{}) *SteamApp {
 	return result
 }
 
-func (ds *DataStore) ListSteamApps() ([]*SteamApp, error) {
+func (ds *DataStore) ListSteamApps(lastAppId string, limit int32) ([]*SteamApp, error) {
 	apps := []*SteamApp{}
-	query := `SELECT id, name FROM steam_apps ORDER BY name ASC, id ASC`
+	query := `SELECT id, name FROM steam_apps `
+	if len(lastAppId) > 0 {
+		query += `WHERE id > ? `
+	}
+	query += `ORDER BY name ASC, id ASC LIMIT ?`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
 		return apps, fmt.Errorf("failed to prepare query for listing Steam apps: %w", err)
 	}
 
-	rows, err := stmt.Query()
+	var rows *sql.Rows
+	if len(lastAppId) > 0 {
+		rows, err = stmt.Query(lastAppId, limit)
+	} else {
+		rows, err = stmt.Query(limit)
+	}
 	if err != nil {
 		return apps, fmt.Errorf("failed to query Steam apps: %w", err)
 	}

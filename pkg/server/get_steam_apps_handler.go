@@ -19,13 +19,14 @@ func (e *Env) GetSteamAppsHandler(w http.ResponseWriter, r *http.Request) {
 	util.LogRequest(r)
 	e.enableCors(&w)
 
-	err := e.syncSteamAppsIfNecessary(r)
+	err := e.syncSteamAppsIfNecessary()
 	if err != nil {
 		ErrorJson(w, err)
 		return
 	}
 
-	apps, err := e.ds.ListSteamApps()
+	lastAppId := r.URL.Query().Get("last_app_id")
+	apps, err := e.ds.ListSteamApps(lastAppId, 100)
 	if err != nil {
 		ErrorJson(w, err)
 		return
@@ -36,7 +37,7 @@ func (e *Env) GetSteamAppsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func (e *Env) syncSteamAppsIfNecessary(r *http.Request) error {
+func (e *Env) syncSteamAppsIfNecessary() error {
 	lastSynced, err := e.ds.GetSteamAppsSyncTime()
 	if err != nil {
 		return fmt.Errorf("failed to get Steam apps sync time: %w", err)
