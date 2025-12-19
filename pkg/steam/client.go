@@ -2,10 +2,12 @@ package steam
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/cheshire137/cheevo-plotter/pkg/data_store"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
@@ -17,8 +19,85 @@ type Client struct {
 	apiKey string
 }
 
+type SteamPlayerSummary struct {
+	AvatarUrl  string `json:"avatarUrl"`
+	ProfileUrl string `json:"profileUrl"`
+	SteamId    string `json:"steamId"`
+	Name       string `json:"name"`
+}
+
 func NewClient(apiKey string) *Client {
 	return &Client{apiKey: apiKey}
+}
+
+func (c *Client) GetPlayerSummaries(steamIds []string) ([]*SteamPlayerSummary, error) {
+	if len(steamIds) < 1 {
+		return nil, errors.New("at least one Steam player ID must be given")
+	}
+
+	if len(steamIds) > 100 {
+		return nil, errors.New("no more than 100 Steam player summaries can be loaded at a time")
+	}
+
+	// https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
+	u, err := url.Parse(baseApiUrl + "/ISteamUser/GetPlayerSummaries/v0002/")
+	if err != nil {
+		return nil, err
+	}
+
+	params := u.Query()
+	params.Add("key", c.apiKey)
+	params.Add("format", "json")
+	params.Add("steamids", strings.Join(steamIds, ","))
+	u.RawQuery = params.Encode()
+
+	makeRequest := func() (*http.Response, error) {
+		req, err := http.NewRequest("GET", u.String(), nil)
+		if err != nil {
+			return nil, err
+		}
+
+		util.LogRequest(req)
+		return http.DefaultClient.Do(req)
+	}
+
+	data, err := c.makeJsonRequest(makeRequest, "get Steam apps")
+	if err != nil {
+		return nil, err
+	}
+
+	result := []*SteamPlayerSummary{}
+
+	if response, ok := data["response"].(map[string]interface{}); ok {
+		if players, ok := response["players"].([]interface{}); ok {
+			for _, playerData := range players {
+				if player, ok := playerData.(map[string]interface{}); ok {
+					summary := &SteamPlayerSummary{}
+					if avatarUrl, ok := player["avatarmedium"].(string); ok {
+						summary.AvatarUrl = avatarUrl
+					} else if avatarUrl, ok := player["avatarfull"].(string); ok {
+						summary.AvatarUrl = avatarUrl
+					} else if avatarUrl, ok := player["avatar"].(string); ok {
+						summary.AvatarUrl = avatarUrl
+					}
+					if profileUrl, ok := player["profileurl"].(string); ok {
+						summary.ProfileUrl = profileUrl
+					}
+					if steamId, ok := player["steamid"].(string); ok {
+						summary.SteamId = steamId
+					}
+					if name, ok := player["personaname"].(string); ok {
+						summary.Name = name
+					} else if name, ok := player["realname"].(string); ok {
+						summary.Name = name
+					}
+					result = append(result, summary)
+				}
+			}
+		}
+	}
+
+	return result, nil
 }
 
 func (c *Client) GetAppList() ([]*data_store.SteamApp, error) {

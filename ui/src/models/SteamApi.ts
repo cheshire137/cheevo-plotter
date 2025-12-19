@@ -37,34 +37,6 @@ class SteamApi {
     throw new Error('Failed to get Steam ID.')
   }
 
-  static async getPlayerSummaries(steamIDs: string[]) {
-    // see https://developer.valvesoftware.com/wiki/Steam_Web_API#GetPlayerSummaries_.28v0002.29
-    const batchSize = 100
-    const batches = []
-    let index = 0
-
-    while (index < steamIDs.length) {
-      const batch = []
-      while (batch.length < batchSize && index < steamIDs.length) {
-        batch.push(steamIDs[index])
-        index++
-      }
-      batches.push(batch)
-    }
-
-    let summaries: any[] = []
-    for (const batch of batches) {
-      const result = await this.get('/api/steam?format=json&path=/ISteamUser/GetPlayerSummaries/v0002/' +
-        '&steamids=' + batch.join(','))
-      if (result.response) {
-        summaries = summaries.concat(result.response.players || [])
-      }
-    }
-    const playerSummaries = summaries.map(ps => new PlayerSummary(ps))
-    playerSummaries.sort((a, b) => a.compare(b))
-    return playerSummaries
-  }
-
   static async getFriends(steamID: string): Promise<Friend[]> {
     // https://developer.valvesoftware.com/wiki/Steam_Web_API#GetFriendList_.28v0001.29
     const data = await this.get('/api/steam?format=json&path=/ISteamUser/GetFriendList/v0001/&steamid=' + steamID +
