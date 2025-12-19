@@ -5,28 +5,80 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
+	"github.com/cheshire137/cheevo-plotter/pkg/data_store"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
-const baseApiUrl = "http://api.steampowered.com"
+const baseApiUrl = "https://api.steampowered.com"
 
 type Client struct {
+	apiKey string
 }
 
-func NewClient() *Client {
-	return &Client{}
+func NewClient(apiKey string) *Client {
+	return &Client{apiKey: apiKey}
 }
 
-func (c *Client) GetAppList() (map[string]interface{}, error) {
-	url := baseApiUrl + "/ISteamApps/GetAppList/v2"
+func (c *Client) GetAppList() ([]*data_store.SteamApp, error) {
+	result := []*data_store.SteamApp{}
+	page, err := c.GetAppListPage(0)
+	if err != nil {
+		return result, err
+	}
+
+	result = append(result, page.apps...)
+	lastAppId := int32(page.lastAppId)
+	haveMoreResults := page.haveMoreResults
+
+	for haveMoreResults {
+		nextPage, err := c.GetAppListPage(lastAppId)
+		if err != nil {
+			return result, err
+		}
+
+		result = append(result, nextPage.apps...)
+		lastAppId = int32(nextPage.lastAppId)
+		haveMoreResults = nextPage.haveMoreResults
+	}
+
+	return result, nil
+}
+
+type AppListPage struct {
+	apps            []*data_store.SteamApp
+	lastAppId       float64
+	haveMoreResults bool
+}
+
+func (c *Client) GetAppListPage(lastAppId int32) (*AppListPage, error) {
+	// https://partner.steamgames.com/doc/webapi/IStoreService#GetAppList
+	u, err := url.Parse(baseApiUrl + "/IStoreService/GetAppList/v1/")
+	if err != nil {
+		return nil, err
+	}
+
+	params := u.Query()
+	params.Add("key", c.apiKey)
+	params.Add("format", "json")
+	params.Add("include_games", "true")
+	params.Add("include_dlc", "false")
+	params.Add("include_software", "false")
+	params.Add("include_videos", "false")
+	params.Add("include_hardware", "false")
+	if lastAppId > 0 {
+		params.Add("last_appid", fmt.Sprintf("%d", lastAppId))
+	}
+	u.RawQuery = params.Encode()
 
 	makeRequest := func() (*http.Response, error) {
-		req, err := http.NewRequest("GET", url, nil)
+		req, err := http.NewRequest("GET", u.String(), nil)
 		if err != nil {
 			return nil, err
 		}
 
+		util.LogRequest(req)
 		return http.DefaultClient.Do(req)
 	}
 
@@ -34,8 +86,33 @@ func (c *Client) GetAppList() (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	util.InspectMap(data, "")
-	return data, nil
+
+	appListPage := &AppListPage{}
+
+	if response, ok := data["response"].(map[string]interface{}); ok {
+		apps := []*data_store.SteamApp{}
+		if appsInPage, ok := response["apps"].([]interface{}); ok {
+			for _, appData := range appsInPage {
+				if appDataMap, ok := appData.(map[string]interface{}); ok {
+					app := data_store.NewSteamApp(appDataMap)
+					if len(app.Name) > 0 {
+						apps = append(apps, app)
+					}
+				}
+			}
+		}
+		appListPage.apps = apps
+
+		if lastAppId, ok := response["last_appid"].(float64); ok {
+			appListPage.lastAppId = lastAppId
+		}
+
+		if haveMoreResults, ok := response["have_more_results"].(bool); ok {
+			appListPage.haveMoreResults = haveMoreResults
+		}
+	}
+
+	return appListPage, nil
 }
 
 func (c *Client) makeJsonRequest(makeRequest func() (*http.Response, error), action string) (map[string]interface{}, error) {

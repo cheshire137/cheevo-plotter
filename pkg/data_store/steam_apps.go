@@ -11,6 +11,17 @@ type SteamApp struct {
 	Name string `json:"name"`
 }
 
+func NewSteamApp(data map[string]interface{}) *SteamApp {
+	result := &SteamApp{}
+	if appid, ok := data["appid"].(float64); ok {
+		result.Id = fmt.Sprintf("%.0f", appid)
+	}
+	if name, ok := data["name"].(string); ok {
+		result.Name = name
+	}
+	return result
+}
+
 func (ds *DataStore) ListSteamApps() ([]*SteamApp, error) {
 	apps := []*SteamApp{}
 	query := `SELECT id, name FROM steam_apps ORDER BY name ASC, id ASC`

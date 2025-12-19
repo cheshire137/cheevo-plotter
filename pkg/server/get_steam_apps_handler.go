@@ -44,30 +44,28 @@ func (e *Env) syncSteamAppsIfNecessary(r *http.Request) error {
 
 	if lastSynced == nil || time.Since(*lastSynced) > 24*time.Hour {
 		util.LogInfo("fetching Steam apps")
-		client := steam.NewClient()
+		client := steam.NewClient(e.config.SteamApiKey)
 
-		_, err := client.GetAppList()
+		apps, err := client.GetAppList()
 		if err != nil {
 			return fmt.Errorf("failed to load all Steam apps: %w", err)
 		}
 
-		// allItemsSaved := true
-		// for _, app := range apps {
-		// 	libraryItem := data_store.NewLibraryItemFromAudibleItem(audibleItem)
-		// 	libraryItem.UserId = userId
-		// 	err := e.ds.UpsertLibraryItem(libraryItem)
-		// 	if err != nil {
-		// 		allItemsSaved = false
-		// 		util.LogError("Failed to save library item " + libraryItem.Asin + ": " + err.Error())
-		// 	}
-		// }
+		allItemsSaved := len(apps) > 0
+		for _, app := range apps {
+			err := e.ds.AddSteamApp(app)
+			if err != nil {
+				allItemsSaved = false
+				util.LogError("Failed to save Steam app " + app.Id + ": " + err.Error())
+			}
+		}
 
-		// if allItemsSaved {
-		// 	err = e.ds.SetLibrarySyncTime(time.Now())
-		// 	if err != nil {
-		// 		return fmt.Errorf("failed to set library sync time: %w", err)
-		// 	}
-		// }
+		if allItemsSaved {
+			err = e.ds.SetSteamAppsSyncTime(time.Now())
+			if err != nil {
+				return fmt.Errorf("failed to set Steam apps sync time: %w", err)
+			}
+		}
 	} else {
 		util.LogInfo("Loading Steam apps from database, last synced " + lastSynced.String())
 	}
