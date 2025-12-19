@@ -3,53 +3,31 @@ import SteamLookupPage from './components/SteamLookupPage'
 import SteamUserPage from './components/SteamUserPage'
 import SteamGamePage from './components/SteamGamePage'
 import SteamUserError from './components/SteamUserError'
-import LocalStorage from './models/LocalStorage'
 import useGetSteamID from './hooks/use-get-steam-id'
 import Game from './models/Game'
 import {areStringArraysEqual} from './models/Utils'
 import Player from './models/Player'
 import PlayerSummary from './models/PlayerSummary'
-import {ThemeProvider, Spinner} from '@primer/react'
+import {BaseStyles, ThemeProvider, Spinner} from '@primer/react'
 import './App.css'
-
-const persistUsernameChange = (username: string, steamID?: string | null) => {
-  const existingUsername = LocalStorage.get('steam-username')
-  const existingSteamID = LocalStorage.get('steam-id')
-  const isNewUsername = existingUsername !== username
-
-  if (isNewUsername) {
-    LocalStorage.delete('steam-id')
-    LocalStorage.delete('steam-games')
-    LocalStorage.delete('steam-selected-friends')
-    LocalStorage.delete('steam-friends')
-    LocalStorage.clearTimestampedKeys()
-  } else if (typeof steamID === 'string' && steamID.length > 0 && existingSteamID !== steamID) {
-    LocalStorage.set('steam-id', steamID)
-  }
-  if (username.length < 1) {
-    LocalStorage.delete('steam-username')
-  } else if (isNewUsername) {
-    LocalStorage.set('steam-username', username)
-  }
-}
 
 function App() {
   const [game, setGame] = useState<Game | null>(null)
-  const [username, setUsername] = useState<string>(LocalStorage.get('steam-username') || '')
-  const {steamID: steamIDFromUsername, error: steamIDError, fetching: loadingSteamID} = useGetSteamID(username)
+  const [username, setUsername] = useState<string>('')
+  const {data: steamIDFromUsername, error, isPending} = useGetSteamID(username)
   const [steamID, setSteamID] = useState<string | null>(null)
   const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
   const [players, setPlayers] = useState<Player[]>([])
   const [loadedPlayer, setLoadedPlayer] = useState<Player | null>(null)
 
   useEffect(() => {
-    if (!loadingSteamID && steamIDFromUsername) {
+    if (!isPending && steamIDFromUsername) {
       setSteamID(steamIDFromUsername)
     }
-    if (!loadingSteamID && steamIDFromUsername && playerSummary) {
+    if (!isPending && steamIDFromUsername && playerSummary) {
       setLoadedPlayer(new Player(steamIDFromUsername, playerSummary))
     }
-  }, [steamIDFromUsername, loadingSteamID, playerSummary])
+  }, [steamIDFromUsername, isPending, playerSummary])
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -60,7 +38,6 @@ function App() {
   }, [window.location.href])
 
   const onUsernameChange = (newUsername: string) => {
-    persistUsernameChange(newUsername, steamID)
     setUsername(newUsername)
     setPlayerSummary(null)
   }
@@ -94,9 +71,9 @@ function App() {
   let currentPage
   if (!steamID && username.length < 1) {
     currentPage = <SteamLookupPage onUsernameChange={onUsernameChange} />
-  } else if (loadingSteamID) {
+  } else if (isPending) {
     currentPage = <Spinner size="large" />
-  } else if (steamIDError) {
+  } else if (error) {
     currentPage = <SteamUserError />
   } else if (game !== null && playerSummary !== null && loadedPlayer !== null && steamID) {
     currentPage = (
@@ -123,7 +100,11 @@ function App() {
     )
   }
 
-  return <ThemeProvider colorMode="dark">{currentPage}</ThemeProvider>
+  return (
+    <ThemeProvider colorMode="dark">
+      <BaseStyles>{currentPage}</BaseStyles>
+    </ThemeProvider>
+  )
 }
 
 export default App

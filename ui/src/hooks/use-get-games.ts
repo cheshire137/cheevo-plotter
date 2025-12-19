@@ -1,42 +1,29 @@
-import { useState, useEffect } from "react"
+import {useState, useEffect} from 'react'
 import SteamApi from '../models/SteamApi'
 import Game from '../models/Game'
-import LocalStorage from '../models/LocalStorage'
 
 interface Results {
-  games?: Game[];
-  fetching: boolean;
-  error?: string;
+  games?: Game[]
+  fetching: boolean
+  error?: string
 }
 
 function useGetGames(steamID?: string | null, username?: string): Results {
-  const [results, setResults] = useState<Results>({ fetching: true })
+  const [results, setResults] = useState<Results>({fetching: true})
 
   useEffect(() => {
     async function fetchGames() {
-      const cachedSteamID = LocalStorage.get('steam-id')
-      const cachedGameData = LocalStorage.get('steam-games')
-      if (typeof cachedSteamID === 'string' && typeof cachedGameData === 'object' && cachedSteamID === steamID) {
-        const cachedGames = (cachedGameData as any[]).map(data => new Game(data))
-        cachedGames.sort((a, b) => a.compare(b))
-        setResults({ games: cachedGames, fetching: false })
-        return
-      }
-
       if (!steamID) {
-        setResults({ fetching: false })
+        setResults({fetching: false})
         return
       }
 
       try {
         const playedGames = await SteamApi.getOwnedPlayedGames(steamID, username)
-        setResults({ games: playedGames, fetching: false })
-        if (typeof cachedSteamID === 'string' && cachedSteamID === steamID) {
-          LocalStorage.set('steam-games', playedGames)
-        }
+        setResults({games: playedGames, fetching: false})
       } catch (err: any) {
         console.error('failed to fetch Steam games for ' + steamID, err)
-        setResults({ fetching: false, error: err.message })
+        setResults({fetching: false, error: err.message})
       }
     }
 

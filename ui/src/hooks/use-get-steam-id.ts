@@ -1,42 +1,19 @@
-import { useState, useEffect } from "react"
-import SteamApi from '../models/SteamApi'
-import LocalStorage from '../models/LocalStorage'
+import {useQuery} from '@tanstack/react-query'
+import axios from 'axios'
 
-interface Results {
-  steamID?: string;
-  fetching: boolean;
-  error?: string;
-}
-
-function useGetSteamID(username: string): Results {
-  const [results, setResults] = useState<Results>({ fetching: true })
-
-  useEffect(() => {
-    async function fetchSteamID() {
-      const cachedSteamID = LocalStorage.get('steam-id');
-      if (typeof cachedSteamID === 'string' && cachedSteamID.length > 0) {
-        setResults({ steamID: cachedSteamID, fetching: false })
-        return
-      }
-
-      try {
-        const steamID = await SteamApi.getSteamID(username)
-        setResults({ steamID, fetching: false })
-        LocalStorage.set('steam-id', steamID)
-      } catch (err: any) {
-        console.error('failed to fetch Steam ID for username ' + username, err)
-        setResults({ fetching: false, error: err.message })
-      }
-    }
-
-    if (username.length > 0) {
-      fetchSteamID()
-    } else {
-      setResults({ fetching: false })
-    }
-  }, [username])
-
-  return results
+function useGetSteamID(username: string) {
+  const queryKey = ['steam-id', username]
+  const result = useQuery<string, Error>({
+    queryKey,
+    queryFn: async () => {
+      const response = await axios.get<{steamId: string}>(
+        `${import.meta.env.VITE_BACKEND_URL}/api/steam-user-id?username=${encodeURIComponent(username)}`
+      )
+      return response.data.steamId
+    },
+    enabled: username.trim().length > 0,
+  })
+  return {...result, queryKey}
 }
 
 export default useGetSteamID

@@ -1,19 +1,13 @@
 import Achievement from './Achievement'
 import Game from './Game'
-import LocalStorage from './LocalStorage'
 import Friend from './Friend'
-import PlayerSummary from './PlayerSummary'
-import { hashString } from './Utils'
 
 enum ResponseType {
-  JSON = "json",
-  XML = "xml"
+  JSON = 'json',
+  XML = 'xml',
 }
 
-export const backendUrl = 'http://localhost:8080';
-const maxCacheAgeInSeconds = 86400; // 24 hours
-
-type AchievementsResult = { iconUri?: string, achievements: Achievement[], unlockedAchievements: Achievement[] };
+type AchievementsResult = {iconUri?: string; achievements: Achievement[]; unlockedAchievements: Achievement[]}
 
 class SteamApi {
   static async getAuthenticatedUser() {
@@ -26,8 +20,9 @@ class SteamApi {
 
   static async getFriends(steamID: string): Promise<Friend[]> {
     // https://developer.valvesoftware.com/wiki/Steam_Web_API#GetFriendList_.28v0001.29
-    const data = await this.get('/api/steam?format=json&path=/ISteamUser/GetFriendList/v0001/&steamid=' + steamID +
-      '&relationship=friend');
+    const data = await this.get(
+      '/api/steam?format=json&path=/ISteamUser/GetFriendList/v0001/&steamid=' + steamID + '&relationship=friend'
+    )
     if (data.friendslist && data.friendslist.friends) {
       return data.friendslist.friends.map((d: any) => new Friend(d))
     }
@@ -38,11 +33,14 @@ class SteamApi {
   static async getOwnedGames(steamID: string, username?: string): Promise<Game[]> {
     const data = await this.get(`/api/steam?format=json&path=/IPlayerService/GetOwnedGames/v0001/&steamid=${steamID}`)
     if (data && data.response && data.response.games) {
-      return data.response.games.map((g: any) => new Game({
-        appID: g.appid,
-        totalPlaytime: g.playtime_forever,
-        timeLastPlayed: g.rtime_last_played,
-      }))
+      return data.response.games.map(
+        (g: any) =>
+          new Game({
+            appID: g.appid,
+            totalPlaytime: g.playtime_forever,
+            timeLastPlayed: g.rtime_last_played,
+          })
+      )
     }
 
     const userDesc = username ? username : `ID ${steamID}`
@@ -58,15 +56,16 @@ class SteamApi {
 
   // https://partner.steamgames.com/doc/webapi/ISteamUserStats#GetPlayerAchievements
   static async getAchievements(steamID: string, appID: number): Promise<AchievementsResult> {
-    const rawResult = await this.get(`/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v1/&appid=${appID}` +
-      `&steamid=${steamID}&format=json`)
+    const rawResult = await this.get(
+      `/api/steam?path=/ISteamUserStats/GetPlayerAchievements/v1/&appid=${appID}` + `&steamid=${steamID}&format=json`
+    )
     if (typeof rawResult.playerstats.error === 'string') {
       throw new Error(rawResult.playerstats.error)
     }
     console.log('json achievements', rawResult)
 
     const schema = await this.getGameSchema(appID)
-    const achievementInfo: { [name: string]: any } = {}
+    const achievementInfo: {[name: string]: any} = {}
     for (const schemaAchievement of schema.game.availableGameStats.achievements) {
       achievementInfo[schemaAchievement.name] = schemaAchievement
     }
@@ -86,7 +85,7 @@ class SteamApi {
     })
 
     // TODO: somehow get game iconUri from JSON API
-    return { achievements, unlockedAchievements }
+    return {achievements, unlockedAchievements}
   }
 
   static async getGameSchema(appID: number) {
@@ -94,17 +93,9 @@ class SteamApi {
   }
 
   static async get(path: string, type?: ResponseType) {
-    type = type || ResponseType.JSON;
+    type = type || ResponseType.JSON
 
-    const cacheKey = hashString(`${type}-${path}`).toString()
-    if (LocalStorage.hasKey(cacheKey)) {
-      if (LocalStorage.getAgeOfKeyInSeconds(cacheKey) < maxCacheAgeInSeconds) {
-        return LocalStorage.get(cacheKey)
-      }
-      LocalStorage.delete(cacheKey) // too old
-    }
-
-    const response = await fetch(backendUrl + path);
+    const response = await fetch(import.meta.env.VITE_BACKEND_URL + path)
     if (response.status >= 200 && response.status < 300) {
       let result
       if (type === ResponseType.JSON) {
@@ -112,13 +103,11 @@ class SteamApi {
       } else {
         result = await response.text()
       }
-      console.log('total local storage size', LocalStorage.totalSize())
-      LocalStorage.set(cacheKey, result, true)
       return result
     }
 
-    throw new Error(response.statusText);
+    throw new Error(response.statusText)
   }
 }
 
-export default SteamApi;
+export default SteamApi
