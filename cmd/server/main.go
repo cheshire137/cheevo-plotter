@@ -53,6 +53,12 @@ func main() {
 		return
 	}
 
+	err = env.SyncSteamAppsIfNecessary()
+	if err != nil {
+		util.LogError("Failed to sync Steam apps:", err)
+		return
+	}
+
 	mux.Handle("/", http.FileServer(http.Dir("./ui/build/")))
 
 	mux.Handle("GET /api/steam-apps", http.HandlerFunc(env.GetSteamAppsHandler))
