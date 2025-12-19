@@ -1,6 +1,5 @@
 import Achievement from './Achievement'
 import Game from './Game'
-import Friend from './Friend'
 
 enum ResponseType {
   JSON = 'json',
@@ -16,18 +15,6 @@ class SteamApi {
       return user
     }
     return null
-  }
-
-  static async getFriends(steamID: string): Promise<Friend[]> {
-    // https://developer.valvesoftware.com/wiki/Steam_Web_API#GetFriendList_.28v0001.29
-    const data = await this.get(
-      '/api/steam?format=json&path=/ISteamUser/GetFriendList/v0001/&steamid=' + steamID + '&relationship=friend'
-    )
-    if (data.friendslist && data.friendslist.friends) {
-      return data.friendslist.friends.map((d: any) => new Friend(d))
-    }
-
-    throw new Error('Failed to get friends for ' + steamID + '; may not be a public profile.')
   }
 
   static async getOwnedGames(steamID: string, username?: string): Promise<Game[]> {

@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react'
 import FriendListItem from './FriendListItem'
-import Friend from '../models/Friend'
 import Game from '../models/Game'
 import Player from '../models/Player'
 import useGetFriends from '../hooks/use-get-friends'
@@ -19,11 +18,11 @@ function FriendsList({
   steamUsername: string
   selectedIDs: string[]
   onPlayerSelectionChange(selectedPlayers: Player[]): void
-  onFriendsLoaded(friends: Friend[]): void
+  onFriendsLoaded(friendIds: string[]): void
   onFriendGamesLoaded(steamID: string, games: Game[]): void
 }) {
-  const {friends, error: friendsError, fetching: loadingFriends} = useGetFriends(steamID)
-  const [selectedFriends, setSelectedFriends] = useState<Friend[]>([])
+  const {data: friends, error: friendsError, isPending: loadingFriends} = useGetFriends(steamID)
+  const [selectedFriends, setSelectedFriends] = useState<string[]>([])
 
   useEffect(() => {
     if (!loadingFriends && friends) {
@@ -31,9 +30,9 @@ function FriendsList({
     }
   }, [friends, loadingFriends, onFriendsLoaded])
 
-  const onFriendToggled = (toggledFriend: Friend, isSelected: boolean) => {
+  const onFriendToggled = (toggledFriend: string, isSelected: boolean) => {
     let newSelectedFriends = [...selectedFriends]
-    const index = selectedIDs.indexOf(toggledFriend.steamID)
+    const index = selectedIDs.indexOf(toggledFriend)
     if (isSelected && index < 0) {
       newSelectedFriends.push(toggledFriend)
     } else if (!isSelected && index > -1) {
@@ -41,7 +40,7 @@ function FriendsList({
     }
     setSelectedFriends(newSelectedFriends)
     onPlayerSelectionChange(
-      newSelectedFriends.filter(f => f.playerSummary).map(friend => new Player(friend.steamID, friend.playerSummary!))
+      newSelectedFriends.filter(f => f.playerSummary).map(friend => new Player(friend, friend.playerSummary!))
     )
   }
 
@@ -55,7 +54,7 @@ function FriendsList({
   }
 
   if (friendsError) {
-    return <Flash variant="danger">There was an error loading the friends list: {friendsError}.</Flash>
+    return <Flash variant="danger">There was an error loading the friends list: {friendsError.message}.</Flash>
   }
 
   return (
@@ -68,9 +67,9 @@ function FriendsList({
           friends.map(friend => (
             <FriendListItem
               onFriendGamesLoaded={onFriendGamesLoaded}
-              key={friend.steamID}
-              friend={friend}
-              isSelected={selectedIDs.indexOf(friend.steamID) > -1}
+              key={friend}
+              friendId={friend}
+              isSelected={selectedIDs.indexOf(friend) > -1}
               onToggle={(checked: boolean) => onFriendToggled(friend, checked)}
             />
           ))}

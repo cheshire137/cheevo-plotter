@@ -30,6 +30,52 @@ func NewClient(apiKey string) *Client {
 	return &Client{apiKey: apiKey}
 }
 
+func (c *Client) GetFriends(steamId string) ([]string, error) {
+	// https://developer.valvesoftware.com/wiki/Steam_Web_API#GetFriendList_.28v0001.29
+	u, err := url.Parse(baseApiUrl + "/ISteamUser/GetFriendList/v0001/")
+	if err != nil {
+		return nil, err
+	}
+
+	params := u.Query()
+	params.Add("key", c.apiKey)
+	params.Add("steamid", steamId)
+	params.Add("format", "json")
+	params.Add("relationship", "friend")
+	u.RawQuery = params.Encode()
+
+	makeRequest := func() (*http.Response, error) {
+		req, err := http.NewRequest("GET", u.String(), nil)
+		if err != nil {
+			return nil, err
+		}
+
+		util.LogRequest(req)
+		return http.DefaultClient.Do(req)
+	}
+
+	data, err := c.makeJsonRequest(makeRequest, "get Steam friends")
+	if err != nil {
+		return nil, err
+	}
+
+	friendSteamIds := []string{}
+
+	if friendsList, ok := data["friendslist"].(map[string]interface{}); ok {
+		if friends, ok := friendsList["friends"].([]interface{}); ok {
+			for _, friend := range friends {
+				if friendData, ok := friend.(map[string]interface{}); ok {
+					if friendSteamId, ok := friendData["steamid"].(string); ok {
+						friendSteamIds = append(friendSteamIds, friendSteamId)
+					}
+				}
+			}
+		}
+	}
+
+	return friendSteamIds, nil
+}
+
 func (c *Client) GetSteamId(username string) (string, error) {
 	// https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
 	u, err := url.Parse(baseApiUrl + "/ISteamUser/ResolveVanityURL/v0001/")

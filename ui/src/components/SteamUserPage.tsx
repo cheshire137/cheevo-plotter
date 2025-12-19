@@ -1,6 +1,5 @@
 import {useState, useEffect} from 'react'
 import Game from '../models/Game'
-import Friend from '../models/Friend'
 import Player from '../models/Player'
 import PlayedGamesList from './PlayedGamesList'
 import FriendsList from './FriendsList'
@@ -32,7 +31,7 @@ const SteamUserPage = ({
   const [selectedFriendSteamIDs, setSelectedFriendSteamIDs] = useState<string[]>([])
   const [ownedGamesByOwnerSteamID, setOwnedGamesByOwnerSteamID] = useState<{[steamID: string]: Game[]}>({})
   const [loadedPlayerSummary, setLoadedPlayerSummary] = useState<PlayerSummary | null>(null)
-  const [friends, setFriends] = useState<Friend[]>([])
+  const [friends, setFriends] = useState<string[]>([])
   const [allSteamIDs, setAllSteamIDs] = useState<string[]>([])
   const [playerSummariesBySteamID, setPlayerSummariesBySteamID] = useState<{[steamID: string]: PlayerSummary}>({})
   const {
@@ -43,7 +42,7 @@ const SteamUserPage = ({
 
   useEffect(() => {
     if (friends && friends.length > 0) {
-      let steamIDs = friends.map(f => f.steamID)
+      let steamIDs = friends
       if (steamID) {
         steamIDs = steamIDs.concat(steamID)
       }
@@ -83,8 +82,8 @@ const SteamUserPage = ({
   useEffect(() => {
     if (!loadingPlayerSummaries && playerSummariesBySteamID && friends.length > 0) {
       for (const friend of friends) {
-        if (playerSummariesBySteamID.hasOwnProperty(friend.steamID)) {
-          friend.playerSummary = playerSummariesBySteamID[friend.steamID]
+        if (playerSummariesBySteamID.hasOwnProperty(friend)) {
+          friend.playerSummary = playerSummariesBySteamID[friend]
         }
       }
       friends.sort((a, b) => a.compare(b))

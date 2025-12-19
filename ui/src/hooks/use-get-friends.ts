@@ -1,31 +1,19 @@
-import {useState, useEffect} from 'react'
-import SteamApi from '../models/SteamApi'
-import Friend from '../models/Friend'
+import {useQuery} from '@tanstack/react-query'
+import axios from 'axios'
 
-interface Results {
-  friends?: Friend[]
-  fetching: boolean
-  error?: string
-}
-
-function useGetFriends(steamID: string): Results {
-  const [results, setResults] = useState<Results>({fetching: true})
-
-  useEffect(() => {
-    async function fetchFriends() {
-      try {
-        const friends = await SteamApi.getFriends(steamID)
-        setResults({friends, fetching: false})
-      } catch (err: any) {
-        console.error('failed to fetch Steam friends', err)
-        setResults({fetching: false, error: err.message})
-      }
-    }
-
-    fetchFriends()
-  }, [steamID])
-
-  return results
+function useGetFriends(steamID: string) {
+  const queryKey = ['steam-friends', steamID]
+  const result = useQuery<string[], Error>({
+    queryKey,
+    queryFn: async () => {
+      const response = await axios.get<{friendIds: string[]}>(
+        `${import.meta.env.VITE_BACKEND_URL}/api/steam-friends?steamid=${encodeURIComponent(steamID)}`
+      )
+      return response.data.friendIds
+    },
+    enabled: steamID.trim().length > 0,
+  })
+  return {...result, queryKey}
 }
 
 export default useGetFriends
