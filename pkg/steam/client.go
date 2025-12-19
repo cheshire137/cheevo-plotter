@@ -30,6 +30,42 @@ func NewClient(apiKey string) *Client {
 	return &Client{apiKey: apiKey}
 }
 
+func (c *Client) GetSteamId(username string) (string, error) {
+	// https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
+	u, err := url.Parse(baseApiUrl + "/ISteamUser/ResolveVanityURL/v0001/")
+	if err != nil {
+		return "", err
+	}
+
+	params := u.Query()
+	params.Add("key", c.apiKey)
+	params.Add("vanityurl", username)
+	u.RawQuery = params.Encode()
+
+	makeRequest := func() (*http.Response, error) {
+		req, err := http.NewRequest("GET", u.String(), nil)
+		if err != nil {
+			return nil, err
+		}
+
+		util.LogRequest(req)
+		return http.DefaultClient.Do(req)
+	}
+
+	data, err := c.makeJsonRequest(makeRequest, "get Steam user ID")
+	if err != nil {
+		return "", err
+	}
+
+	if response, ok := data["response"].(map[string]interface{}); ok {
+		if steamId, ok := response["steamid"].(string); ok {
+			return steamId, nil
+		}
+	}
+
+	return "", errors.New("could not find steam ID in response")
+}
+
 func (c *Client) GetPlayerSummaries(steamIds []string) ([]*SteamPlayerSummary, error) {
 	if len(steamIds) < 1 {
 		return nil, errors.New("at least one Steam player ID must be given")

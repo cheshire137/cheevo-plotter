@@ -24,19 +24,6 @@ class SteamApi {
     return null
   }
 
-  // https://wiki.teamfortress.com/wiki/WebAPI/ResolveVanityURL
-  static async getSteamID(username: string): Promise<string> {
-    const data = await this.get('/api/steam?format=json&path=/ISteamUser/ResolveVanityURL/v0001/&vanityurl=' +
-      encodeURIComponent(username))
-    if (data && data.response && data.response.steamid) {
-      return data.response.steamid
-    }
-    if (data && data.response && data.response.message) {
-      throw new Error(data.response.message)
-    }
-    throw new Error('Failed to get Steam ID.')
-  }
-
   static async getFriends(steamID: string): Promise<Friend[]> {
     // https://developer.valvesoftware.com/wiki/Steam_Web_API#GetFriendList_.28v0001.29
     const data = await this.get('/api/steam?format=json&path=/ISteamUser/GetFriendList/v0001/&steamid=' + steamID +
