@@ -9,12 +9,13 @@ Compare your Steam achievements with your friends'.
 I'm using the following tool versions:
 
     % node --version
-    v18.12.1
+    v23.11.0
     % npm --version
-    8.19.2
+    11.5.2
 
 Get a [Steam Web API Key](http://steamcommunity.com/dev/apikey).
 
+    cd ui
     npm install
     STEAM_API_KEY="your API key here" SESSION_SECRET="some fun string you make up" node server.js
     npm start

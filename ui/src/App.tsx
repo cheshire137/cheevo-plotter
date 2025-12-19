@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import {useState, useEffect} from 'react'
 import SteamLookupPage from './components/SteamLookupPage'
 import SteamUserPage from './components/SteamUserPage'
 import SteamGamePage from './components/SteamGamePage'
@@ -6,10 +6,10 @@ import SteamUserError from './components/SteamUserError'
 import LocalStorage from './models/LocalStorage'
 import useGetSteamID from './hooks/use-get-steam-id'
 import Game from './models/Game'
-import { areStringArraysEqual } from './models/Utils'
+import {areStringArraysEqual} from './models/Utils'
 import Player from './models/Player'
 import PlayerSummary from './models/PlayerSummary'
-import { ThemeProvider, theme as primer, Spinner } from "@primer/react"
+import {ThemeProvider, Spinner} from '@primer/react'
 import './App.css'
 
 const persistUsernameChange = (username: string, steamID?: string | null) => {
@@ -35,8 +35,8 @@ const persistUsernameChange = (username: string, steamID?: string | null) => {
 
 function App() {
   const [game, setGame] = useState<Game | null>(null)
-  const [username, setUsername] = useState<string>(LocalStorage.get('steam-username') || "")
-  const { steamID: steamIDFromUsername, error: steamIDError, fetching: loadingSteamID } = useGetSteamID(username)
+  const [username, setUsername] = useState<string>(LocalStorage.get('steam-username') || '')
+  const {steamID: steamIDFromUsername, error: steamIDError, fetching: loadingSteamID} = useGetSteamID(username)
   const [steamID, setSteamID] = useState<string | null>(null)
   const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
   const [players, setPlayers] = useState<Player[]>([])
@@ -66,7 +66,11 @@ function App() {
   }
 
   const setPlayerUnlockedAchievements = (steamID: string, unlockedKeys: string[]) => {
-    if (loadedPlayer && steamID === loadedPlayer.steamid && !areStringArraysEqual(unlockedKeys, loadedPlayer.unlockedAchievementKeys)) {
+    if (
+      loadedPlayer &&
+      steamID === loadedPlayer.steamid &&
+      !areStringArraysEqual(unlockedKeys, loadedPlayer.unlockedAchievementKeys)
+    ) {
       const newLoadedPlayer = new Player(steamID, loadedPlayer.playerSummary)
       newLoadedPlayer.setUnlockedAchievementKeys(unlockedKeys)
       console.log('setLoadedPlayer', newLoadedPlayer)
@@ -91,31 +95,35 @@ function App() {
   if (!steamID && username.length < 1) {
     currentPage = <SteamLookupPage onUsernameChange={onUsernameChange} />
   } else if (loadingSteamID) {
-    currentPage = <Spinner size='large' />
+    currentPage = <Spinner size="large" />
   } else if (steamIDError) {
     currentPage = <SteamUserError />
   } else if (game !== null && playerSummary !== null && loadedPlayer !== null && steamID) {
-    currentPage = <SteamGamePage
-      steamUsername={username}
-      game={game}
-      loadedPlayer={loadedPlayer}
-      onUsernameChange={onUsernameChange}
-      onGameChange={g => setGame(g)}
-      selectedPlayers={players}
-      setPlayerUnlockedAchievements={setPlayerUnlockedAchievements}
-      steamID={steamID}
-    />
+    currentPage = (
+      <SteamGamePage
+        steamUsername={username}
+        game={game}
+        loadedPlayer={loadedPlayer}
+        onUsernameChange={onUsernameChange}
+        onGameChange={g => setGame(g)}
+        selectedPlayers={players}
+        setPlayerUnlockedAchievements={setPlayerUnlockedAchievements}
+        steamID={steamID}
+      />
+    )
   } else {
-    currentPage = <SteamUserPage
-      loadGame={g => setGame(g)}
-      steamUsername={username}
-      onUsernameChange={onUsernameChange}
-      onPlayerSummaryChange={ps => setPlayerSummary(ps)}
-      onPlayerSelectionChange={list => setPlayers(list)}
-    />
+    currentPage = (
+      <SteamUserPage
+        loadGame={g => setGame(g)}
+        steamUsername={username}
+        onUsernameChange={onUsernameChange}
+        onPlayerSummaryChange={ps => setPlayerSummary(ps)}
+        onPlayerSelectionChange={list => setPlayers(list)}
+      />
+    )
   }
 
-  return <ThemeProvider theme={primer}>{currentPage}</ThemeProvider>
+  return <ThemeProvider colorMode="dark">{currentPage}</ThemeProvider>
 }
 
 export default App
