@@ -1,7 +1,7 @@
 import PlayerSummary from '../models/PlayerSummary'
-import Game from '../models/Game'
 import {Avatar, IconButton, Link, Text} from '@primer/react'
 import {ArrowLeftIcon} from '@primer/octicons-react'
+import type {SteamGame} from '../types'
 
 function SteamGamePageHeader({
   game,
@@ -12,8 +12,8 @@ function SteamGamePageHeader({
 }: {
   steamUsername: string
   playerSummary: PlayerSummary | null
-  onGameChange(newGame: Game | null): void
-  game: Game
+  onGameChange(newGame: SteamGame | null): void
+  game: SteamGame
   totalAchievements: number
 }) {
   const profileUrl = playerSummary

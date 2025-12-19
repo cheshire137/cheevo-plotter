@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-import Game from '../models/Game'
 import Player from '../models/Player'
 import PlayedGamesList from './PlayedGamesList'
 import FriendsList from './FriendsList'
@@ -10,13 +9,14 @@ import useGetPlayerSummaries from '../hooks/use-get-player-summaries'
 import useGetGames from '../hooks/use-get-games'
 import useGetSteamID from '../hooks/use-get-steam-id'
 import {PageLayout, Flash, Spinner} from '@primer/react'
+import type {SteamGame} from '../types'
 
 interface Props {
   steamUsername: string
   onUsernameChange(newUsername: string): void
   onPlayerSummaryChange(newPlayerSummary: PlayerSummary): void
   onPlayerSelectionChange(selectedPlayers: Player[]): void
-  loadGame(game: Game): void
+  loadGame(game: SteamGame): void
 }
 
 const SteamUserPage = ({
@@ -27,7 +27,7 @@ const SteamUserPage = ({
   loadGame,
 }: Props) => {
   const {data: steamID, error: steamIDError, isPending: loadingSteamID} = useGetSteamID(steamUsername)
-  const {games, error: gamesError, fetching: loadingGames} = useGetGames(steamID)
+  const {data: games, error: gamesError, isPending: loadingGames} = useGetGames({steamId: steamID})
   const [selectedFriendSteamIDs, setSelectedFriendSteamIDs] = useState<string[]>([])
   const [ownedGamesByOwnerSteamID, setOwnedGamesByOwnerSteamID] = useState<{[steamID: string]: Game[]}>({})
   const [loadedPlayerSummary, setLoadedPlayerSummary] = useState<PlayerSummary | null>(null)

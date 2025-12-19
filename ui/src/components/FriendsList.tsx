@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react'
 import FriendListItem from './FriendListItem'
-import Game from '../models/Game'
 import Player from '../models/Player'
 import useGetFriends from '../hooks/use-get-friends'
 import {CheckboxGroup, Flash, Spinner} from '@primer/react'
+import type { SteamGame } from '../types'
 import './FriendsList.css'
 
 function FriendsList({
@@ -19,7 +19,7 @@ function FriendsList({
   selectedIDs: string[]
   onPlayerSelectionChange(selectedPlayers: Player[]): void
   onFriendsLoaded(friendIds: string[]): void
-  onFriendGamesLoaded(steamID: string, games: Game[]): void
+  onFriendGamesLoaded(steamID: string, games: SteamGame[]): void
 }) {
   const {data: friends, error: friendsError, isPending: loadingFriends} = useGetFriends(steamID)
   const [selectedFriends, setSelectedFriends] = useState<string[]>([])

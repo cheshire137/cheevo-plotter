@@ -58,6 +58,44 @@ func (ds *DataStore) ListSteamApps(lastAppId string, limit int32) ([]*SteamApp, 
 	return apps, nil
 }
 
+func (ds *DataStore) GetSteamApps(appIds []string) ([]*SteamApp, error) {
+	apps := []*SteamApp{}
+	if len(appIds) < 1 {
+		return apps, nil
+	}
+
+	placeholders := strings.Repeat("?,", len(appIds))
+	placeholders = placeholders[:len(placeholders)-1] // drop trailing comma
+
+	query := `SELECT id, name FROM steam_apps WHERE id IN (` + placeholders + `) ORDER BY name ASC, id ASC`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		return apps, fmt.Errorf("failed to prepare query for getting Steam apps: %w", err)
+	}
+
+	args := make([]interface{}, len(appIds))
+	for i, appId := range appIds {
+		args[i] = appId
+	}
+
+	rows, err := stmt.Query(args...)
+	if err != nil {
+		return apps, fmt.Errorf("failed to query Steam apps: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		app := &SteamApp{}
+		err := rows.Scan(&app.Id, &app.Name)
+		if err != nil {
+			return apps, fmt.Errorf("failed to scan Steam app row: %w", err)
+		}
+		apps = append(apps, app)
+	}
+
+	return apps, nil
+}
+
 func (ds *DataStore) AddSteamApp(app *SteamApp) error {
 	if app == nil {
 		return errors.New("app is required")

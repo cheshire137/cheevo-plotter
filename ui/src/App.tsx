@@ -4,15 +4,15 @@ import SteamUserPage from './components/SteamUserPage'
 import SteamGamePage from './components/SteamGamePage'
 import SteamUserError from './components/SteamUserError'
 import useGetSteamID from './hooks/use-get-steam-id'
-import Game from './models/Game'
 import {areStringArraysEqual} from './models/Utils'
 import Player from './models/Player'
 import PlayerSummary from './models/PlayerSummary'
 import {BaseStyles, ThemeProvider, Spinner} from '@primer/react'
+import type {SteamGame} from './types'
 import './App.css'
 
 function App() {
-  const [game, setGame] = useState<Game | null>(null)
+  const [game, setGame] = useState<SteamGame | null>(null)
   const [username, setUsername] = useState<string>('')
   const {data: steamIDFromUsername, error, isPending} = useGetSteamID(username)
   const [steamID, setSteamID] = useState<string | null>(null)

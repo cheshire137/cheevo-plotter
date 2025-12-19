@@ -1,5 +1,4 @@
 import Achievement from './Achievement'
-import Game from './Game'
 
 enum ResponseType {
   JSON = 'json',
@@ -15,23 +14,6 @@ class SteamApi {
       return user
     }
     return null
-  }
-
-  static async getOwnedGames(steamID: string, username?: string): Promise<Game[]> {
-    const data = await this.get(`/api/steam?format=json&path=/IPlayerService/GetOwnedGames/v0001/&steamid=${steamID}`)
-    if (data && data.response && data.response.games) {
-      return data.response.games.map(
-        (g: any) =>
-          new Game({
-            appID: g.appid,
-            totalPlaytime: g.playtime_forever,
-            timeLastPlayed: g.rtime_last_played,
-          })
-      )
-    }
-
-    const userDesc = username ? username : `ID ${steamID}`
-    throw new Error(`Couldn't load Steam games for ${userDesc}; may not be a public profile.`)
   }
 
   static async getOwnedPlayedGames(steamID: string, username?: string) {

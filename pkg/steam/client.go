@@ -26,8 +26,66 @@ type SteamPlayerSummary struct {
 	Name       string `json:"name"`
 }
 
+type SteamOwnedGame struct {
+	AppId    string `json:"appId"`
+	Playtime int32  `json:"playtime"`
+}
+
 func NewClient(apiKey string) *Client {
 	return &Client{apiKey: apiKey}
+}
+
+func (c *Client) GetOwnedGames(steamId string) ([]*SteamOwnedGame, error) {
+	// https://developer.valvesoftware.com/wiki/Steam_Web_API#GetOwnedGames_(v0001)
+	u, err := url.Parse(baseApiUrl + "/IPlayerService/GetOwnedGames/v0001/")
+	if err != nil {
+		return nil, err
+	}
+
+	params := u.Query()
+	params.Add("key", c.apiKey)
+	params.Add("steamid", steamId)
+	params.Add("format", "json")
+	u.RawQuery = params.Encode()
+
+	makeRequest := func() (*http.Response, error) {
+		req, err := http.NewRequest("GET", u.String(), nil)
+		if err != nil {
+			return nil, err
+		}
+
+		util.LogRequest(req)
+		return http.DefaultClient.Do(req)
+	}
+
+	data, err := c.makeJsonRequest(makeRequest, "get Steam owned games")
+	if err != nil {
+		return nil, err
+	}
+	util.InspectMap(data, "")
+
+	result := []*SteamOwnedGame{}
+
+	if response, ok := data["response"].(map[string]interface{}); ok {
+		if games, ok := response["games"].([]interface{}); ok {
+			for _, game := range games {
+				if gameData, ok := game.(map[string]interface{}); ok {
+					ownedGame := &SteamOwnedGame{}
+					if appId, ok := gameData["appid"].(float64); ok {
+						ownedGame.AppId = fmt.Sprintf("%.0f", appId)
+					}
+					if playTime, ok := gameData["playtime_forever"].(float64); ok {
+						ownedGame.Playtime = int32(playTime)
+					}
+					if len(ownedGame.AppId) > 0 {
+						result = append(result, ownedGame)
+					}
+				}
+			}
+		}
+	}
+
+	return result, err
 }
 
 func (c *Client) GetFriends(steamId string) ([]string, error) {

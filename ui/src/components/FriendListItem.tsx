@@ -1,7 +1,7 @@
 import {useEffect} from 'react'
 import useGetGames from '../hooks/use-get-games'
-import Game from '../models/Game'
 import {Avatar, Flash, FormControl, Checkbox, Spinner, Text} from '@primer/react'
+import type {SteamGame} from '../types'
 
 function FriendListItem({
   onToggle,
@@ -12,13 +12,13 @@ function FriendListItem({
   onToggle(isSelected: boolean): void
   isSelected: boolean
   friendId: string
-  onFriendGamesLoaded(steamID: string, games: Game[]): void
+  onFriendGamesLoaded(steamID: string, games: SteamGame[]): void
 }) {
   const {
-    games,
+    data: games,
     error: gamesError,
-    fetching: loadingGames,
-  } = useGetGames(isSelected ? friendId : null, friend.playerSummary?.personaname)
+    isPending: loadingGames,
+  } = useGetGames({steamId: isSelected ? friendId : null})
   const domId = 'friend-' + friendId
 
   useEffect(() => {
@@ -46,7 +46,7 @@ function FriendListItem({
         )}
         {gamesError && (
           <Flash variant="danger" sx={{ml: 2, fontWeight: 'normal', p: 1, fontSize: 1}}>
-            {gamesError}
+            {gamesError.message}
           </Flash>
         )}
       </FormControl.Label>

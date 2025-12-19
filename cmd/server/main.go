@@ -73,6 +73,9 @@ func main() {
 	mux.Handle("GET /api/steam-friends", http.HandlerFunc(env.GetSteamFriendsHandler))
 	mux.Handle("OPTIONS /api/steam-friends", http.HandlerFunc(env.OptionsHandler))
 
+	mux.Handle("GET /api/steam-owned-games", http.HandlerFunc(env.GetSteamOwnedGamesHandler))
+	mux.Handle("OPTIONS /api/steam-owned-games", http.HandlerFunc(env.OptionsHandler))
+
 	server := &http.Server{Addr: cfg.BackendAddress(), Handler: mux}
 
 	util.LogInfo("Starting server at http://localhost:%d", cfg.BackendPort)
