@@ -15,6 +15,20 @@ I'm using the following tool versions:
 
 Get a [Steam Web API Key](http://steamcommunity.com/dev/apikey).
 
+```sh
+cp config.yml.example config.yml
+```
+
+Fill in your Steam API key in config.yml.
+
+Start the backend:
+
+```sh
+go run cmd/server/main.go
+```
+
+Start the frontend:
+
     cd ui
     npm install
     STEAM_API_KEY="your API key here" SESSION_SECRET="some fun string you make up" node server.js

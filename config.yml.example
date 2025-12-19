@@ -1,0 +1,4 @@
+database_file: "cheevo-plotter.db" # used for a SQLite database
+backend_port: 8080
+frontend_port: 5173
+steam_api_key: "Your Steam API key here"
