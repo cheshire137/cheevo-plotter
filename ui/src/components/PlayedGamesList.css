@@ -1,0 +1,4 @@
+.played-games-list {
+  display: flex;
+  flex-wrap: wrap;
+}

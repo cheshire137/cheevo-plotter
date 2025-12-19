@@ -1,4 +1,3 @@
-import React from 'react'
 import Game from '../models/Game'
 import { FormControl, Radio } from '@primer/react'
 

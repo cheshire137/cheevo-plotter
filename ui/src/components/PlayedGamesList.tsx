@@ -1,18 +1,22 @@
-import React from 'react'
 import PlayedGameListItem from './PlayedGameListItem'
 import Game from '../models/Game'
-import { Box, RadioGroup } from '@primer/react'
+import {RadioGroup} from '@primer/react'
+import './PlayedGamesList.css'
 
 interface Props {
-  loadGame(game: Game): void;
-  games: Game[];
+  loadGame(game: Game): void
+  games: Game[]
 }
 
-const PlayedGamesList = ({ loadGame, games }: Props) => <RadioGroup name="game">
-  <RadioGroup.Label>Played Games ({games.length})</RadioGroup.Label>
-  <Box display="flex" flexWrap="wrap">
-    {games.map(game => <PlayedGameListItem loadGame={loadGame} game={game} key={game.appID} />)}
-  </Box>
-</RadioGroup>
+const PlayedGamesList = ({loadGame, games}: Props) => (
+  <RadioGroup name="game">
+    <RadioGroup.Label>Played Games ({games.length})</RadioGroup.Label>
+    <div className="played-games-list">
+      {games.map(game => (
+        <PlayedGameListItem loadGame={loadGame} game={game} key={game.appID} />
+      ))}
+    </div>
+  </RadioGroup>
+)
 
-export default PlayedGamesList;
+export default PlayedGamesList

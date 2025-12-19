@@ -1,4 +1,3 @@
-import React from 'react'
 import { Flash } from '@primer/react'
 
 const SteamUserError = () => {

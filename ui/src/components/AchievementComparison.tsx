@@ -1,4 +1,3 @@
-import React from 'react'
 import Player from '../models/Player'
 import Achievement from '../models/Achievement'
 

@@ -1,0 +1,7 @@
+.achievement-list-item {
+  margin-bottom: var(--base-size-8);
+}
+
+.achievement-icon {
+  margin-right: var(--base-size-8);
+}

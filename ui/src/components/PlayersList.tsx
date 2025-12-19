@@ -1,4 +1,3 @@
-import React from 'react'
 import PlayerListItem from './PlayerListItem'
 import Player from '../models/Player'
 import Game from '../models/Game'
