@@ -23,9 +23,15 @@ func LogRequest(r *http.Request) {
 	LogInfo("%s %s", r.Method, r.URL.Path)
 	if queryStr != "" {
 		params := r.URL.Query()
+		i := 0
 		for key, values := range params {
 			for _, value := range values {
-				LogInfo("  %s=%s", key, value)
+				joiner := "?"
+				if i > 0 {
+					joiner = "&"
+				}
+				LogInfo("  %s%s=%s", joiner, key, value)
+				i++
 			}
 		}
 	}
