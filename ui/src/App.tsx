@@ -1,7 +1,18 @@
-import type {PropsWithChildren} from 'react'
-import {BaseStyles, Button, Heading, Link, PageLayout, ThemeProvider, Tooltip, Spinner} from '@primer/react'
+import {type PropsWithChildren, useState} from 'react'
+import {
+  ActionList,
+  BaseStyles,
+  Button,
+  Heading,
+  Link,
+  PageLayout,
+  ThemeProvider,
+  Tooltip,
+  Spinner,
+} from '@primer/react'
 import {useGetCurrentUser} from './queries/use-get-current-user'
 import {useGetGames} from './queries/use-get-games'
+import type {SteamGame} from './types'
 import '@primer/primitives/dist/css/functional/themes/light.css'
 import '@primer/primitives/dist/css/primitives.css'
 import './App.css'
@@ -9,6 +20,7 @@ import './App.css'
 function App() {
   const {data: currentUser, isPending: isCurrentUserPending} = useGetCurrentUser()
   const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames({steamId: currentUser?.steamId})
+  const [selectedGame, setSelectedGame] = useState<SteamGame | null>(null)
 
   return (
     <ProviderStack>
@@ -32,13 +44,22 @@ function App() {
           {ownedGames && (
             <>
               {currentUser && <Heading as="h2">{currentUser.name}&rsquo;s owned games</Heading>}
-              <ul>
-                {ownedGames.map(game => (
-                  <li key={game.appId}>
-                    {game.name}
-                  </li>
-                ))}
-              </ul>
+              <ActionList selectionVariant="single" role="menu" aria-label="Owned game">
+                {ownedGames.map(game => {
+                  const isSelected = game.appId === selectedGame?.appId
+                  return (
+                    <ActionList.Item
+                      selected={isSelected}
+                      aria-checked={isSelected}
+                      onSelect={() => setSelectedGame(game)}
+                      key={game.appId}
+                      role="menuitemradio"
+                    >
+                      {game.name}
+                    </ActionList.Item>
+                  )
+                })}
+              </ActionList>
             </>
           )}
         </PageLayout.Content>
