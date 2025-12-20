@@ -20,10 +20,14 @@ func LogError(a ...interface{}) {
 
 func LogRequest(r *http.Request) {
 	queryStr := r.URL.RawQuery
-	if queryStr == "" {
-		LogInfo("%s %s", r.Method, r.URL.Path)
-	} else {
-		LogInfo("%s %s?%s", r.Method, r.URL.Path, r.URL.RawQuery)
+	LogInfo("%s %s", r.Method, r.URL.Path)
+	if queryStr != "" {
+		params := r.URL.Query()
+		for key, values := range params {
+			for _, value := range values {
+				LogInfo("  %s=%s", key, value)
+			}
+		}
 	}
 }
 

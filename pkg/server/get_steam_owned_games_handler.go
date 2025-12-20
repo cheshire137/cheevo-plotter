@@ -46,7 +46,6 @@ func (e *Env) GetSteamOwnedGamesHandler(w http.ResponseWriter, r *http.Request) 
 
 	appIds := make([]string, len(ownedGames))
 	for i, ownedGame := range ownedGames {
-		util.LogInfo("app ID " + ownedGame.AppId)
 		appIds[i] = ownedGame.AppId
 	}
 

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,15 +10,20 @@ import (
 	"github.com/cheshire137/cheevo-plotter/pkg/data_store"
 	"github.com/cheshire137/cheevo-plotter/pkg/steam"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
+	"github.com/yohcop/openid-go"
 )
 
 type Env struct {
-	ds     *data_store.DataStore
-	config *config.Config
+	ds             *data_store.DataStore
+	config         *config.Config
+	nonceStore     *openid.SimpleNonceStore
+	discoveryCache openid.DiscoveryCache
 }
 
 func NewEnv(ds *data_store.DataStore, config *config.Config) (*Env, error) {
-	return &Env{ds: ds, config: config}, nil
+	nonceStore := openid.NewSimpleNonceStore()
+	discoveryCache := &NoopDiscoveryCache{}
+	return &Env{ds: ds, config: config, nonceStore: nonceStore, discoveryCache: discoveryCache}, nil
 }
 
 func (e *Env) SyncSteamAppsIfNecessary() error {
@@ -60,4 +66,34 @@ func (e *Env) SyncSteamAppsIfNecessary() error {
 func (e *Env) redirectToFrontend(w http.ResponseWriter, r *http.Request) {
 	frontendUrl := fmt.Sprintf("http://localhost:%d", e.config.FrontendPort)
 	http.Redirect(w, r, frontendUrl, http.StatusFound)
+}
+
+const steamIdCookieName = "steamId"
+
+func setSteamIdCookie(steamId string, w http.ResponseWriter) {
+	cookie := &http.Cookie{
+		Name:     steamIdCookieName,
+		Value:    steamId,
+		Path:     "/",
+		Domain:   "localhost",
+		MaxAge:   86400 * 7, // 7 days
+		HttpOnly: true,
+		Secure:   false, // Set to true in production with HTTPS
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, cookie)
+}
+
+func (e *Env) getCurrentSteamId(r *http.Request) (string, error) {
+	cookie, err := r.Cookie(steamIdCookieName)
+	if err != nil {
+		return "", err
+	}
+
+	steamId := cookie.Value
+	if steamId == "" {
+		return "", errors.New("invalid Steam ID in cookie")
+	}
+
+	return steamId, nil
 }

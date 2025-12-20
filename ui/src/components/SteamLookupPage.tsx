@@ -1,13 +1,18 @@
 import {type FormEventHandler, useCallback, useState} from 'react'
 import {Button, PageLayout, FormControl, Link, TextInput, Text} from '@primer/react'
+import {useGetCurrentUser} from '../hooks/use-get-current-user'
 
 function SteamLookupPage({onUsernameChange}: {onUsernameChange(newUsername: string): void}) {
   const [username, setUsername] = useState('')
+  const {data: steamId} = useGetCurrentUser()
 
-  const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>(event => {
-    event.preventDefault()
-    onUsernameChange(username)
-  }, [onUsernameChange, username])
+  const onSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+    event => {
+      event.preventDefault()
+      onUsernameChange(username)
+    },
+    [onUsernameChange, username]
+  )
 
   return (
     <PageLayout>
@@ -31,9 +36,11 @@ function SteamLookupPage({onUsernameChange}: {onUsernameChange(newUsername: stri
           </FormControl>
           <Button type="submit">Find user</Button>
         </form>
-        <p>
-          Or <Link href={`${import.meta.env.VITE_BACKEND_URL}/auth/steam`}>Sign in with Steam</Link>
-        </p>
+        {steamId === undefined && (
+          <p>
+            Or <Link href={`${import.meta.env.VITE_BACKEND_URL}/auth/steam`}>Sign in with Steam</Link>
+          </p>
+        )}
       </PageLayout.Content>
     </PageLayout>
   )

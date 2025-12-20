@@ -60,6 +60,11 @@ func main() {
 	}
 
 	mux.Handle("/", http.FileServer(http.Dir("./ui/build/")))
+	mux.Handle("GET /auth/steam", http.HandlerFunc(env.RedirectToSteamAuthHandler))
+	mux.Handle("/auth/steam/callback", http.HandlerFunc(env.SteamAuthCallbackHandler))
+
+	mux.Handle("GET /api/user", http.HandlerFunc(env.GetCurrentUserHandler))
+	mux.Handle("OPTIONS /api/user", http.HandlerFunc(env.OptionsHandler))
 
 	mux.Handle("GET /api/steam-apps", http.HandlerFunc(env.GetSteamAppsHandler))
 	mux.Handle("OPTIONS /api/steam-apps", http.HandlerFunc(env.OptionsHandler))
