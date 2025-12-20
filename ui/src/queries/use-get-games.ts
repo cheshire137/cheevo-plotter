@@ -2,7 +2,7 @@ import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
 import type {SteamGame} from '../types'
 
-function useGetGames({steamId, username}: {steamId?: string | null; username?: string | null}) {
+export function useGetGames({steamId, username}: {steamId?: string | null; username?: string | null}) {
   const queryKey = ['steam-games', steamId, username]
   const hasSteamId = typeof steamId === 'string' && steamId.trim().length > 0
   const hasUsername = typeof username === 'string' && username.trim().length > 0
@@ -18,7 +18,7 @@ function useGetGames({steamId, username}: {steamId?: string | null; username?: s
       const response = await axios.get<{
         ownedGames: Array<{appId: string; playtime: number}>
         namesByAppId: Record<string, string>
-      }>(`${import.meta.env.VITE_BACKEND_URL}/api/steam-owned-games?${params}`)
+      }>(`${import.meta.env.VITE_BACKEND_URL}/api/steam-owned-games${params}`)
       const {ownedGames, namesByAppId} = response.data
       return ownedGames.map(game => ({
         appId: game.appId,
@@ -30,5 +30,3 @@ function useGetGames({steamId, username}: {steamId?: string | null; username?: s
   })
   return {...result, queryKey}
 }
-
-export default useGetGames

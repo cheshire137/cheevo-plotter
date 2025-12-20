@@ -1,12 +1,14 @@
 import type {PropsWithChildren} from 'react'
 import {BaseStyles, Button, Link, PageLayout, ThemeProvider, Tooltip, Spinner} from '@primer/react'
 import {useGetCurrentUser} from './queries/use-get-current-user'
+import {useGetGames} from './queries/use-get-games'
 import '@primer/primitives/dist/css/functional/themes/light.css'
 import '@primer/primitives/dist/css/primitives.css'
 import './App.css'
 
 function App() {
   const {data: currentUser, isPending} = useGetCurrentUser()
+  const {data: ownedGames} = useGetGames({steamId: currentUser?.steamId})
 
   return (
     <ProviderStack>
