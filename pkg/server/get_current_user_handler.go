@@ -7,10 +7,6 @@ import (
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
-type CurrentUserResponse struct {
-	SteamId string `json:"steamId"`
-}
-
 func (e *Env) GetCurrentUserHandler(w http.ResponseWriter, r *http.Request) {
 	util.LogRequest(r)
 	e.enableCors(&w)
@@ -32,7 +28,6 @@ func (e *Env) GetCurrentUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := CurrentUserResponse{SteamId: user.Id}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(user)
 }
