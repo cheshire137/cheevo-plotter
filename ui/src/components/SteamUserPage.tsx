@@ -2,64 +2,61 @@ import {useState, useEffect} from 'react'
 import PlayedGamesList from './PlayedGamesList'
 import FriendsList from './FriendsList'
 import SteamUserPageHeader from './SteamUserPageHeader'
-import SteamUserError from './SteamUserError'
 import useGetPlayerSummaries from '../hooks/use-get-player-summaries'
 import useGetGames from '../hooks/use-get-games'
-import useGetSteamID from '../hooks/use-get-steam-id'
 import {PageLayout, Flash, Spinner} from '@primer/react'
 import type {SteamGame, SteamUser} from '../types'
+import {useGetCurrentUser} from '../hooks/use-get-current-user'
 
-interface Props {
-  steamUsername: string
-  onUsernameChange(newUsername: string): void
-  onPlayerSummaryChange(newPlayerSummary: SteamUser): void
-  onPlayerSelectionChange(selectedPlayers: SteamUser[]): void
-  loadGame(game: SteamGame): void
-}
-
-const SteamUserPage = ({
+function SteamUserPage({
   steamUsername,
   onUsernameChange,
   onPlayerSummaryChange,
   onPlayerSelectionChange,
   loadGame,
-}: Props) => {
-  const {data: steamID, error: steamIDError, isPending: loadingSteamID} = useGetSteamID(steamUsername)
-  const {data: games, error: gamesError, isPending: loadingGames} = useGetGames({steamId: steamID})
+}: {
+  steamUsername: string
+  onUsernameChange(newUsername: string): void
+  onPlayerSummaryChange(newPlayerSummary: SteamUser): void
+  onPlayerSelectionChange(selectedPlayers: SteamUser[]): void
+  loadGame(game: SteamGame): void
+}) {
+  const {data: currentUser} = useGetCurrentUser()
+  const {data: games, error: gamesError, isPending: loadingGames} = useGetGames({steamId: currentUser?.steamId})
   const [selectedFriendSteamIDs, setSelectedFriendSteamIDs] = useState<string[]>([])
-  const [ownedGamesByOwnerSteamID, setOwnedGamesByOwnerSteamID] = useState<{[steamID: string]: SteamGame[]}>({})
+  const [ownedGamesByOwnerSteamID, setOwnedGamesByOwnerSteamID] = useState<Record<string, SteamGame[]>>({})
   const [loadedPlayerSummary, setLoadedPlayerSummary] = useState<SteamUser | null>(null)
   const [friends, setFriends] = useState<string[]>([])
   const [allSteamIDs, setAllSteamIDs] = useState<string[]>([])
-  const [playerSummariesBySteamID, setPlayerSummariesBySteamID] = useState<{[steamID: string]: SteamUser}>({})
+  const [playerSummariesBySteamID, setPlayerSummariesBySteamID] = useState<Record<string, SteamUser>>({})
   const {
-    playerSummaries,
+    data: playerSummaries,
     error: playerSummariesError,
-    fetching: loadingPlayerSummaries,
+    isPending: loadingPlayerSummaries,
   } = useGetPlayerSummaries(allSteamIDs)
 
   useEffect(() => {
     if (friends && friends.length > 0) {
       let steamIDs = friends
-      if (steamID) {
-        steamIDs = steamIDs.concat(steamID)
+      if (currentUser?.steamId) {
+        steamIDs = steamIDs.concat(currentUser?.steamId)
       }
       setAllSteamIDs(steamIDs)
     }
-  }, [friends, steamID])
+  }, [friends, currentUser?.steamId])
 
   useEffect(() => {
-    if (!loadingGames && games && steamID) {
+    if (!loadingGames && games && currentUser?.steamId) {
       const newHash = Object.assign({}, ownedGamesByOwnerSteamID)
-      newHash[steamID] = games
+      newHash[currentUser?.steamId] = games
       setOwnedGamesByOwnerSteamID(newHash)
     }
-  }, [games, loadingGames, steamID, ownedGamesByOwnerSteamID])
+  }, [games, loadingGames, currentUser?.steamId, ownedGamesByOwnerSteamID])
 
   useEffect(() => {
     if (!loadingPlayerSummaries && playerSummaries) {
       const hash = playerSummaries.reduce((acc, p) => {
-        acc[p.steamid] = p
+        acc[p.steamId] = p
         return acc
       }, {} as {[steamID: string]: SteamUser})
       setPlayerSummariesBySteamID(hash)
@@ -67,15 +64,15 @@ const SteamUserPage = ({
   }, [loadingPlayerSummaries, playerSummaries])
 
   useEffect(() => {
-    if (steamID && playerSummariesBySteamID.hasOwnProperty(steamID)) {
-      const playerSummary = playerSummariesBySteamID[steamID]
+    if (currentUser?.steamId && playerSummariesBySteamID.hasOwnProperty(currentUser?.steamId)) {
+      const playerSummary = playerSummariesBySteamID[currentUser?.steamId]
       setLoadedPlayerSummary(playerSummary)
       onPlayerSummaryChange(playerSummary)
       if (playerSummary.name && playerSummary.name !== steamUsername) {
         onUsernameChange(playerSummary.name)
       }
     }
-  }, [onUsernameChange, playerSummariesBySteamID, steamID, onPlayerSummaryChange, steamUsername])
+  }, [onUsernameChange, playerSummariesBySteamID, currentUser?.steamId, onPlayerSummaryChange, steamUsername])
 
   useEffect(() => {
     if (!loadingPlayerSummaries && playerSummariesBySteamID && friends.length > 0) {
@@ -89,7 +86,7 @@ const SteamUserPage = ({
   }, [loadingPlayerSummaries, playerSummariesBySteamID, friends])
 
   const onFriendSelectionChanged = (selectedPlayers: SteamUser[]) => {
-    const steamIDs = selectedPlayers.map(player => player.steamid)
+    const steamIDs = selectedPlayers.map(player => player.steamId)
     setSelectedFriendSteamIDs(steamIDs)
     onPlayerSelectionChange(selectedPlayers)
   }
@@ -99,6 +96,8 @@ const SteamUserPage = ({
     newHash[friendSteamID] = friendGames
     setOwnedGamesByOwnerSteamID(newHash)
   }
+
+  if (!currentUser) return null
 
   return (
     <PageLayout>
@@ -110,22 +109,18 @@ const SteamUserPage = ({
         />
       </PageLayout.Header>
       <PageLayout.Content>
-        {steamIDError && <SteamUserError />}
         {playerSummariesError && <Flash variant="warning">There was an error loading Steam user data.</Flash>}
-        {loadingSteamID && <Spinner />}
-        {steamID && friends.length > 0 && games && (
+        {friends.length > 0 && games && (
           <p>Choose some other players and a game to compare your achievements!</p>
         )}
-        {steamID && (
-          <FriendsList
-            onFriendGamesLoaded={onFriendGamesLoaded}
-            selectedIDs={selectedFriendSteamIDs}
-            steamUsername={steamUsername}
-            steamID={steamID}
-            onFriendsLoaded={list => setFriends(list)}
-            onPlayerSelectionChange={selectedPlayers => onFriendSelectionChanged(selectedPlayers)}
-          />
-        )}
+        <FriendsList
+          onFriendGamesLoaded={onFriendGamesLoaded}
+          selectedIDs={selectedFriendSteamIDs}
+          steamUsername={steamUsername}
+          steamID={currentUser.steamId}
+          onFriendsLoaded={list => setFriends(list)}
+          onPlayerSelectionChange={selectedPlayers => onFriendSelectionChanged(selectedPlayers)}
+        />
         {games && games.length > 0 && <hr />}
         {gamesError && (
           <Flash variant="warning">
@@ -138,7 +133,7 @@ const SteamUserPage = ({
             <p>Loading {steamUsername}'s games list...</p>
           </div>
         )}
-        {steamID && games && <PlayedGamesList games={games} loadGame={loadGame} />}
+        {currentUser?.steamId && games && <PlayedGamesList games={games} loadGame={loadGame} />}
       </PageLayout.Content>
     </PageLayout>
   )
