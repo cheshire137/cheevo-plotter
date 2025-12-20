@@ -75,7 +75,15 @@ func (e *Env) GetSteamOwnedGamesHandler(w http.ResponseWriter, r *http.Request) 
 		gameB := filteredOwnedGames[j]
 		nameA := namesByAppId[gameA.AppId]
 		nameB := namesByAppId[gameB.AppId]
-		if nameA < nameB {
+		gameAPlayed := gameA.Playtime > 0
+		gameBPlayed := gameB.Playtime > 0
+		if gameAPlayed == gameBPlayed {
+			if nameA < nameB {
+				return true
+			}
+			return false
+		}
+		if gameAPlayed && !gameBPlayed {
 			return true
 		}
 		return false

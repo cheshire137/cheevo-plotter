@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"sort"
 	"strings"
 	"time"
 
@@ -88,6 +89,33 @@ func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamAchievem
 			}
 		}
 	}
+
+	sort.Slice(achievements, func(i, j int) bool {
+		a1 := achievements[i]
+		a2 := achievements[j]
+		if a1.Unlocked && a2.Unlocked {
+			if a1.UnlockTime == a2.UnlockTime {
+				if a1.Name < a2.Name {
+					return true
+				}
+				return false
+			}
+			if a1.UnlockTime < a2.UnlockTime {
+				return true
+			}
+			return false
+		}
+		if a1.Unlocked && !a2.Unlocked {
+			return true
+		}
+		if a2.Unlocked && !a1.Unlocked {
+			return false
+		}
+		if a1.Name < a2.Name {
+			return true
+		}
+		return false
+	})
 
 	return achievements, nil
 }
