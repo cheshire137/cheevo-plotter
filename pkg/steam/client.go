@@ -119,7 +119,6 @@ func (c *Client) GetOwnedGames(steamId string) ([]*SteamOwnedGame, error) {
 	if err != nil {
 		return nil, err
 	}
-	util.InspectMap(data, "")
 
 	result := []*SteamOwnedGame{}
 

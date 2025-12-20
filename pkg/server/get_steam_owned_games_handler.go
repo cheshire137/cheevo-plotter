@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"sort"
 
 	"github.com/cheshire137/cheevo-plotter/pkg/steam"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
@@ -43,7 +44,6 @@ func (e *Env) GetSteamOwnedGamesHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	response := SteamOwnedGamesResponse{OwnedGames: ownedGames}
 
 	appIds := make([]string, len(ownedGames))
 	for i, ownedGame := range ownedGames {
@@ -61,7 +61,26 @@ func (e *Env) GetSteamOwnedGamesHandler(w http.ResponseWriter, r *http.Request) 
 	for _, app := range steamApps {
 		namesByAppId[app.Id] = app.Name
 	}
-	response.NamesByAppId = namesByAppId
+	response := SteamOwnedGamesResponse{NamesByAppId: namesByAppId}
+
+	filteredOwnedGames := []*steam.SteamOwnedGame{}
+	for _, ownedGame := range ownedGames {
+		if _, ok := namesByAppId[ownedGame.AppId]; ok {
+			filteredOwnedGames = append(filteredOwnedGames, ownedGame)
+		}
+	}
+
+	sort.Slice(filteredOwnedGames, func(i, j int) bool {
+		gameA := filteredOwnedGames[i]
+		gameB := filteredOwnedGames[j]
+		nameA := namesByAppId[gameA.AppId]
+		nameB := namesByAppId[gameB.AppId]
+		if nameA < nameB {
+			return true
+		}
+		return false
+	})
+	response.OwnedGames = filteredOwnedGames
 
 	json.NewEncoder(w).Encode(response)
 }
