@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import FriendListItem from './FriendListItem'
-import useGetFriends from '../hooks/use-get-friends'
+import useGetFriends from '../queries/use-get-friends'
 import {CheckboxGroup, Flash, Spinner} from '@primer/react'
 import type {SteamGame, SteamUser} from '../types'
 import './FriendsList.css'

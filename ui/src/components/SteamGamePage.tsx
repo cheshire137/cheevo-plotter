@@ -3,7 +3,7 @@ import AchievementsList from './AchievementsList'
 import AchievementsComparison from './AchievementsComparison'
 import PlayersList from './PlayersList'
 import SteamGamePageHeader from './SteamGamePageHeader'
-import useGetAchievements from '../hooks/use-get-achievements'
+import useGetAchievements from '../queries/use-get-achievements'
 import {Flash, PageLayout, Spinner} from '@primer/react'
 import type {SteamGame, SteamUser} from '../types'
 

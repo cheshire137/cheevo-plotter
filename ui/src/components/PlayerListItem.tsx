@@ -1,5 +1,5 @@
 import {useEffect} from 'react'
-import useGetAchievements from '../hooks/use-get-achievements'
+import useGetAchievements from '../queries/use-get-achievements'
 import {Avatar, Button, Flash, Spinner} from '@primer/react'
 import type {SteamGame, SteamUser} from '../types'
 

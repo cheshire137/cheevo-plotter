@@ -1,5 +1,5 @@
 import {useEffect} from 'react'
-import useGetGames from '../hooks/use-get-games'
+import useGetGames from '../queries/use-get-games'
 import {Avatar, Flash, FormControl, Checkbox, Spinner, Text} from '@primer/react'
 import type {SteamGame} from '../types'
 
