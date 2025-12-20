@@ -15,6 +15,8 @@ import (
 
 const baseApiUrl = "https://api.steampowered.com"
 
+var ErrUnauthorized = errors.New("unauthorized")
+
 type Client struct {
 	apiKey string
 }
@@ -373,6 +375,9 @@ func (c *Client) handleJsonResponse(action string, resp *http.Response) (map[str
 
 func handleHttpError(action string, resp *http.Response) error {
 	code := resp.StatusCode
+	if code == 401 {
+		return ErrUnauthorized
+	}
 
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
