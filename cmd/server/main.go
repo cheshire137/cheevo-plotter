@@ -82,6 +82,9 @@ func main() {
 	mux.Handle("GET /api/steam-owned-games", http.HandlerFunc(env.GetSteamOwnedGamesHandler))
 	mux.Handle("OPTIONS /api/steam-owned-games", http.HandlerFunc(env.OptionsHandler))
 
+	mux.Handle("GET /api/steam-achievements", http.HandlerFunc(env.GetSteamAchievementsHandler))
+	mux.Handle("OPTIONS /api/steam-achievements", http.HandlerFunc(env.OptionsHandler))
+
 	server := &http.Server{Addr: cfg.BackendAddress(), Handler: mux}
 
 	util.LogInfo("Starting server at http://localhost:%d", cfg.BackendPort)

@@ -30,6 +30,38 @@ func NewClient(apiKey string) *Client {
 	return &Client{apiKey: apiKey}
 }
 
+func (c *Client) GetAchievements(steamId string, appId string) (map[string]interface{}, error) {
+	// https://partner.steamgames.com/doc/webapi/ISteamUserStats#GetPlayerAchievements
+	u, err := url.Parse(baseApiUrl + "/ISteamUserStats/GetPlayerAchievements/v1/")
+	if err != nil {
+		return nil, err
+	}
+
+	params := u.Query()
+	params.Add("key", c.apiKey)
+	params.Add("steamid", steamId)
+	params.Add("appid", appId)
+	u.RawQuery = params.Encode()
+
+	makeRequest := func() (*http.Response, error) {
+		req, err := http.NewRequest("GET", u.String(), nil)
+		if err != nil {
+			return nil, err
+		}
+
+		util.LogRequest(req)
+		return http.DefaultClient.Do(req)
+	}
+
+	data, err := c.makeJsonRequest(makeRequest, "get Steam achievements")
+	if err != nil {
+		return nil, err
+	}
+	util.InspectMap(data, "")
+
+	return data, err
+}
+
 func (c *Client) GetOwnedGames(steamId string) ([]*SteamOwnedGame, error) {
 	// https://developer.valvesoftware.com/wiki/Steam_Web_API#GetOwnedGames_(v0001)
 	u, err := url.Parse(baseApiUrl + "/IPlayerService/GetOwnedGames/v0001/")

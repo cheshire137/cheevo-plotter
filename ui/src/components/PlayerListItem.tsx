@@ -1,5 +1,4 @@
 import {useEffect} from 'react'
-import Achievement from '../models/Achievement'
 import useGetAchievements from '../hooks/use-get-achievements'
 import {Avatar, Button, Flash, Spinner} from '@primer/react'
 import type {SteamGame, SteamUser} from '../types'
@@ -22,11 +21,11 @@ const PlayerListItem = ({
   onUsernameChange,
 }: Props) => {
   const {
-    achievements,
+    data: achievements,
     unlockedAchievements,
     error: achievementsError,
-    fetching: loadingAchievements,
-  } = useGetAchievements(steamID, game.appId)
+    isPending: loadingAchievements,
+  } = useGetAchievements({steamId: steamID, appId: game.appId})
 
   useEffect(() => {
     if (!loadingAchievements && unlockedAchievements) {

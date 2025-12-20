@@ -1,42 +1,19 @@
-import { useState, useEffect } from "react"
-import SteamApi from '../models/SteamApi'
-import Achievement from '../models/Achievement'
+import {useQuery} from '@tanstack/react-query'
+import axios from 'axios'
 
-interface Results {
-  iconUri?: string;
-  achievements?: Achievement[];
-  unlockedAchievements?: Achievement[];
-  fetching: boolean;
-  error?: string;
-}
-
-function useGetAchievements(steamID: string, appID: number | string): Results {
-  const [results, setResults] = useState<Results>({ fetching: true })
-
-  useEffect(() => {
-    async function fetchAchievements() {
-      try {
-        const result = await SteamApi.getAchievements(steamID, appID)
-        setResults({
-          achievements: result.achievements,
-          unlockedAchievements: result.unlockedAchievements,
-          iconUri: result.iconUri,
-          fetching: false,
-        })
-      } catch (err: any) {
-        console.error(`failed to fetch Steam achievements for user ${steamID}, game ${appID}`, err)
-        setResults({ fetching: false, error: err.message })
-      }
-    }
-
-    if (steamID.length > 0 && appID > 0) {
-      fetchAchievements()
-    } else {
-      setResults({ fetching: false, achievements: [], unlockedAchievements: [] })
-    }
-  }, [steamID, appID])
-
-  return results
+function useGetAchievements({steamId, appId}: {steamId: string; appId: string}) {
+  const queryKey = ['steam-achievements', steamId, appId]
+  const result = useQuery<Record<string, unknown>, Error>({
+    queryKey,
+    queryFn: async () => {
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/steam-achievements?` +
+        `steamid=${encodeURIComponent(steamId.trim())}&appid=${encodeURIComponent(appId.trim())}`
+      const response = await axios.get<Record<string, unknown>>(url)
+      return response.data
+    },
+    enabled: steamId.trim().length > 0 && appId.trim().length > 0,
+  })
+  return {...result, queryKey}
 }
 
 export default useGetAchievements

@@ -27,12 +27,12 @@ const SteamGamePage = ({
   steamID: string
 }) => {
   const {
-    achievements,
+    data: achievements,
     unlockedAchievements: loadedPlayerUnlockedAchievements,
     error: achievementsError,
-    fetching: loadingAchievements,
+    isPending: loadingAchievements,
     iconUri: gameIconUri,
-  } = useGetAchievements(steamID, game.appId)
+  } = useGetAchievements({steamId: steamID, appId: game.appId})
 
   useEffect(() => {
     if (!loadingAchievements) {
