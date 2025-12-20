@@ -1,9 +1,8 @@
 import {useEffect, useState} from 'react'
 import FriendListItem from './FriendListItem'
-import Player from '../models/Player'
 import useGetFriends from '../hooks/use-get-friends'
 import {CheckboxGroup, Flash, Spinner} from '@primer/react'
-import type { SteamGame } from '../types'
+import type {SteamGame, SteamUser} from '../types'
 import './FriendsList.css'
 
 function FriendsList({
@@ -17,7 +16,7 @@ function FriendsList({
   steamID: string
   steamUsername: string
   selectedIDs: string[]
-  onPlayerSelectionChange(selectedPlayers: Player[]): void
+  onPlayerSelectionChange(selectedPlayers: SteamUser[]): void
   onFriendsLoaded(friendIds: string[]): void
   onFriendGamesLoaded(steamID: string, games: SteamGame[]): void
 }) {

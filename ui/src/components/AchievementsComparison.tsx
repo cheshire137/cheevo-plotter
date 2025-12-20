@@ -1,21 +1,16 @@
-import React, { useState } from 'react'
+import {useState} from 'react'
 import AchievementComparison from './AchievementComparison'
 import UnlockedBarChart from './UnlockedBarChart'
 import Filters from './Filters'
-import Player from '../models/Player'
 import Achievement from '../models/Achievement'
-
-interface Props {
-  players: Player[];
-  achievements: Achievement[];
-}
+import type {SteamUser} from '../types'
 
 enum AchievementFilter {
   AllUnlocked = 'allUnlocked',
-  NoneUnlocked = 'noneUnlocked'
+  NoneUnlocked = 'noneUnlocked',
 }
 
-const AchievementsComparison = ({ players, achievements }: Props) => {
+const AchievementsComparison = ({players, achievements}: {players: SteamUser[]; achievements: Achievement[]}) => {
   const [filters, setFilters] = useState<AchievementFilter[]>([])
 
   const onFilterChange = (activeFilters: AchievementFilter[]) => {
@@ -26,7 +21,8 @@ const AchievementsComparison = ({ players, achievements }: Props) => {
     if (filters.length < 1) {
       return true
     }
-    let allUnlocked = true, noneUnlocked = true
+    let allUnlocked = true,
+      noneUnlocked = true
     for (const player of players) {
       if (player.hasAchievement(achievement.key)) {
         noneUnlocked = false
@@ -49,18 +45,22 @@ const AchievementsComparison = ({ players, achievements }: Props) => {
   const haveAchievements = achievements.length > 0
   const filteredAchievements = achievements.filter(a => includeAchievement(a))
 
-  return <div>
-    {haveAchievements ? <UnlockedBarChart achievements={achievements} players={players} /> : <p>No achievements</p>}
-    {haveAchievements && <>
-      <hr />
-      <Filters onChange={onFilterChange} filteredCount={filteredAchievements.length} />
-    </>}
-    <ul>
-      {filteredAchievements.map(achievement => <AchievementComparison players={players}
-        achievement={achievement} key={achievement.key} />
+  return (
+    <div>
+      {haveAchievements ? <UnlockedBarChart achievements={achievements} players={players} /> : <p>No achievements</p>}
+      {haveAchievements && (
+        <>
+          <hr />
+          <Filters onChange={onFilterChange} filteredCount={filteredAchievements.length} />
+        </>
       )}
-    </ul>
-  </div>
+      <ul>
+        {filteredAchievements.map(achievement => (
+          <AchievementComparison players={players} achievement={achievement} key={achievement.key} />
+        ))}
+      </ul>
+    </div>
+  )
 }
 
-export default AchievementsComparison;
+export default AchievementsComparison

@@ -3,3 +3,10 @@ export interface SteamGame {
   name: string
   playtime: number
 }
+
+export interface SteamUser {
+  steamId: string
+  name: string
+  profileUrl: string
+  avatarUrl: string
+}

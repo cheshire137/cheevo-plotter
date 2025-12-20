@@ -1,13 +1,12 @@
 import {useEffect} from 'react'
 import Achievement from '../models/Achievement'
-import PlayerSummary from '../models/PlayerSummary'
 import useGetAchievements from '../hooks/use-get-achievements'
 import {Avatar, Button, Flash, Spinner} from '@primer/react'
-import type {SteamGame} from '../types'
+import type {SteamGame, SteamUser} from '../types'
 
 interface Props {
   steamID: string
-  playerSummary: PlayerSummary
+  playerSummary: SteamUser
   isCurrent: boolean
   game: SteamGame
   onUsernameChange(username: string, steamID?: string): void
@@ -40,7 +39,7 @@ const PlayerListItem = ({
       <div>
         <Spinner />
         <p>
-          Loading {playerSummary.personaname}'s achievements for {game.name}...
+          Loading {playerSummary.name}'s achievements for {game.name}...
         </p>
       </div>
     )
@@ -50,13 +49,13 @@ const PlayerListItem = ({
     if (achievementsError.match(/app has no stats/i)) {
       return (
         <p>
-          {playerSummary.personaname} hasn't played {game.name}.
+          {playerSummary.name} hasn't played {game.name}.
         </p>
       )
     }
     return (
       <Flash variant="danger">
-        Failed to load {playerSummary.personaname}'s achievements for {game.name}: {achievementsError}.
+        Failed to load {playerSummary.name}'s achievements for {game.name}: {achievementsError}.
       </Flash>
     )
   }
@@ -67,7 +66,7 @@ const PlayerListItem = ({
 
   const avatarAndPlayerName = (
     <>
-      <Avatar src={playerSummary.avatarmedium} alt={playerSummary.personaname} /> {playerSummary.personaname}
+      <Avatar src={playerSummary.avatarUrl} alt={playerSummary.name} /> {playerSummary.name}
     </>
   )
 
@@ -76,7 +75,7 @@ const PlayerListItem = ({
       {isCurrent ? (
         avatarAndPlayerName
       ) : (
-        <Button type="button" onClick={e => onUsernameChange(playerSummary.personaname, steamID)}>
+        <Button type="button" onClick={e => onUsernameChange(playerSummary.name, steamID)}>
           {avatarAndPlayerName}
         </Button>
       )}

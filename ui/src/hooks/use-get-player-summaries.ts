@@ -1,35 +1,21 @@
-import { useState, useEffect } from "react"
-import SteamApi from '../models/SteamApi'
-import PlayerSummary from '../models/PlayerSummary'
+import {useQuery} from '@tanstack/react-query'
+import axios from 'axios'
+import type {SteamUser} from '../types'
 
-interface Results {
-  playerSummaries?: PlayerSummary[];
-  fetching: boolean;
-  error?: string;
-}
-
-function useGetPlayerSummaries(steamIDs: string[]): Results {
-  const [results, setResults] = useState<Results>({ fetching: true })
-
-  useEffect(() => {
-    async function fetchPlayerSummaries() {
-      try {
-        const playerSummaries = await SteamApi.getPlayerSummaries(steamIDs)
-        setResults({ playerSummaries, fetching: false })
-      } catch (err: any) {
-        console.error('failed to fetch Steam player summaries', err)
-        setResults({ fetching: false, error: err.message })
-      }
-    }
-
-    if (steamIDs.length > 0) {
-      fetchPlayerSummaries()
-    } else {
-      setResults({ fetching: false, playerSummaries: [] })
-    }
-  }, [steamIDs])
-
-  return results
+function useGetPlayerSummaries(steamIds: string[]) {
+  const queryKey = ['steam-player-summaries', steamIds]
+  const result = useQuery<SteamUser[], Error>({
+    queryKey,
+    queryFn: async () => {
+      const steamIdsStr = encodeURIComponent(steamIds.join(','))
+      const response = await axios.get<{players: SteamUser[]}>(
+        `${import.meta.env.VITE_BACKEND_URL}/api/steam-player-summaries?steamids=${steamIdsStr}`
+      )
+      return response.data.players
+    },
+    enabled: steamIds.length > 0,
+  })
+  return {...result, queryKey}
 }
 
 export default useGetPlayerSummaries

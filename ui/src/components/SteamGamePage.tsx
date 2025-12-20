@@ -1,23 +1,11 @@
 import {useEffect} from 'react'
-import Player from '../models/Player'
 import AchievementsList from './AchievementsList'
 import AchievementsComparison from './AchievementsComparison'
 import PlayersList from './PlayersList'
 import SteamGamePageHeader from './SteamGamePageHeader'
 import useGetAchievements from '../hooks/use-get-achievements'
 import {Flash, PageLayout, Spinner} from '@primer/react'
-import type {SteamGame} from '../types'
-
-interface Props {
-  steamUsername: string
-  game: SteamGame
-  loadedPlayer: Player
-  selectedPlayers: Player[]
-  onUsernameChange(newUsername: string): void
-  onGameChange(newGame: SteamGame | null): void
-  setPlayerUnlockedAchievements(steamID: string, unlockedAchievementKeys: string[]): void
-  steamID: string
-}
+import type {SteamGame, SteamUser} from '../types'
 
 const SteamGamePage = ({
   steamID,
@@ -28,7 +16,16 @@ const SteamGamePage = ({
   onUsernameChange,
   onGameChange,
   setPlayerUnlockedAchievements,
-}: Props) => {
+}: {
+  steamUsername: string
+  game: SteamGame
+  loadedPlayer: SteamUser
+  selectedPlayers: SteamUser[]
+  onUsernameChange(newUsername: string): void
+  onGameChange(newGame: SteamGame | null): void
+  setPlayerUnlockedAchievements(steamID: string, unlockedAchievementKeys: string[]): void
+  steamID: string
+}) => {
   const {
     achievements,
     unlockedAchievements: loadedPlayerUnlockedAchievements,
@@ -48,14 +45,14 @@ const SteamGamePage = ({
   useEffect(() => {
     if (!loadingAchievements && loadedPlayerUnlockedAchievements) {
       setPlayerUnlockedAchievements(
-        loadedPlayer.steamid,
+        loadedPlayer.steamId,
         loadedPlayerUnlockedAchievements.map(a => a.key)
       )
     }
   }, [
     loadingAchievements,
-    loadedPlayer.steamid,
-    loadedPlayer.playerSummary,
+    loadedPlayer.steamId,
+    loadedPlayer,
     setPlayerUnlockedAchievements,
     loadedPlayerUnlockedAchievements,
   ])
@@ -85,7 +82,7 @@ const SteamGamePage = ({
     <PageLayout>
       <PageLayout.Header>
         <SteamGamePageHeader
-          playerSummary={loadedPlayer.playerSummary}
+          playerSummary={loadedPlayer}
           game={game}
           steamUsername={steamUsername}
           onGameChange={onGameChange}

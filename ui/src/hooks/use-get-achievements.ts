@@ -10,7 +10,7 @@ interface Results {
   error?: string;
 }
 
-function useGetAchievements(steamID: string, appID: number): Results {
+function useGetAchievements(steamID: string, appID: number | string): Results {
   const [results, setResults] = useState<Results>({ fetching: true })
 
   useEffect(() => {

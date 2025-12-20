@@ -1,14 +1,5 @@
 import PlayerListItem from './PlayerListItem'
-import Player from '../models/Player'
-import type {SteamGame} from '../types'
-
-interface Props {
-  players: Player[]
-  currentSteamID: string
-  game: SteamGame
-  onUsernameChange(username: string, steamID?: string): void
-  onPlayerUnlockedAchievementsLoaded(steamID: string, unlockedAchievementKeys: string[]): void
-}
+import type {SteamGame, SteamUser} from '../types'
 
 const PlayersList = ({
   players,
@@ -16,7 +7,13 @@ const PlayersList = ({
   onPlayerUnlockedAchievementsLoaded,
   currentSteamID,
   onUsernameChange,
-}: Props) => (
+}: {
+  players: SteamUser[]
+  currentSteamID: string
+  game: SteamGame
+  onUsernameChange(username: string, steamID?: string): void
+  onPlayerUnlockedAchievementsLoaded(steamID: string, unlockedAchievementKeys: string[]): void
+}) => (
   <div>
     <span>Comparing:</span>
     <ul>
@@ -24,16 +21,16 @@ const PlayersList = ({
         <PlayerListItem
           game={game}
           onUsernameChange={onUsernameChange}
-          key={player.steamid}
-          steamID={player.steamid}
-          playerSummary={player.playerSummary}
+          key={player.steamId}
+          steamID={player.steamId}
+          playerSummary={player}
           onUnlockedAchievementsLoaded={unlockedAchievements =>
             onPlayerUnlockedAchievementsLoaded(
-              player.steamid,
+              player.steamId,
               unlockedAchievements.map(a => a.key)
             )
           }
-          isCurrent={currentSteamID === player.steamid}
+          isCurrent={currentSteamID === player.steamId}
         />
       ))}
     </ul>

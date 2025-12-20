@@ -1,15 +1,16 @@
 import Achievement from '../models/Achievement'
-import Player from '../models/Player'
 import AchievementListItem from './AchievementListItem'
-import type {SteamGame} from '../types'
+import type {SteamGame, SteamUser} from '../types'
 
-interface Props {
+const AchievementsList = ({
+  game,
+  achievements,
+  loadedPlayer,
+}: {
   achievements: Achievement[]
   game: SteamGame
-  loadedPlayer: Player
-}
-
-const AchievementsList = ({game, achievements, loadedPlayer}: Props) => {
+  loadedPlayer: SteamUser
+}) => {
   const totalAchievements = achievements.length
 
   if (totalAchievements < 1) {
@@ -20,7 +21,7 @@ const AchievementsList = ({game, achievements, loadedPlayer}: Props) => {
   return (
     <div>
       <p>
-        {loadedPlayer.playerSummary.personaname} has unlocked {unlockedCount} of {totalAchievements}
+        {loadedPlayer.name} has unlocked {unlockedCount} of {totalAchievements}
         <span> {totalAchievements === 1 ? 'achievement' : 'achievements'} &mdash;</span>
         <strong> {Math.round((unlockedCount / totalAchievements) * 100)}%</strong>
       </p>

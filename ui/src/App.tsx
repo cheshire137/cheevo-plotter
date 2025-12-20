@@ -5,10 +5,8 @@ import SteamGamePage from './components/SteamGamePage'
 import SteamUserError from './components/SteamUserError'
 import useGetSteamID from './hooks/use-get-steam-id'
 import {areStringArraysEqual} from './models/Utils'
-import Player from './models/Player'
-import PlayerSummary from './models/PlayerSummary'
 import {BaseStyles, ThemeProvider, Spinner} from '@primer/react'
-import type {SteamGame} from './types'
+import type {SteamGame, SteamUser} from './types'
 import './App.css'
 
 function App() {
@@ -16,16 +14,16 @@ function App() {
   const [username, setUsername] = useState<string>('')
   const {data: steamIDFromUsername, error, isPending} = useGetSteamID(username)
   const [steamID, setSteamID] = useState<string | null>(null)
-  const [playerSummary, setPlayerSummary] = useState<PlayerSummary | null>(null)
-  const [players, setPlayers] = useState<Player[]>([])
-  const [loadedPlayer, setLoadedPlayer] = useState<Player | null>(null)
+  const [playerSummary, setPlayerSummary] = useState<SteamUser | null>(null)
+  const [players, setPlayers] = useState<SteamUser[]>([])
+  const [loadedPlayer, setLoadedPlayer] = useState<SteamUser | null>(null)
 
   useEffect(() => {
     if (!isPending && steamIDFromUsername) {
       setSteamID(steamIDFromUsername)
     }
     if (!isPending && steamIDFromUsername && playerSummary) {
-      setLoadedPlayer(new Player(steamIDFromUsername, playerSummary))
+      setLoadedPlayer(playerSummary)
     }
   }, [steamIDFromUsername, isPending, playerSummary])
 
@@ -45,20 +43,20 @@ function App() {
   const setPlayerUnlockedAchievements = (steamID: string, unlockedKeys: string[]) => {
     if (
       loadedPlayer &&
-      steamID === loadedPlayer.steamid &&
+      steamID === loadedPlayer.steamId &&
       !areStringArraysEqual(unlockedKeys, loadedPlayer.unlockedAchievementKeys)
     ) {
-      const newLoadedPlayer = new Player(steamID, loadedPlayer.playerSummary)
+      const newLoadedPlayer = loadedPlayer
       newLoadedPlayer.setUnlockedAchievementKeys(unlockedKeys)
       console.log('setLoadedPlayer', newLoadedPlayer)
       setLoadedPlayer(newLoadedPlayer)
     }
-    const index = players.map(p => p.steamid).indexOf(steamID)
+    const index = players.map(p => p.steamId).indexOf(steamID)
     if (index > -1) {
       const existingPlayer = players[index]
 
       if (!areStringArraysEqual(unlockedKeys, existingPlayer.unlockedAchievementKeys)) {
-        const newPlayer = new Player(steamID, existingPlayer.playerSummary)
+        const newPlayer = existingPlayer
         newPlayer.setUnlockedAchievementKeys(unlockedKeys)
         const newPlayers = [...players]
         newPlayers[index] = newPlayer

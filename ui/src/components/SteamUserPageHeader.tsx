@@ -1,6 +1,6 @@
-import PlayerSummary from '../models/PlayerSummary'
 import {Avatar, Heading, IconButton, Link, Text} from '@primer/react'
 import {ArrowLeftIcon} from '@primer/octicons-react'
+import type {SteamUser} from '../types'
 
 function SteamUserPageHeader({
   playerSummary,
@@ -8,11 +8,11 @@ function SteamUserPageHeader({
   onUsernameChange,
 }: {
   steamUsername: string
-  playerSummary: PlayerSummary | null
+  playerSummary: SteamUser | null
   onUsernameChange(newUsername: string): void
 }) {
   const profileUrl = playerSummary
-    ? playerSummary.profileurl
+    ? playerSummary.profileUrl
     : 'https://steamcommunity.com/id/' + encodeURIComponent(steamUsername) + '/'
 
   const clearSteamUsername = (event: React.MouseEvent) => {
@@ -37,8 +37,8 @@ function SteamUserPageHeader({
       </Text>
       {playerSummary ? (
         <Link sx={{display: 'flex', alignItems: 'center'}} href={profileUrl} rel="noreferrer" target="_blank">
-          <Avatar size={48} sx={{mx: 2}} src={playerSummary.avatarmedium} alt={playerSummary.steamid} />
-          <span>{playerSummary.personaname}</span>
+          <Avatar size={48} sx={{mx: 2}} src={playerSummary.avatarUrl} alt={playerSummary.steamId} />
+          <span>{playerSummary.name}</span>
         </Link>
       ) : (
         <Link sx={{ml: 2}} href={profileUrl} rel="noreferrer" target="_blank">

@@ -1,7 +1,6 @@
-import PlayerSummary from '../models/PlayerSummary'
 import {Avatar, IconButton, Link, Text} from '@primer/react'
 import {ArrowLeftIcon} from '@primer/octicons-react'
-import type {SteamGame} from '../types'
+import type {SteamGame, SteamUser} from '../types'
 
 function SteamGamePageHeader({
   game,
@@ -11,13 +10,13 @@ function SteamGamePageHeader({
   onGameChange,
 }: {
   steamUsername: string
-  playerSummary: PlayerSummary | null
+  playerSummary: SteamUser | null
   onGameChange(newGame: SteamGame | null): void
   game: SteamGame
   totalAchievements: number
 }) {
   const profileUrl = playerSummary
-    ? playerSummary.profileurl
+    ? playerSummary.profileUrl
     : 'https://steamcommunity.com/id/' + encodeURIComponent(steamUsername) + '/'
 
   const clearSteamGame = (event: React.MouseEvent) => {
@@ -41,8 +40,8 @@ function SteamGamePageHeader({
       </Text>
       {playerSummary ? (
         <Link sx={{display: 'flex', alignItems: 'center'}} href={profileUrl} rel="noreferrer" target="_blank">
-          <Avatar size={48} sx={{mx: 2}} src={playerSummary.avatarmedium} alt={playerSummary.steamid} />
-          <span>{playerSummary.personaname}</span>
+          <Avatar size={48} sx={{mx: 2}} src={playerSummary.avatarUrl} alt={playerSummary.steamId} />
+          <span>{playerSummary.name}</span>
         </Link>
       ) : (
         <Link sx={{ml: 2}} href={profileUrl} rel="noreferrer" target="_blank">
