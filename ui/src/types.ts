@@ -10,3 +10,9 @@ export interface SteamUser {
   profileUrl: string
   avatarUrl: string
 }
+
+export interface SteamAchievement {
+  name: string
+  unlocked: boolean
+  unlockTime: string
+}

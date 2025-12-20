@@ -1,19 +1,23 @@
 import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
+import type {SteamAchievement} from '../types'
 
-function useGetAchievements({steamId, appId}: {steamId: string; appId: string}) {
+export function useGetAchievements({steamId, appId}: {steamId?: string | null; appId?: string | null}) {
   const queryKey = ['steam-achievements', steamId, appId]
-  const result = useQuery<Record<string, unknown>, Error>({
+  console.log('useGetAchievements', queryKey)
+  const hasSteamId = typeof steamId === 'string' && steamId.trim().length > 0
+  const hasAppId = typeof appId === 'string' && appId.trim().length > 0
+  const result = useQuery<SteamAchievement[], Error>({
     queryKey,
     queryFn: async () => {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/api/steam-achievements?` +
-        `steamid=${encodeURIComponent(steamId.trim())}&appid=${encodeURIComponent(appId.trim())}`
-      const response = await axios.get<Record<string, unknown>>(url)
-      return response.data
+      let params = '?'
+      if (hasSteamId) params += `steamid=${encodeURIComponent(steamId.trim())}`
+      if (hasAppId) params += `&appid=${encodeURIComponent(appId.trim())}`
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/steam-achievements${params}`
+      const response = await axios.get<{achievements: SteamAchievement[]}>(url)
+      return response.data.achievements
     },
-    enabled: steamId.trim().length > 0 && appId.trim().length > 0,
+    enabled: hasSteamId && hasAppId,
   })
   return {...result, queryKey}
 }
-
-export default useGetAchievements
