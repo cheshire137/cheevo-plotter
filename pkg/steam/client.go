@@ -16,6 +16,7 @@ import (
 const baseApiUrl = "https://api.steampowered.com"
 
 var ErrUnauthorized = errors.New("unauthorized")
+var ErrForbidden = errors.New("forbidden")
 
 type Client struct {
 	apiKey string
@@ -409,6 +410,9 @@ func handleHttpError(action string, resp *http.Response) error {
 	code := resp.StatusCode
 	if code == 401 {
 		return ErrUnauthorized
+	}
+	if code == 403 {
+		return ErrForbidden
 	}
 
 	bodyBytes, err := io.ReadAll(resp.Body)

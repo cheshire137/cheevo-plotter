@@ -21,6 +21,8 @@ func ErrorJson(w http.ResponseWriter, err error) {
 		statusCode = http.StatusNotFound
 	} else if errors.Is(err, steam.ErrUnauthorized) {
 		statusCode = http.StatusUnauthorized
+	} else if errors.Is(err, steam.ErrForbidden) {
+		statusCode = http.StatusForbidden
 	} else {
 		statusCode = http.StatusInternalServerError
 	}
