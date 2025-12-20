@@ -1,6 +1,8 @@
 import type {PropsWithChildren} from 'react'
 import {BaseStyles, Button, Link, PageLayout, ThemeProvider, Tooltip, Spinner} from '@primer/react'
 import {useGetCurrentUser} from './hooks/use-get-current-user'
+import '@primer/primitives/dist/css/functional/themes/light.css'
+import '@primer/primitives/dist/css/primitives.css'
 import './App.css'
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
           )}
         </PageLayout.Header>
         <PageLayout.Content>
+          {currentUser?.name}
           {isPending && <Spinner />}
         </PageLayout.Content>
       </PageLayout>
@@ -32,7 +35,7 @@ function App() {
 
 function ProviderStack({children}: PropsWithChildren) {
   return (
-    <ThemeProvider colorMode="dark">
+    <ThemeProvider>
       <BaseStyles>{children}</BaseStyles>
     </ThemeProvider>
   )
