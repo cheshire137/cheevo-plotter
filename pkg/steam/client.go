@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/cheshire137/cheevo-plotter/pkg/data_store"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
@@ -27,11 +28,17 @@ type SteamOwnedGame struct {
 	Playtime int32  `json:"playtime"`
 }
 
+type SteamAchievement struct {
+	Unlocked   bool   `json:"unlocked"`
+	UnlockTime string `json:"unlockTime"`
+	Name       string `json:"name"`
+}
+
 func NewClient(apiKey string) *Client {
 	return &Client{apiKey: apiKey}
 }
 
-func (c *Client) GetAchievements(steamId string, appId string) (map[string]interface{}, error) {
+func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamAchievement, error) {
 	// https://partner.steamgames.com/doc/webapi/ISteamUserStats#GetPlayerAchievements
 	u, err := url.Parse(baseApiUrl + "/ISteamUserStats/GetPlayerAchievements/v1/")
 	if err != nil {
@@ -58,9 +65,31 @@ func (c *Client) GetAchievements(steamId string, appId string) (map[string]inter
 	if err != nil {
 		return nil, err
 	}
-	util.InspectMap(data, "")
 
-	return data, err
+	achievements := []*SteamAchievement{}
+
+	if playerStats, ok := data["playerstats"].(map[string]interface{}); ok {
+		if achievementsData, ok := playerStats["achievements"].([]interface{}); ok {
+			for _, achievementData := range achievementsData {
+				if achievementMap, ok := achievementData.(map[string]interface{}); ok {
+					achievement := &SteamAchievement{}
+					if name, ok := achievementMap["apiname"].(string); ok {
+						achievement.Name = name
+					}
+					if achieved, ok := achievementMap["achieved"].(float64); ok {
+						achievement.Unlocked = achieved == float64(1)
+					}
+					if unlockTimestamp, ok := achievementMap["unlocktime"].(float64); ok && achievement.Unlocked {
+						unlockTime := time.Unix(int64(unlockTimestamp), 0)
+						achievement.UnlockTime = unlockTime.Format(time.RFC3339)
+					}
+					achievements = append(achievements, achievement)
+				}
+			}
+		}
+	}
+
+	return achievements, nil
 }
 
 func (c *Client) GetOwnedGames(steamId string) ([]*SteamOwnedGame, error) {

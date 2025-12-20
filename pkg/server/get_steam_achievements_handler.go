@@ -8,6 +8,10 @@ import (
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
+type SteamAchievementsResponse struct {
+	Achievements []*steam.SteamAchievement `json:"achievements"`
+}
+
 func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request) {
 	util.LogRequest(r)
 	e.enableCors(&w)
@@ -32,6 +36,7 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	response := SteamAchievementsResponse{Achievements: achievements}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(achievements)
+	json.NewEncoder(w).Encode(response)
 }
