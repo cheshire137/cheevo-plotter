@@ -19,13 +19,6 @@ type Client struct {
 	apiKey string
 }
 
-type SteamPlayerSummary struct {
-	AvatarUrl  string `json:"avatarUrl"`
-	ProfileUrl string `json:"profileUrl"`
-	SteamId    string `json:"steamId"`
-	Name       string `json:"name"`
-}
-
 type SteamOwnedGame struct {
 	AppId    string `json:"appId"`
 	Playtime int32  `json:"playtime"`
@@ -170,7 +163,18 @@ func (c *Client) GetSteamId(username string) (string, error) {
 	return "", errors.New("could not find steam ID in response")
 }
 
-func (c *Client) GetPlayerSummaries(steamIds []string) ([]*SteamPlayerSummary, error) {
+func (c *Client) GetPlayerSummary(steamId string) (*data_store.SteamUser, error) {
+	players, err := c.GetPlayerSummaries([]string{steamId})
+	if err != nil {
+		return nil, err
+	}
+	if len(players) != 1 {
+		return nil, errors.New("could not find Steam user " + steamId)
+	}
+	return players[0], nil
+}
+
+func (c *Client) GetPlayerSummaries(steamIds []string) ([]*data_store.SteamUser, error) {
 	if len(steamIds) < 1 {
 		return nil, errors.New("at least one Steam player ID must be given")
 	}
@@ -206,32 +210,32 @@ func (c *Client) GetPlayerSummaries(steamIds []string) ([]*SteamPlayerSummary, e
 		return nil, err
 	}
 
-	result := []*SteamPlayerSummary{}
+	result := []*data_store.SteamUser{}
 
 	if response, ok := data["response"].(map[string]interface{}); ok {
 		if players, ok := response["players"].([]interface{}); ok {
 			for _, playerData := range players {
 				if player, ok := playerData.(map[string]interface{}); ok {
-					summary := &SteamPlayerSummary{}
+					user := &data_store.SteamUser{}
 					if avatarUrl, ok := player["avatarmedium"].(string); ok {
-						summary.AvatarUrl = avatarUrl
+						user.AvatarUrl = avatarUrl
 					} else if avatarUrl, ok := player["avatarfull"].(string); ok {
-						summary.AvatarUrl = avatarUrl
+						user.AvatarUrl = avatarUrl
 					} else if avatarUrl, ok := player["avatar"].(string); ok {
-						summary.AvatarUrl = avatarUrl
+						user.AvatarUrl = avatarUrl
 					}
 					if profileUrl, ok := player["profileurl"].(string); ok {
-						summary.ProfileUrl = profileUrl
+						user.ProfileUrl = profileUrl
 					}
 					if steamId, ok := player["steamid"].(string); ok {
-						summary.SteamId = steamId
+						user.Id = steamId
 					}
 					if name, ok := player["personaname"].(string); ok {
-						summary.Name = name
+						user.Name = name
 					} else if name, ok := player["realname"].(string); ok {
-						summary.Name = name
+						user.Name = name
 					}
-					result = append(result, summary)
+					result = append(result, user)
 				}
 			}
 		}

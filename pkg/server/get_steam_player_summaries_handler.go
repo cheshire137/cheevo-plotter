@@ -5,12 +5,13 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/cheshire137/cheevo-plotter/pkg/data_store"
 	"github.com/cheshire137/cheevo-plotter/pkg/steam"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
 type SteamPlayerSummariesResponse struct {
-	Players []*steam.SteamPlayerSummary `json:"players"`
+	Players []*data_store.SteamUser `json:"players"`
 }
 
 func (e *Env) GetSteamPlayerSummariesHandler(w http.ResponseWriter, r *http.Request) {

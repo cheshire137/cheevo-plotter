@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/cheshire137/cheevo-plotter/pkg/data_store"
+	"github.com/cheshire137/cheevo-plotter/pkg/steam"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 	"github.com/yohcop/openid-go"
 )
@@ -37,15 +38,28 @@ func (e *Env) SteamAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	steamId := pathParts[1]
+	client := steam.NewClient(e.config.SteamApiKey)
+	playerSummary, err := client.GetPlayerSummary(steamId)
+	if err != nil {
+		util.LogError("Failed to look up Steam player details: " + err.Error())
+		http.Error(w, "Failed to look up Steam player details", http.StatusInternalServerError)
+		return
+	}
+
 	user, err := e.ds.GetSteamUser(steamId)
 	if user == nil {
 		user = &data_store.SteamUser{Id: steamId}
-		err = e.ds.AddSteamUser(user)
-		if err != nil {
-			util.LogError("Failed to create new user: " + err.Error())
-			http.Error(w, "Failed to create new user", http.StatusInternalServerError)
-			return
-		}
+	}
+
+	user.Name = playerSummary.Name
+	user.ProfileUrl = playerSummary.ProfileUrl
+	user.AvatarUrl = playerSummary.AvatarUrl
+
+	err = e.ds.UpsertSteamUser(user)
+	if err != nil {
+		util.LogError("Failed to update user: " + err.Error())
+		http.Error(w, "Failed to update user", http.StatusInternalServerError)
+		return
 	}
 
 	setSteamIdCookie(steamId, w)
