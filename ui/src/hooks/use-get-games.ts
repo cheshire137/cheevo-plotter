@@ -2,15 +2,17 @@ import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
 import type {SteamGame} from '../types'
 
-function useGetGames({steamId, username}: {steamId?: string | null; username?: string}) {
+function useGetGames({steamId, username}: {steamId?: string | null; username?: string | null}) {
   const queryKey = ['steam-games', steamId, username]
+  const hasSteamId = typeof steamId === 'string' && steamId.trim().length > 0
+  const hasUsername = typeof username === 'string' && username.trim().length > 0
   const result = useQuery<SteamGame[], Error>({
     queryKey,
     queryFn: async () => {
       let params = '?'
-      if (steamId && steamId.trim().length > 0) {
+      if (hasSteamId) {
         params += `steamid=${encodeURIComponent(steamId.trim())}`
-      } else if (username && username.trim().length > 0) {
+      } else if (hasUsername) {
         params += `username=${encodeURIComponent(username.trim())}`
       }
       const response = await axios.get<{
@@ -24,7 +26,7 @@ function useGetGames({steamId, username}: {steamId?: string | null; username?: s
         playtime: game.playtime,
       }))
     },
-    enabled: (steamId && steamId.trim().length > 0) || (username && username.trim().length > 0) || false,
+    enabled: hasSteamId || hasUsername,
   })
   return {...result, queryKey}
 }
