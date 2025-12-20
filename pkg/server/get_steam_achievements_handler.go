@@ -9,7 +9,8 @@ import (
 )
 
 type SteamAchievementsResponse struct {
-	Achievements []*steam.SteamAchievement `json:"achievements"`
+	GameSchema         *steam.SteamGameSchema          `json:"gameSchema"`
+	PlayerAchievements []*steam.SteamPlayerAchievement `json:"playerAchievements"`
 }
 
 func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +37,13 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	response := SteamAchievementsResponse{Achievements: achievements}
+	gameSchema, err := client.GetGameSchema(appId)
+	if err != nil {
+		ErrorJson(w, err)
+		return
+	}
+
+	response := SteamAchievementsResponse{PlayerAchievements: achievements, GameSchema: gameSchema}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }

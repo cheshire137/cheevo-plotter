@@ -29,17 +29,113 @@ type SteamOwnedGame struct {
 	Playtime int32  `json:"playtime"`
 }
 
-type SteamAchievement struct {
+type SteamPlayerAchievement struct {
 	Unlocked   bool   `json:"unlocked"`
 	UnlockTime string `json:"unlockTime"`
-	Name       string `json:"name"`
+	Id         string `json:"id"`
+}
+
+type SteamGameSchema struct {
+	Name         string                  `json:"name"`
+	Achievements []*SteamGameAchievement `json:"achievements"`
+	Version      string                  `json:"version"`
+}
+
+type SteamGameAchievement struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	IconUrl     string `json:"iconUrl"`
+	GrayIconUrl string `json:"grayIconUrl"`
+	Description string `json:"description"`
+	Hidden      bool   `json:"hidden"`
 }
 
 func NewClient(apiKey string) *Client {
 	return &Client{apiKey: apiKey}
 }
 
-func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamAchievement, error) {
+func (c *Client) GetGameSchema(appId string) (*SteamGameSchema, error) {
+	// https://partner.steamgames.com/doc/webapi/ISteamUserStats#GetSchemaForGame
+	u, err := url.Parse(baseApiUrl + "/ISteamUserStats/GetSchemaForGame/v2/")
+	if err != nil {
+		return nil, err
+	}
+
+	params := u.Query()
+	params.Add("key", c.apiKey)
+	params.Add("appid", appId)
+	u.RawQuery = params.Encode()
+
+	makeRequest := func() (*http.Response, error) {
+		req, err := http.NewRequest("GET", u.String(), nil)
+		if err != nil {
+			return nil, err
+		}
+
+		util.LogRequest(req)
+		return http.DefaultClient.Do(req)
+	}
+
+	data, err := c.makeJsonRequest(makeRequest, "get Steam game schema")
+	if err != nil {
+		return nil, err
+	}
+
+	achievements := []*SteamGameAchievement{}
+	schema := &SteamGameSchema{}
+
+	if gameMap, ok := data["game"].(map[string]interface{}); ok {
+		if gameName, ok := gameMap["gameName"].(string); ok {
+			schema.Name = gameName
+		}
+
+		if gameVersion, ok := gameMap["gameVersion"].(string); ok {
+			schema.Version = gameVersion
+		}
+
+		if availableGameStats, ok := gameMap["availableGameStats"].(map[string]interface{}); ok {
+			if achievementsData, ok := availableGameStats["achievements"].([]interface{}); ok {
+				for _, achievementData := range achievementsData {
+					if achievementMap, ok := achievementData.(map[string]interface{}); ok {
+						achievement := &SteamGameAchievement{}
+
+						if description, ok := achievementMap["description"].(string); ok {
+							achievement.Description = description
+						}
+
+						if icon, ok := achievementMap["icon"].(string); ok {
+							achievement.IconUrl = icon
+						}
+
+						if icongray, ok := achievementMap["icongray"].(string); ok {
+							achievement.GrayIconUrl = icongray
+						}
+
+						if id, ok := achievementMap["name"].(string); ok {
+							achievement.Id = id
+						}
+
+						if name, ok := achievementMap["displayName"].(string); ok {
+							achievement.Name = name
+						}
+
+						if hidden, ok := achievementMap["hidden"].(float64); ok {
+							achievement.Hidden = hidden == float64(1)
+						}
+
+						achievements = append(achievements, achievement)
+					}
+				}
+			}
+		}
+	}
+
+	schema.Achievements = achievements
+
+	return schema, nil
+}
+
+func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamPlayerAchievement, error) {
 	// https://partner.steamgames.com/doc/webapi/ISteamUserStats#GetPlayerAchievements
 	u, err := url.Parse(baseApiUrl + "/ISteamUserStats/GetPlayerAchievements/v1/")
 	if err != nil {
@@ -67,15 +163,15 @@ func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamAchievem
 		return nil, err
 	}
 
-	achievements := []*SteamAchievement{}
+	achievements := []*SteamPlayerAchievement{}
 
 	if playerStats, ok := data["playerstats"].(map[string]interface{}); ok {
 		if achievementsData, ok := playerStats["achievements"].([]interface{}); ok {
 			for _, achievementData := range achievementsData {
 				if achievementMap, ok := achievementData.(map[string]interface{}); ok {
-					achievement := &SteamAchievement{}
-					if name, ok := achievementMap["apiname"].(string); ok {
-						achievement.Name = name
+					achievement := &SteamPlayerAchievement{}
+					if id, ok := achievementMap["apiname"].(string); ok {
+						achievement.Id = id
 					}
 					if achieved, ok := achievementMap["achieved"].(float64); ok {
 						achievement.Unlocked = achieved == float64(1)
@@ -95,7 +191,7 @@ func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamAchievem
 		a2 := achievements[j]
 		if a1.Unlocked && a2.Unlocked {
 			if a1.UnlockTime == a2.UnlockTime {
-				if a1.Name < a2.Name {
+				if a1.Id < a2.Id {
 					return true
 				}
 				return false
@@ -111,7 +207,7 @@ func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamAchievem
 		if a2.Unlocked && !a1.Unlocked {
 			return false
 		}
-		if a1.Name < a2.Name {
+		if a1.Id < a2.Id {
 			return true
 		}
 		return false

@@ -24,7 +24,7 @@ function App() {
   const {data: currentUser, isPending: isCurrentUserPending} = useGetCurrentUser()
   const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames({steamId: currentUser?.steamId})
   const [selectedGame, setSelectedGame] = useState<SteamGame | null>(null)
-  const {data: achievements, isPending: isAchievementsPending} = useGetAchievements({
+  const {data: achievementsResp, isPending: isAchievementsPending} = useGetAchievements({
     steamId: currentUser?.steamId,
     appId: selectedGame?.appId,
   })
@@ -76,11 +76,11 @@ function App() {
                   <Spinner />
                 ) : (
                   <ul>
-                    {achievements?.map(achievement => {
+                    {achievementsResp?.playerAchievements?.map(achievement => {
                       const unlockTime = achievement.unlockTime.length > 0 ? new Date(achievement.unlockTime) : undefined
                       return (
-                        <li key={achievement.name}>
-                          {achievement.name}
+                        <li key={achievement.id}>
+                          {achievement.id}
                           {achievement.unlocked ? <UnlockIcon /> : <LockIcon />}
                           {unlockTime && <span>{unlockTime.toLocaleDateString()}</span>}
                         </li>

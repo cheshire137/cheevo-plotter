@@ -11,8 +11,23 @@ export interface SteamUser {
   avatarUrl: string
 }
 
-export interface SteamAchievement {
-  name: string
+export interface SteamPlayerAchievement {
+  id: string
   unlocked: boolean
   unlockTime: string
+}
+
+export interface SteamGameSchema {
+  name: string
+  achievements: SteamGameAchievement[]
+  version: string
+}
+
+export interface SteamGameAchievement {
+  id: string
+  name: string
+  iconUrl: string
+  grayIconUrl: string
+  description: string
+  hidden: boolean
 }
