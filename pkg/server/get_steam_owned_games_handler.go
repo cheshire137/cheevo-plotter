@@ -20,7 +20,8 @@ func (e *Env) GetSteamOwnedGamesHandler(w http.ResponseWriter, r *http.Request) 
 	steamId := r.URL.Query().Get("steamid")
 	username := r.URL.Query().Get("username")
 	if len(steamId) < 1 && len(username) < 1 {
-		ErrorMessageJson(w, "Either steamid or username parameter is required", 400)
+		ErrorMessageJson(w, "Either steamid or username parameter is required, got username='"+username+
+			"', steamid='"+steamId+"'", 400)
 		return
 	}
 
