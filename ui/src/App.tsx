@@ -1,4 +1,4 @@
-import {type PropsWithChildren, useState} from 'react'
+import {type PropsWithChildren, useCallback, useState} from 'react'
 import {
   ActionList,
   BaseStyles,
@@ -11,23 +11,25 @@ import {
   Spinner,
   Stack,
 } from '@primer/react'
+import {useSearchParams} from 'react-router-dom'
 import {LockIcon, UnlockIcon} from '@primer/octicons-react'
 import {useGetCurrentUser} from './queries/use-get-current-user'
 import {useGetGames} from './queries/use-get-games'
 import {useGetAchievements} from './queries/use-get-achievements'
-import type {SteamGame} from './types'
 import '@primer/primitives/dist/css/functional/themes/light.css'
 import '@primer/primitives/dist/css/primitives.css'
 import './App.css'
 
 function App() {
   const {data: currentUser, isPending: isCurrentUserPending} = useGetCurrentUser()
-  const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames({steamId: currentUser?.steamId})
-  const [selectedGame, setSelectedGame] = useState<SteamGame | null>(null)
-  const {data: achievementsResp, isPending: isAchievementsPending} = useGetAchievements({
-    steamId: currentUser?.steamId,
-    appId: selectedGame?.appId,
-  })
+  const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(searchParams.get("appid"))
+  const {data: achievementsResp, isPending: isAchievementsPending} = useGetAchievements({appId: selectedGameId})
+  const selectGame = useCallback((appId: string) => {
+    setSelectedGameId(appId)
+    setSearchParams({appid: appId})
+  }, [setSearchParams])
 
   return (
     <ProviderStack>
@@ -54,12 +56,12 @@ function App() {
                 {currentUser && <Heading as="h2">{currentUser.name}&rsquo;s owned games</Heading>}
                 <ActionList selectionVariant="single" role="menu" aria-label="Owned game">
                   {ownedGames.map(game => {
-                    const isSelected = game.appId === selectedGame?.appId
+                    const isSelected = game.appId === selectedGameId
                     return (
                       <ActionList.Item
                         selected={isSelected}
                         aria-checked={isSelected}
-                        onSelect={() => setSelectedGame(game)}
+                        onSelect={() => selectGame(game.appId)}
                         key={game.appId}
                         role="menuitemradio"
                       >
@@ -70,14 +72,15 @@ function App() {
                 </ActionList>
               </Stack.Item>
             )}
-            {selectedGame && (
+            {selectedGameId && (
               <Stack.Item>
                 {isAchievementsPending ? (
                   <Spinner />
                 ) : (
                   <ul>
                     {achievementsResp?.playerAchievements?.map(achievement => {
-                      const unlockTime = achievement.unlockTime.length > 0 ? new Date(achievement.unlockTime) : undefined
+                      const unlockTime =
+                        achievement.unlockTime.length > 0 ? new Date(achievement.unlockTime) : undefined
                       return (
                         <li key={achievement.id}>
                           {achievement.id}
