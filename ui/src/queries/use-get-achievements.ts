@@ -16,10 +16,13 @@ export function useGetAchievements({appId}: {appId?: string | null}) {
       let params = '?'
       if (hasAppId) params += `&appid=${encodeURIComponent(appId.trim())}`
       const url = `${import.meta.env.VITE_BACKEND_URL}/api/steam-achievements${params}`
-      const response = await axios.get<GameAchievementsResponse>(url)
+      const response = await axios.get<GameAchievementsResponse>(url, {
+        withCredentials: true, // Send cookies with request
+      })
       return response.data
     },
     enabled: hasAppId,
+    retry: false, // Don't retry if not authenticated
   })
   return {...result, queryKey}
 }

@@ -16,6 +16,8 @@ export interface SteamPlayerAchievement {
   id: string
   unlocked: boolean
   unlockTime: string
+  appId: string
+  steamId: string
 }
 
 export interface SteamGameSchema {
