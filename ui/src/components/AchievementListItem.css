@@ -2,14 +2,19 @@
   margin-bottom: var(--base-size-8);
 }
 
-.achievement-icon {
-  margin-right: var(--base-size-8);
-}
-
 .show-hidden-achievement {
   font-style: italic;
 }
 
 .hidden-achievement-details {
   display: inline-block;
+}
+
+.locked-icon, .unlocked-icon {
+  margin-right: var(--base-size-6);
+}
+
+.achievement-unlock-info {
+  color: var(--fgColor-muted);
+  font-size: var(--text-body-size-small);
 }
