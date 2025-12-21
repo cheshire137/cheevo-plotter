@@ -1,4 +1,4 @@
-import {type PropsWithChildren, useCallback, useState} from 'react'
+import {type PropsWithChildren, useCallback, useMemo, useState} from 'react'
 import {
   ActionList,
   BaseStyles,
@@ -14,18 +14,20 @@ import {
 import {useSearchParams} from 'react-router-dom'
 import {useGetCurrentUser} from './queries/use-get-current-user'
 import {useGetGames} from './queries/use-get-games'
-import {useGetAchievements} from './queries/use-get-achievements'
 import '@primer/primitives/dist/css/functional/themes/light.css'
 import '@primer/primitives/dist/css/primitives.css'
 import './App.css'
-import {AchievementListItem} from './components/AchievementListItem'
+import {AchievementsList} from './components/AchievementsList'
 
 function App() {
   const {data: currentUser, isPending: isCurrentUserPending} = useGetCurrentUser()
   const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames()
   const [searchParams, setSearchParams] = useSearchParams()
   const [selectedGameId, setSelectedGameId] = useState<string | null>(searchParams.get('appid'))
-  const {data: achievements, isPending: isAchievementsPending} = useGetAchievements({appId: selectedGameId})
+  const selectedGame = useMemo(
+    () => (ownedGames && selectedGameId ? ownedGames?.find(g => g.appId === selectedGameId) : undefined),
+    [ownedGames, selectedGameId]
+  )
   const selectGame = useCallback(
     (appId: string) => {
       setSelectedGameId(appId)
@@ -75,19 +77,7 @@ function App() {
                 </ActionList>
               </Stack.Item>
             )}
-            {selectedGameId && (
-              <Stack.Item>
-                {isAchievementsPending ? (
-                  <Spinner />
-                ) : (
-                  <ul>
-                    {achievements?.map(achievement => (
-                      <AchievementListItem achievement={achievement} key={achievement.id} />
-                    ))}
-                  </ul>
-                )}
-              </Stack.Item>
-            )}
+            {selectedGameId && <Stack.Item>{selectedGame && <AchievementsList game={selectedGame} />}</Stack.Item>}
           </Stack>
         </PageLayout.Content>
       </PageLayout>
