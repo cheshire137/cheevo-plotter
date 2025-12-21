@@ -30,5 +30,9 @@ func (ds *DataStore) CreateTables() error {
 	if err != nil {
 		return fmt.Errorf("failed to create Steam owned games table: %w", err)
 	}
-	return ds.createSteamPlayerAchievementsTable()
+	err = ds.createSteamPlayerAchievementsTable()
+	if err != nil {
+		return fmt.Errorf("failed to create Steam player achievements table: %w", err)
+	}
+	return ds.createSteamGameAchievementsTable()
 }

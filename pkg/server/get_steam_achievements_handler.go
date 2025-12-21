@@ -44,28 +44,16 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = e.syncSteamPlayerAchievementsIfNecessary(steamId, appId)
+	playerAchievements, err := e.getCachedSteamPlayerAchievements(steamId, appId)
 	if err != nil {
 		ErrorJson(w, err)
 		return
 	}
 
-	playerAchievements, err := e.ds.GetSteamPlayerAchievements(steamId, appId)
+	gameAchievementsById, err := e.getCachedSteamGameAchievementsById(appId)
 	if err != nil {
 		ErrorJson(w, err)
 		return
-	}
-
-	client := steam.NewClient(e.config.SteamApiKey)
-	gameSchema, err := client.GetGameSchema(appId)
-	if err != nil {
-		ErrorJson(w, err)
-		return
-	}
-
-	gameAchievementsById := map[string]*steam.SteamGameAchievement{}
-	for _, gameAchievement := range gameSchema.Achievements {
-		gameAchievementsById[gameAchievement.Id] = gameAchievement
 	}
 
 	achievements := []*SteamAchievement{}
@@ -79,6 +67,33 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 	response := SteamAchievementsResponse{Achievements: achievements}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func (e *Env) getCachedSteamPlayerAchievements(steamId, appId string) ([]*data_store.SteamPlayerAchievement, error) {
+	err := e.syncSteamPlayerAchievementsIfNecessary(steamId, appId)
+	if err != nil {
+		return nil, err
+	}
+
+	return e.ds.GetSteamPlayerAchievements(steamId, appId)
+}
+
+func (e *Env) getCachedSteamGameAchievementsById(appId string) (map[string]*data_store.SteamGameAchievement, error) {
+	err := e.syncSteamGameAchievementsIfNecessary(appId)
+	if err != nil {
+		return nil, err
+	}
+
+	gameAchievements, err := e.ds.GetSteamGameAchievements(appId)
+	if err != nil {
+		return nil, err
+	}
+
+	result := map[string]*data_store.SteamGameAchievement{}
+	for _, gameAchievement := range gameAchievements {
+		result[gameAchievement.Id] = gameAchievement
+	}
+	return result, nil
 }
 
 func (e *Env) syncSteamPlayerAchievementsIfNecessary(steamId string, appId string) error {
@@ -122,7 +137,46 @@ func (e *Env) syncSteamPlayerAchievementsIfNecessary(steamId string, appId strin
 	return nil
 }
 
-func newSteamAchievement(playerAchievement *data_store.SteamPlayerAchievement, gameAchievement *steam.SteamGameAchievement) *SteamAchievement {
+func (e *Env) syncSteamGameAchievementsIfNecessary(appId string) error {
+	lastSynced, err := e.ds.GetSteamGameAchievementsSyncTime(appId)
+	if err != nil {
+		return fmt.Errorf("failed to get Steam owned games sync time for game %s: %w", appId, err)
+	}
+
+	if lastSynced == nil || time.Since(*lastSynced) > 7*24*time.Hour {
+		util.LogInfo("fetching Steam game achievements for game " + appId)
+		client := steam.NewClient(e.config.SteamApiKey)
+
+		gameSchema, err := client.GetGameSchema(appId)
+		if err != nil {
+			return fmt.Errorf("failed to load all Steam game achievements for game %s: %w", appId, err)
+		}
+
+		allItemsSaved := len(gameSchema.Achievements) > 0
+		for _, achievementData := range gameSchema.Achievements {
+			achievement := data_store.NewSteamGameAchievement(appId, achievementData)
+			err := e.ds.UpsertSteamGameAchievement(achievement)
+			if err != nil {
+				allItemsSaved = false
+				util.LogError("Failed to save Steam game achievement " + achievement.Id + ": " + err.Error())
+			}
+		}
+
+		if allItemsSaved {
+			err = e.ds.SetSteamGameAchievementsSyncTime(appId, time.Now())
+			if err != nil {
+				return fmt.Errorf("failed to set Steam game achievements sync time for game %s: %w", appId, err)
+			}
+		}
+	} else {
+		util.LogInfo("Loading Steam game achievements from database for game " + appId + " , last synced " +
+			lastSynced.String())
+	}
+
+	return nil
+}
+
+func newSteamAchievement(playerAchievement *data_store.SteamPlayerAchievement, gameAchievement *data_store.SteamGameAchievement) *SteamAchievement {
 	return &SteamAchievement{
 		Unlocked:    playerAchievement.Unlocked,
 		UnlockTime:  playerAchievement.UnlockTimeStr,

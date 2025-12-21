@@ -12,6 +12,7 @@ import (
 const steamAppsId = "steam-apps"
 const steamOwnedGamesIdPrefix = "steam-owned-games"
 const steamPlayerAchievementsIdPrefix = "steam-player-achievements"
+const steamGameAchievementsIdPrefix = "steam-game-achievements"
 
 func (ds *DataStore) GetSteamAppsSyncTime() (*time.Time, error) {
 	return ds.getSyncTime(steamAppsId)
@@ -41,12 +42,26 @@ func (ds *DataStore) SetSteamPlayerAchievementsSyncTime(userId, appId string, t 
 	return ds.setSyncTime(id, t)
 }
 
+func (ds *DataStore) GetSteamGameAchievementsSyncTime(appId string) (*time.Time, error) {
+	id := getSteamGameAchievementsId(appId)
+	return ds.getSyncTime(id)
+}
+
+func (ds *DataStore) SetSteamGameAchievementsSyncTime(appId string, t time.Time) error {
+	id := getSteamGameAchievementsId(appId)
+	return ds.setSyncTime(id, t)
+}
+
 func getSteamOwnedGamesId(userId string) string {
 	return steamOwnedGamesIdPrefix + "-" + userId
 }
 
 func getSteamPlayerAchievementsId(userId, appId string) string {
 	return steamPlayerAchievementsIdPrefix + "-" + userId + "-" + appId
+}
+
+func getSteamGameAchievementsId(appId string) string {
+	return steamGameAchievementsIdPrefix + "-" + appId
 }
 
 func (ds *DataStore) getSyncTime(id string) (*time.Time, error) {
