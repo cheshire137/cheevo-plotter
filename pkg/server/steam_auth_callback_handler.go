@@ -51,6 +51,14 @@ func (e *Env) SteamAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		user = &data_store.SteamUser{Id: steamId}
 	}
 
+	friendIds, err := client.GetFriends(steamId)
+	if err == nil {
+		user.FriendIds = friendIds
+	} else {
+		user.FriendIds = []string{}
+		util.LogError("Failed to look up Steam friend IDs: " + err.Error())
+	}
+
 	user.Name = playerSummary.Name
 	user.ProfileUrl = playerSummary.ProfileUrl
 	user.AvatarUrl = playerSummary.AvatarUrl

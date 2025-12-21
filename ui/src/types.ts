@@ -10,6 +10,7 @@ export interface SteamUser {
   name: string
   profileUrl: string
   avatarUrl: string
+  friendIds?: string[]
 }
 
 export interface SteamAchievement {

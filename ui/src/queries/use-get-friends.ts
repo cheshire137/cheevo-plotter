@@ -1,7 +1,7 @@
 import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
 
-function useGetFriends() {
+export function useGetFriends() {
   const queryKey = ['steam-friends']
   const result = useQuery<string[], Error>({
     queryKey,
@@ -18,5 +18,3 @@ function useGetFriends() {
   })
   return {...result, queryKey}
 }
-
-export default useGetFriends

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/cheshire137/cheevo-plotter/pkg/steam"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
@@ -22,14 +21,13 @@ func (e *Env) GetSteamFriendsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := steam.NewClient(e.config.SteamApiKey)
-	friendIds, err := client.GetFriends(steamId)
+	user, err := e.ds.GetSteamUser(steamId)
 	if err != nil {
 		ErrorJson(w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	response := SteamFriendsResponse{FriendIds: friendIds}
+	response := SteamFriendsResponse{FriendIds: user.FriendIds}
 	json.NewEncoder(w).Encode(response)
 }
