@@ -17,9 +17,9 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 	util.LogRequest(r)
 	e.enableCors(&w)
 
-	steamId := r.URL.Query().Get("steamid")
-	if len(steamId) < 1 {
-		ErrorMessageJson(w, "steamid parameter is required", 400)
+	steamId, err := e.getCurrentSteamId(r)
+	if err != nil {
+		ErrorMessageJson(w, "Not authenticated", http.StatusUnauthorized)
 		return
 	}
 
