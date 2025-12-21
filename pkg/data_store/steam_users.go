@@ -21,6 +21,7 @@ func (ds *DataStore) GetSteamUser(id string) (*SteamUser, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to prepare query for getting Steam user: %w", err)
 	}
+	defer stmt.Close()
 
 	var name, avatarUrl, profileUrl sql.NullString
 	err = stmt.QueryRow(id).Scan(&user.Id, &name, &avatarUrl, &profileUrl)
@@ -57,6 +58,7 @@ func (ds *DataStore) UpsertSteamUser(user *SteamUser) error {
 	if err != nil {
 		return fmt.Errorf("failed to prepare query for inserting Steam user %w", err)
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec(user.Id, user.Name, user.AvatarUrl, user.ProfileUrl)
 	if err != nil {
@@ -78,6 +80,7 @@ func (ds *DataStore) createSteamUsersTable() error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec()
 	return err
