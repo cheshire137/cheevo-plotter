@@ -20,7 +20,7 @@ function FriendsList({
   onFriendsLoaded(friendIds: string[]): void
   onFriendGamesLoaded(steamID: string, games: SteamGame[]): void
 }) {
-  const {data: friends, error: friendsError, isPending: loadingFriends} = useGetFriends(steamID)
+  const {data: friends, error: friendsError, isPending: loadingFriends} = useGetFriends()
   const [selectedFriends, setSelectedFriends] = useState<string[]>([])
 
   useEffect(() => {
