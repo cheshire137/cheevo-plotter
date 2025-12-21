@@ -40,6 +40,7 @@ func (ds *DataStore) getSyncTime(id string) (*time.Time, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to prepare query to get sync time: %w", err)
 	}
+	defer stmt.Close()
 
 	var timeStr string
 	err = stmt.QueryRow(id).Scan(&timeStr)
@@ -66,6 +67,7 @@ func (ds *DataStore) setSyncTime(id string, t time.Time) error {
 	if err != nil {
 		return fmt.Errorf("failed to prepare statement to set sync time: %w", err)
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec(id, t.Format(time.RFC3339))
 	if err != nil {
@@ -85,6 +87,7 @@ func (ds *DataStore) createSyncTimesTable() error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec()
 	return err

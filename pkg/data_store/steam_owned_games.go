@@ -25,6 +25,7 @@ func (ds *DataStore) GetSteamOwnedGames(steamId string) ([]*SteamOwnedGame, erro
 	if err != nil {
 		return apps, fmt.Errorf("failed to prepare query for listing Steam apps: %w", err)
 	}
+	defer stmt.Close()
 
 	rows, err := stmt.Query(steamId)
 	if err != nil {
@@ -65,6 +66,7 @@ func (ds *DataStore) UpsertSteamOwnedGame(ownedGame *SteamOwnedGame) error {
 	if err != nil {
 		return fmt.Errorf("failed to prepare query for inserting Steam owned game %w", err)
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec(ownedGame.AppId, ownedGame.Playtime, ownedGame.SteamId)
 	if err != nil {
@@ -86,6 +88,7 @@ func (ds *DataStore) createSteamOwnedGamesTable() error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec()
 	return err

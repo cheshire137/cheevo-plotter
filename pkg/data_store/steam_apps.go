@@ -29,6 +29,7 @@ func (ds *DataStore) ListSteamApps(lastAppId string, limit int32) ([]*SteamApp, 
 	if err != nil {
 		return apps, fmt.Errorf("failed to prepare query for listing Steam apps: %w", err)
 	}
+	defer stmt.Close()
 
 	var rows *sql.Rows
 	if len(lastAppId) > 0 {
@@ -67,6 +68,7 @@ func (ds *DataStore) GetSteamApps(appIds []string) ([]*SteamApp, error) {
 	if err != nil {
 		return apps, fmt.Errorf("failed to prepare query for getting Steam apps: %w", err)
 	}
+	defer stmt.Close()
 
 	args := make([]interface{}, len(appIds))
 	for i, appId := range appIds {
@@ -112,6 +114,7 @@ func (ds *DataStore) AddSteamApp(app *SteamApp) error {
 	if err != nil {
 		return fmt.Errorf("failed to prepare query for inserting Steam app %w", err)
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec(app.Id, app.Name)
 	if err != nil {
@@ -131,6 +134,7 @@ func (ds *DataStore) createSteamAppsTable() error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec()
 	return err
