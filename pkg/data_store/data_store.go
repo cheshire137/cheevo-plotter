@@ -22,5 +22,9 @@ func (ds *DataStore) CreateTables() error {
 	if err != nil {
 		return fmt.Errorf("failed to create sync times table: %w", err)
 	}
-	return ds.createSteamUsersTable()
+	err = ds.createSteamUsersTable()
+	if err != nil {
+		return fmt.Errorf("failed to create Steam users table: %w", err)
+	}
+	return ds.createSteamOwnedGamesTable()
 }

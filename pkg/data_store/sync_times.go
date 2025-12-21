@@ -5,9 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
 const steamAppsId = "steam-apps"
+const steamOwnedGamesIdPrefix = "steam-owned-games"
 
 func (ds *DataStore) GetSteamAppsSyncTime() (*time.Time, error) {
 	return ds.getSyncTime(steamAppsId)
@@ -15,6 +18,20 @@ func (ds *DataStore) GetSteamAppsSyncTime() (*time.Time, error) {
 
 func (ds *DataStore) SetSteamAppsSyncTime(t time.Time) error {
 	return ds.setSyncTime(steamAppsId, t)
+}
+
+func (ds *DataStore) GetSteamOwnedGamesSyncTime(userId string) (*time.Time, error) {
+	id := getSteamOwnedGamesId(userId)
+	return ds.getSyncTime(id)
+}
+
+func (ds *DataStore) SetSteamOwnedGamesSyncTime(userId string, t time.Time) error {
+	id := getSteamOwnedGamesId(userId)
+	return ds.setSyncTime(id, t)
+}
+
+func getSteamOwnedGamesId(userId string) string {
+	return steamOwnedGamesIdPrefix + "-" + userId
 }
 
 func (ds *DataStore) getSyncTime(id string) (*time.Time, error) {
@@ -42,6 +59,7 @@ func (ds *DataStore) getSyncTime(id string) (*time.Time, error) {
 }
 
 func (ds *DataStore) setSyncTime(id string, t time.Time) error {
+	util.LogInfo("Setting sync time for " + id)
 	query := `INSERT INTO sync_times (id, time) VALUES (?, ?)
 		ON CONFLICT (id) DO UPDATE SET time = excluded.time`
 	stmt, err := ds.db.Prepare(query)

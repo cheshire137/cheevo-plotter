@@ -1,7 +1,8 @@
-export interface SteamGame {
+export interface SteamOwnedGame {
   appId: string
   name: string
   playtime: number
+  steamId: string
 }
 
 export interface SteamUser {

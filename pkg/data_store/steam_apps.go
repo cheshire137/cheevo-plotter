@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/cheshire137/cheevo-plotter/pkg/steam"
 )
 
 type SteamApp struct {
@@ -12,15 +14,8 @@ type SteamApp struct {
 	Name string `json:"name"`
 }
 
-func NewSteamApp(data map[string]interface{}) *SteamApp {
-	result := &SteamApp{}
-	if appid, ok := data["appid"].(float64); ok {
-		result.Id = fmt.Sprintf("%.0f", appid)
-	}
-	if name, ok := data["name"].(string); ok {
-		result.Name = name
-	}
-	return result
+func NewSteamApp(data *steam.SteamApp) *SteamApp {
+	return &SteamApp{Id: data.Id, Name: data.Name}
 }
 
 func (ds *DataStore) ListSteamApps(lastAppId string, limit int32) ([]*SteamApp, error) {

@@ -43,7 +43,7 @@ func (e *Env) SyncSteamAppsIfNecessary() error {
 
 		allItemsSaved := len(apps) > 0
 		for _, app := range apps {
-			err := e.ds.AddSteamApp(app)
+			err := e.ds.AddSteamApp(data_store.NewSteamApp(app))
 			if err != nil {
 				allItemsSaved = false
 				util.LogError("Failed to save Steam app " + app.Id + ": " + err.Error())

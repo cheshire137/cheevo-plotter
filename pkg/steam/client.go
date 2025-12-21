@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cheshire137/cheevo-plotter/pkg/data_store"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
@@ -48,6 +47,18 @@ type SteamGameAchievement struct {
 	GrayIconUrl string `json:"grayIconUrl"`
 	Description string `json:"description"`
 	Hidden      bool   `json:"hidden"`
+}
+
+type SteamPlayerSummary struct {
+	Id         string `json:"steamId"`
+	Name       string `json:"name"`
+	AvatarUrl  string `json:"avatarUrl"`
+	ProfileUrl string `json:"profileUrl"`
+}
+
+type SteamApp struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 func NewClient(apiKey string) *Client {
@@ -350,7 +361,7 @@ func (c *Client) GetSteamId(username string) (string, error) {
 	return "", errors.New("could not find steam ID in response")
 }
 
-func (c *Client) GetPlayerSummary(steamId string) (*data_store.SteamUser, error) {
+func (c *Client) GetPlayerSummary(steamId string) (*SteamPlayerSummary, error) {
 	players, err := c.GetPlayerSummaries([]string{steamId})
 	if err != nil {
 		return nil, err
@@ -361,7 +372,7 @@ func (c *Client) GetPlayerSummary(steamId string) (*data_store.SteamUser, error)
 	return players[0], nil
 }
 
-func (c *Client) GetPlayerSummaries(steamIds []string) ([]*data_store.SteamUser, error) {
+func (c *Client) GetPlayerSummaries(steamIds []string) ([]*SteamPlayerSummary, error) {
 	if len(steamIds) < 1 {
 		return nil, errors.New("at least one Steam player ID must be given")
 	}
@@ -397,32 +408,32 @@ func (c *Client) GetPlayerSummaries(steamIds []string) ([]*data_store.SteamUser,
 		return nil, err
 	}
 
-	result := []*data_store.SteamUser{}
+	result := []*SteamPlayerSummary{}
 
 	if response, ok := data["response"].(map[string]interface{}); ok {
 		if players, ok := response["players"].([]interface{}); ok {
 			for _, playerData := range players {
 				if player, ok := playerData.(map[string]interface{}); ok {
-					user := &data_store.SteamUser{}
+					playerSummary := &SteamPlayerSummary{}
 					if avatarUrl, ok := player["avatarmedium"].(string); ok {
-						user.AvatarUrl = avatarUrl
+						playerSummary.AvatarUrl = avatarUrl
 					} else if avatarUrl, ok := player["avatarfull"].(string); ok {
-						user.AvatarUrl = avatarUrl
+						playerSummary.AvatarUrl = avatarUrl
 					} else if avatarUrl, ok := player["avatar"].(string); ok {
-						user.AvatarUrl = avatarUrl
+						playerSummary.AvatarUrl = avatarUrl
 					}
 					if profileUrl, ok := player["profileurl"].(string); ok {
-						user.ProfileUrl = profileUrl
+						playerSummary.ProfileUrl = profileUrl
 					}
 					if steamId, ok := player["steamid"].(string); ok {
-						user.Id = steamId
+						playerSummary.Id = steamId
 					}
 					if name, ok := player["personaname"].(string); ok {
-						user.Name = name
+						playerSummary.Name = name
 					} else if name, ok := player["realname"].(string); ok {
-						user.Name = name
+						playerSummary.Name = name
 					}
-					result = append(result, user)
+					result = append(result, playerSummary)
 				}
 			}
 		}
@@ -431,8 +442,8 @@ func (c *Client) GetPlayerSummaries(steamIds []string) ([]*data_store.SteamUser,
 	return result, nil
 }
 
-func (c *Client) GetAppList() ([]*data_store.SteamApp, error) {
-	result := []*data_store.SteamApp{}
+func (c *Client) GetAppList() ([]*SteamApp, error) {
+	result := []*SteamApp{}
 	page, err := c.GetAppListPage(0)
 	if err != nil {
 		return result, err
@@ -457,7 +468,7 @@ func (c *Client) GetAppList() ([]*data_store.SteamApp, error) {
 }
 
 type AppListPage struct {
-	apps            []*data_store.SteamApp
+	apps            []*SteamApp
 	lastAppId       float64
 	haveMoreResults bool
 }
@@ -500,11 +511,17 @@ func (c *Client) GetAppListPage(lastAppId int32) (*AppListPage, error) {
 	appListPage := &AppListPage{}
 
 	if response, ok := data["response"].(map[string]interface{}); ok {
-		apps := []*data_store.SteamApp{}
+		apps := []*SteamApp{}
 		if appsInPage, ok := response["apps"].([]interface{}); ok {
 			for _, appData := range appsInPage {
 				if appDataMap, ok := appData.(map[string]interface{}); ok {
-					app := data_store.NewSteamApp(appDataMap)
+					app := &SteamApp{}
+					if appid, ok := appDataMap["appid"].(float64); ok {
+						app.Id = fmt.Sprintf("%.0f", appid)
+					}
+					if name, ok := appDataMap["name"].(string); ok {
+						app.Name = name
+					}
 					if len(app.Name) > 0 {
 						apps = append(apps, app)
 					}
