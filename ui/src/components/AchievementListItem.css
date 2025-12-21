@@ -5,3 +5,11 @@
 .achievement-icon {
   margin-right: var(--base-size-8);
 }
+
+.show-hidden-achievement {
+  font-style: italic;
+}
+
+.hidden-achievement-details {
+  display: inline-block;
+}

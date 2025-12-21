@@ -11,9 +11,21 @@ import (
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
+type SteamAchievement struct {
+	Unlocked    bool   `json:"unlocked"`
+	UnlockTime  string `json:"unlockTime"`
+	Id          string `json:"id"`
+	AppId       string `json:"appId"`
+	SteamId     string `json:"steamId"`
+	Name        string `json:"name"`
+	IconUrl     string `json:"iconUrl"`
+	GrayIconUrl string `json:"grayIconUrl"`
+	Description string `json:"description"`
+	Hidden      bool   `json:"hidden"`
+}
+
 type SteamAchievementsResponse struct {
-	GameSchema         *steam.SteamGameSchema               `json:"gameSchema"`
-	PlayerAchievements []*data_store.SteamPlayerAchievement `json:"playerAchievements"`
+	Achievements []*SteamAchievement `json:"achievements"`
 }
 
 func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +50,7 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	achievements, err := e.ds.GetSteamPlayerAchievements(steamId, appId)
+	playerAchievements, err := e.ds.GetSteamPlayerAchievements(steamId, appId)
 	if err != nil {
 		ErrorJson(w, err)
 		return
@@ -51,7 +63,20 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	response := SteamAchievementsResponse{PlayerAchievements: achievements, GameSchema: gameSchema}
+	gameAchievementsById := map[string]*steam.SteamGameAchievement{}
+	for _, gameAchievement := range gameSchema.Achievements {
+		gameAchievementsById[gameAchievement.Id] = gameAchievement
+	}
+
+	achievements := []*SteamAchievement{}
+	for _, playerAchievement := range playerAchievements {
+		if gameAchievement, ok := gameAchievementsById[playerAchievement.Id]; ok {
+			achievement := newSteamAchievement(playerAchievement, gameAchievement)
+			achievements = append(achievements, achievement)
+		}
+	}
+
+	response := SteamAchievementsResponse{Achievements: achievements}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
@@ -95,4 +120,19 @@ func (e *Env) syncSteamPlayerAchievementsIfNecessary(steamId string, appId strin
 	}
 
 	return nil
+}
+
+func newSteamAchievement(playerAchievement *data_store.SteamPlayerAchievement, gameAchievement *steam.SteamGameAchievement) *SteamAchievement {
+	return &SteamAchievement{
+		Unlocked:    playerAchievement.Unlocked,
+		UnlockTime:  playerAchievement.UnlockTimeStr,
+		Id:          playerAchievement.Id,
+		AppId:       playerAchievement.AppId,
+		SteamId:     playerAchievement.SteamId,
+		Name:        gameAchievement.Name,
+		IconUrl:     gameAchievement.IconUrl,
+		GrayIconUrl: gameAchievement.GrayIconUrl,
+		Description: gameAchievement.Description,
+		Hidden:      gameAchievement.Hidden,
+	}
 }

@@ -12,24 +12,27 @@ import {
   Stack,
 } from '@primer/react'
 import {useSearchParams} from 'react-router-dom'
-import {LockIcon, UnlockIcon} from '@primer/octicons-react'
 import {useGetCurrentUser} from './queries/use-get-current-user'
 import {useGetGames} from './queries/use-get-games'
 import {useGetAchievements} from './queries/use-get-achievements'
 import '@primer/primitives/dist/css/functional/themes/light.css'
 import '@primer/primitives/dist/css/primitives.css'
 import './App.css'
+import {AchievementListItem} from './components/AchievementListItem'
 
 function App() {
   const {data: currentUser, isPending: isCurrentUserPending} = useGetCurrentUser()
   const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [selectedGameId, setSelectedGameId] = useState<string | null>(searchParams.get("appid"))
-  const {data: achievementsResp, isPending: isAchievementsPending} = useGetAchievements({appId: selectedGameId})
-  const selectGame = useCallback((appId: string) => {
-    setSelectedGameId(appId)
-    setSearchParams({appid: appId})
-  }, [setSearchParams])
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(searchParams.get('appid'))
+  const {data: achievements, isPending: isAchievementsPending} = useGetAchievements({appId: selectedGameId})
+  const selectGame = useCallback(
+    (appId: string) => {
+      setSelectedGameId(appId)
+      setSearchParams({appid: appId})
+    },
+    [setSearchParams]
+  )
 
   return (
     <ProviderStack>
@@ -78,17 +81,9 @@ function App() {
                   <Spinner />
                 ) : (
                   <ul>
-                    {achievementsResp?.playerAchievements?.map(achievement => {
-                      const unlockTime =
-                        achievement.unlockTime.length > 0 ? new Date(achievement.unlockTime) : undefined
-                      return (
-                        <li key={achievement.id}>
-                          {achievement.id}
-                          {achievement.unlocked ? <UnlockIcon /> : <LockIcon />}
-                          {unlockTime && <span>{unlockTime.toLocaleDateString()}</span>}
-                        </li>
-                      )
-                    })}
+                    {achievements?.map(achievement => (
+                      <AchievementListItem achievement={achievement} key={achievement.id} />
+                    ))}
                   </ul>
                 )}
               </Stack.Item>
