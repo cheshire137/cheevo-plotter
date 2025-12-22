@@ -3,6 +3,8 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"sort"
+	"strings"
 
 	"github.com/cheshire137/cheevo-plotter/pkg/steam"
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
@@ -37,6 +39,12 @@ func (e *Env) GetSteamFriendsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+
+	sort.Slice(friends, func(i, j int) bool {
+		nameA := strings.ToLower(friends[i].Name)
+		nameB := strings.ToLower(friends[j].Name)
+		return nameA < nameB
+	})
 
 	w.Header().Set("Content-Type", "application/json")
 	response := SteamFriendsResponse{Friends: friends}

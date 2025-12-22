@@ -52,7 +52,6 @@ func (e *Env) GetSteamOwnedGamesHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	util.LogInfo("Found %d Steam apps", len(steamApps))
 	namesByAppId := map[string]string{}
 	for _, app := range steamApps {
 		namesByAppId[app.Id] = app.Name
