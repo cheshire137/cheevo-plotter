@@ -1,5 +1,7 @@
 import {type PropsWithChildren, useCallback, useMemo, useState} from 'react'
+import {Blankslate} from '@primer/react/experimental'
 import {BaseStyles, Heading, PageLayout, Spinner, ThemeProvider} from '@primer/react'
+import {TrophyIcon} from '@primer/octicons-react'
 import {useSearchParams} from 'react-router-dom'
 import {useGetGames} from './queries/use-get-games'
 import '@primer/primitives/dist/css/functional/themes/light.css'
@@ -43,19 +45,30 @@ function App() {
           )}
         </PageLayout.Pane>
         <PageLayout.Content>
-          {selectedGameId && selectedGame && <AchievementsList game={selectedGame} />}
-        </PageLayout.Content>
-        <PageLayout.Pane aria-label="Friends" position="end">
-          {isFriendsPending && <Spinner />}
-          {friends && (
-            <>
-              <Heading as="h2">Friends</Heading>
-              {friends.map(friend => (
-                <div key={friend.steamId}>{friend.name}</div>
-              ))}
-            </>
+          {selectedGame ? (
+            <AchievementsList game={selectedGame} />
+          ) : (
+            <Blankslate>
+              <Blankslate.Visual>
+                <TrophyIcon size="medium" />
+              </Blankslate.Visual>
+              <Blankslate.Heading>Select a game to see achievements</Blankslate.Heading>
+            </Blankslate>
           )}
-        </PageLayout.Pane>
+        </PageLayout.Content>
+        {(isFriendsPending || friends) && selectedGame && (
+          <PageLayout.Pane aria-label="Friends" position="end">
+            {isFriendsPending && <Spinner />}
+            {friends && (
+              <>
+                <Heading as="h2">Friends</Heading>
+                {friends.map(friend => (
+                  <div key={friend.steamId}>{friend.name}</div>
+                ))}
+              </>
+            )}
+          </PageLayout.Pane>
+        )}
       </PageLayout>
     </ProviderStack>
   )
