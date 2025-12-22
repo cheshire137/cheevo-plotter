@@ -1,80 +1,56 @@
-import {useEffect, useState} from 'react'
-import FriendListItem from './FriendListItem'
-import useGetFriends from '../queries/use-get-friends'
-import {CheckboxGroup, Flash, Spinner} from '@primer/react'
-import type {SteamGame, SteamUser} from '../types'
+import {useCallback, useState} from 'react'
+import {ActionList, Avatar} from '@primer/react'
+import type {SteamUser} from '../types'
 import './FriendsList.css'
 
-function FriendsList({
-  steamID,
-  steamUsername,
-  selectedIDs,
-  onPlayerSelectionChange,
-  onFriendsLoaded,
-  onFriendGamesLoaded,
-}: {
-  steamID: string
-  steamUsername: string
-  selectedIDs: string[]
-  onPlayerSelectionChange(selectedPlayers: SteamUser[]): void
-  onFriendsLoaded(friendIds: string[]): void
-  onFriendGamesLoaded(steamID: string, games: SteamGame[]): void
-}) {
-  const {data: friends, error: friendsError, isPending: loadingFriends} = useGetFriends()
-  const [selectedFriends, setSelectedFriends] = useState<string[]>([])
-
-  useEffect(() => {
-    if (!loadingFriends && friends) {
-      onFriendsLoaded(friends)
-    }
-  }, [friends, loadingFriends, onFriendsLoaded])
-
-  const onFriendToggled = (toggledFriend: string, isSelected: boolean) => {
-    let newSelectedFriends = [...selectedFriends]
-    const index = selectedIDs.indexOf(toggledFriend)
-    if (isSelected && index < 0) {
-      newSelectedFriends.push(toggledFriend)
-    } else if (!isSelected && index > -1) {
-      newSelectedFriends = newSelectedFriends.slice(0, index).concat(newSelectedFriends.slice(index + 1))
-    }
-    setSelectedFriends(newSelectedFriends)
-    onPlayerSelectionChange(
-      newSelectedFriends.filter(f => f.playerSummary).map(friend => new Player(friend, friend.playerSummary!))
-    )
-  }
-
-  if (loadingFriends) {
-    return (
-      <div>
-        <Spinner />
-        <p>Loading friends list...</p>
-      </div>
-    )
-  }
-
-  if (friendsError) {
-    return <Flash variant="danger">There was an error loading the friends list: {friendsError.message}.</Flash>
-  }
-
+export function FriendsList({friends}: {friends: SteamUser[]}) {
+  const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([])
+  const onSelectFriend = useCallback(
+    (friendId: string) => {
+      if (selectedFriendIds.includes(friendId)) {
+        setSelectedFriendIds(selectedFriendIds.filter(id => id !== friendId))
+      } else {
+        setSelectedFriendIds([...selectedFriendIds, friendId])
+      }
+    },
+    [selectedFriendIds]
+  )
   return (
-    <CheckboxGroup>
-      <CheckboxGroup.Label>
-        {steamUsername}'s Friends {friends && <span>({friends.length})</span>}
-      </CheckboxGroup.Label>
-      <div className="friends-list">
-        {friends &&
-          friends.map(friend => (
-            <FriendListItem
-              onFriendGamesLoaded={onFriendGamesLoaded}
-              key={friend}
-              friendId={friend}
-              isSelected={selectedIDs.indexOf(friend) > -1}
-              onToggle={(checked: boolean) => onFriendToggled(friend, checked)}
-            />
-          ))}
-      </div>
-    </CheckboxGroup>
+    <ActionList role="menu" aria-label="Friend" selectionVariant="multiple">
+      {friends.map(friend => (
+        <FriendsListItem
+          selected={selectedFriendIds.includes(friend.steamId)}
+          onSelect={onSelectFriend}
+          key={friend.steamId}
+          friend={friend}
+        />
+      ))}
+    </ActionList>
   )
 }
 
-export default FriendsList
+function FriendsListItem({
+  friend,
+  onSelect,
+  selected,
+}: {
+  friend: SteamUser
+  onSelect: (friendId: string) => void
+  selected: boolean
+}) {
+  return (
+    <ActionList.Item
+      selected={selected}
+      onSelect={() => onSelect(friend.steamId)}
+      aria-checked={selected}
+      role="menuitemcheckbox"
+    >
+      {friend.avatarUrl.length > 0 && (
+        <ActionList.LeadingVisual>
+          <Avatar src={friend.avatarUrl} />
+        </ActionList.LeadingVisual>
+      )}
+      {friend.name}
+    </ActionList.Item>
+  )
+}

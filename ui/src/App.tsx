@@ -11,6 +11,7 @@ import {AchievementsList} from './components/AchievementsList'
 import {OwnedGamesList} from './components/OwnedGamesList'
 import {useGetFriends} from './queries/use-get-friends'
 import {AppHeader} from './components/AppHeader'
+import {FriendsList} from './components/FriendsList'
 
 function App() {
   const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames()
@@ -62,9 +63,7 @@ function App() {
             {friends && (
               <>
                 <Heading as="h2">Friends</Heading>
-                {friends.map(friend => (
-                  <div key={friend.steamId}>{friend.name}</div>
-                ))}
+                <FriendsList friends={friends} />
               </>
             )}
           </PageLayout.Pane>
