@@ -32,7 +32,7 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 	util.LogRequest(r)
 	e.enableCors(&w)
 
-	steamId, err := e.getCurrentSteamId(r)
+	steamIdFromCurrentUser, err := e.getCurrentSteamId(r)
 	if err != nil {
 		ErrorMessageJson(w, "Not authenticated", http.StatusUnauthorized)
 		return
@@ -42,6 +42,14 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 	if len(appId) < 1 {
 		ErrorMessageJson(w, "appid parameter is required", 400)
 		return
+	}
+
+	steamIdFromParam := r.URL.Query().Get("steamid")
+	var steamId string
+	if len(steamIdFromParam) > 0 {
+		steamId = steamIdFromParam
+	} else {
+		steamId = steamIdFromCurrentUser
 	}
 
 	playerAchievements, err := e.getCachedSteamPlayerAchievements(steamId, appId)
