@@ -11,13 +11,20 @@ import {AchievementsList} from './components/AchievementsList'
 import {OwnedGamesList} from './components/OwnedGamesList'
 import {useGetFriends} from './queries/use-get-friends'
 import {AppHeader} from './components/AppHeader'
-import {FriendsList} from './components/FriendsList'
+import {FriendsList, friendSeparator, maxSelectedFriends} from './components/FriendsList'
 
 function App() {
   const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames()
   const [searchParams, setSearchParams] = useSearchParams()
   const {data: friends, isPending: isFriendsPending} = useGetFriends()
   const [selectedGameId, setSelectedGameId] = useState<string | null>(searchParams.get('appid'))
+  const selectedFriendIds = useMemo<string[]>(() => {
+    const friendParam = searchParams.get('friends')
+    if (friendParam && friendParam.length > 0) {
+      return friendParam.split(friendSeparator).map(id => id.trim()).slice(0, maxSelectedFriends)
+    }
+    return []
+  }, [searchParams])
   const selectedGame = useMemo(
     () => (ownedGames && selectedGameId ? ownedGames?.find(g => g.appId === selectedGameId) : undefined),
     [ownedGames, selectedGameId]
@@ -62,8 +69,13 @@ function App() {
             {isFriendsPending && <Spinner />}
             {friends && (
               <>
-                <Heading as="h2">Friends</Heading>
-                <FriendsList friends={friends} />
+                <Heading as="h2">
+                  Friends
+                  <span className="selected-friends-count">
+                    {selectedFriendIds.length} of {friends.length} selected
+                  </span>
+                </Heading>
+                <FriendsList selectedFriendIds={selectedFriendIds} friends={friends} />
               </>
             )}
           </PageLayout.Pane>

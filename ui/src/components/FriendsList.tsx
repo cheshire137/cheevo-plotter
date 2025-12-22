@@ -1,45 +1,70 @@
 import {useCallback, useState} from 'react'
+import {useSearchParams} from 'react-router-dom'
 import {ActionList, Avatar} from '@primer/react'
 import type {SteamUser} from '../types'
 import './FriendsList.css'
 
-export function FriendsList({friends}: {friends: SteamUser[]}) {
-  const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([])
+export const friendSeparator = ','
+export const maxSelectedFriends = 5
+
+export function FriendsList({
+  friends,
+  selectedFriendIds: initialSelectedFriendIds,
+}: {
+  friends: SteamUser[]
+  selectedFriendIds: string[]
+}) {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>(initialSelectedFriendIds)
   const onSelectFriend = useCallback(
     (friendId: string) => {
+      let newValue: string[] = []
       if (selectedFriendIds.includes(friendId)) {
-        setSelectedFriendIds(selectedFriendIds.filter(id => id !== friendId))
+        newValue = selectedFriendIds.filter(id => id !== friendId)
+      } else if (selectedFriendIds.length < maxSelectedFriends) {
+        newValue = [...selectedFriendIds, friendId]
       } else {
-        setSelectedFriendIds([...selectedFriendIds, friendId])
+        newValue = [...selectedFriendIds]
       }
+      const newParams = new URLSearchParams(searchParams)
+      newParams.set('friends', newValue.join(friendSeparator))
+      setSearchParams(newParams)
+      setSelectedFriendIds(newValue)
     },
-    [selectedFriendIds]
+    [searchParams, selectedFriendIds]
   )
   return (
     <ActionList role="menu" aria-label="Friend" selectionVariant="multiple">
-      {friends.map(friend => (
-        <FriendsListItem
-          selected={selectedFriendIds.includes(friend.steamId)}
-          onSelect={onSelectFriend}
-          key={friend.steamId}
-          friend={friend}
-        />
-      ))}
+      {friends.map(friend => {
+        const selected = selectedFriendIds.includes(friend.steamId)
+        return (
+          <FriendsListItem
+            selected={selected}
+            disabled={!selected && selectedFriendIds.length >= maxSelectedFriends}
+            onSelect={onSelectFriend}
+            key={friend.steamId}
+            friend={friend}
+          />
+        )
+      })}
     </ActionList>
   )
 }
 
 function FriendsListItem({
+  disabled,
   friend,
   onSelect,
   selected,
 }: {
+  disabled?: boolean
   friend: SteamUser
   onSelect: (friendId: string) => void
   selected: boolean
 }) {
   return (
     <ActionList.Item
+      disabled={disabled}
       selected={selected}
       onSelect={() => onSelect(friend.steamId)}
       aria-checked={selected}
