@@ -2,6 +2,7 @@
   color: var(--fgColor-danger);
 }
 
+.selected-friend-avatar,
 .selected-friend-name {
   display: inline-block;
   margin-right: var(--base-size-6);
