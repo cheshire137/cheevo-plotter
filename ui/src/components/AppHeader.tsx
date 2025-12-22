@@ -9,19 +9,22 @@ export function AppHeader() {
       <PageHeader.TitleArea>
         <PageHeader.Title as="h1">Cheevo plotter</PageHeader.Title>
       </PageHeader.TitleArea>
-      <PageHeader.Actions>
-        {isPending && <Spinner />}
-        {currentUser ? (
-          <span className="signed-in-as">
-            Signed in as{' '}
-            <Link href={currentUser.profileUrl}>
-              {currentUser.avatarUrl.length > 0 && <Avatar src={currentUser.avatarUrl} />} {currentUser.name}
-            </Link>
-          </span>
-        ) : (
-          <form method="POST" id="logout-form" action={`${import.meta.env.VITE_BACKEND_URL}/user/logout`}></form>
-        )}
-      </PageHeader.Actions>
+      {(isPending || currentUser) && (
+        <PageHeader.Actions>
+          {isPending && <Spinner />}
+          {currentUser && (
+            <>
+              <form method="POST" id="logout-form" action={`${import.meta.env.VITE_BACKEND_URL}/user/logout`}></form>
+              <span className="signed-in-as">
+                Signed in as{' '}
+                <Link href={currentUser.profileUrl}>
+                  {currentUser.avatarUrl.length > 0 && <Avatar src={currentUser.avatarUrl} />} {currentUser.name}
+                </Link>
+              </span>
+            </>
+          )}
+        </PageHeader.Actions>
+      )}
       <PageHeader.Navigation>
         <UnderlineNav aria-label="Main navigation">
           {currentUser ? (

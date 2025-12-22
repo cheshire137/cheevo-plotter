@@ -51,7 +51,7 @@ function App() {
             <>
               <Heading as="h2">Friends</Heading>
               {friends.map(friend => (
-                <div key={friend.id}>{friend.name}</div>
+                <div key={friend.steamId}>{friend.name}</div>
               ))}
             </>
           )}
