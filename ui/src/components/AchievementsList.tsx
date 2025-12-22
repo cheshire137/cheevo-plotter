@@ -1,19 +1,14 @@
-import {Banner, Spinner} from '@primer/react'
+import {Banner, CounterLabel, Heading, Spinner} from '@primer/react'
 import {Blankslate} from '@primer/react/experimental'
 import {TrophyIcon} from '@primer/octicons-react'
 import {AchievementListItem} from './AchievementListItem'
 import type {SteamOwnedGame} from '../types'
-import {useGetCurrentUser} from '../queries/use-get-current-user'
 import {useGetAchievements} from '../queries/use-get-achievements'
 import './AchievementsList.css'
 
 export function AchievementsList({game}: {game: SteamOwnedGame}) {
   const {data: achievements, error, isPending} = useGetAchievements({appId: game.appId})
   const totalAchievements = achievements?.length ?? 0
-  const {data: currentUser} = useGetCurrentUser()
-  const unlockedCount = achievements?.filter(a => a.unlocked).length ?? 0
-
-  if (!currentUser) return null
 
   if (isPending) return <Spinner />
 
@@ -36,19 +31,15 @@ export function AchievementsList({game}: {game: SteamOwnedGame}) {
   }
 
   return (
-    <div>
-      <p>
-        <span>
-          {unlockedCount} of {totalAchievements}
-        </span>
-        <span> {totalAchievements === 1 ? 'achievement' : 'achievements'} unlocked</span>
-        <strong> ({Math.round((unlockedCount / totalAchievements) * 100)}%)</strong>
-      </p>
+    <>
+      <Heading as="h2" className="achievements-heading">
+        Achievements <CounterLabel>{achievements.length}</CounterLabel>
+      </Heading>
       <ul className="achievements-list">
         {achievements.map(achievement => (
           <AchievementListItem key={achievement.id} achievement={achievement} />
         ))}
       </ul>
-    </div>
+    </>
   )
 }

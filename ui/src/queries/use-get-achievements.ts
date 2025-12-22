@@ -1,5 +1,5 @@
 import {useQuery} from '@tanstack/react-query'
-import axios, {AxiosError} from 'axios'
+import axios from 'axios'
 import type {SteamAchievement} from '../types'
 
 export function useGetAchievements({appId, steamId}: {appId?: string | null; steamId?: string | null}) {

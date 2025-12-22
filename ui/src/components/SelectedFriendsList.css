@@ -1,3 +1,8 @@
+.selected-friends-list {
+  border-bottom: 1px solid var(--borderColor-default);
+  padding-bottom: var(--base-size-16);
+}
+
 .friend-achievements-error {
   color: var(--fgColor-danger);
 }

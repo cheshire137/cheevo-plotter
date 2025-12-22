@@ -1,3 +1,9 @@
+.achievements-heading {
+  display: flex;
+  align-items: baseline;
+  gap: var(--stack-gap-condensed);
+}
+
 .achievements-list {
   list-style: none;
   margin-left: 0;
