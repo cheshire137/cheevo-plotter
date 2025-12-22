@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/cheshire137/cheevo-plotter/pkg/steam"
@@ -16,6 +17,27 @@ type SteamApp struct {
 
 func NewSteamApp(data *steam.SteamApp) *SteamApp {
 	return &SteamApp{Id: data.Id, Name: data.Name}
+}
+
+func (ds *DataStore) GetLastAppId() (int32, error) {
+	query := `SELECT id FROM steam_apps ORDER BY id DESC LIMIT 1`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		return 0, fmt.Errorf("failed to prepare query for getting last Steam app ID: %w", err)
+	}
+	defer stmt.Close()
+
+	var appIdStr string
+	err = stmt.QueryRow().Scan(&appIdStr)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get last Steam app ID: %w", err)
+	}
+
+	appId64, err := strconv.ParseInt(appIdStr, 10, 32)
+	if err != nil {
+		return 0, fmt.Errorf("Error converting string to int32: %v", err)
+	}
+	return int32(appId64), nil
 }
 
 func (ds *DataStore) ListSteamApps(lastAppId string, limit int32) ([]*SteamApp, error) {

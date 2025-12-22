@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -33,10 +34,19 @@ func (e *Env) SyncSteamAppsIfNecessary() error {
 	}
 
 	if lastSynced == nil || time.Since(*lastSynced) > 24*time.Hour {
-		util.LogInfo("fetching Steam apps")
+		lastAppId, err := e.ds.GetLastAppId()
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return fmt.Errorf("failed to get last Steam app ID: %w", err)
+		}
+
+		if lastAppId > 0 {
+			util.LogInfo(fmt.Sprintf("fetching Steam apps starting with app ID %d", lastAppId))
+		} else {
+			util.LogInfo("fetching all Steam apps")
+		}
 		client := steam.NewClient(e.config.SteamApiKey)
 
-		apps, err := client.GetAppList()
+		apps, err := client.GetAppList(lastAppId)
 		if err != nil {
 			return fmt.Errorf("failed to load all Steam apps: %w", err)
 		}

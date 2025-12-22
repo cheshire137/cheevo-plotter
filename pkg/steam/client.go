@@ -442,15 +442,15 @@ func (c *Client) GetPlayerSummaries(steamIds []string) ([]*SteamPlayerSummary, e
 	return result, nil
 }
 
-func (c *Client) GetAppList() ([]*SteamApp, error) {
+func (c *Client) GetAppList(lastAppId int32) ([]*SteamApp, error) {
 	result := []*SteamApp{}
-	page, err := c.GetAppListPage(0)
+	page, err := c.GetAppListPage(lastAppId)
 	if err != nil {
 		return result, err
 	}
 
 	result = append(result, page.apps...)
-	lastAppId := int32(page.lastAppId)
+	lastAppId = int32(page.lastAppId)
 	haveMoreResults := page.haveMoreResults
 
 	for haveMoreResults {
