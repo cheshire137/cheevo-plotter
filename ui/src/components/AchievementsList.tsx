@@ -1,4 +1,6 @@
 import {Banner, Spinner} from '@primer/react'
+import {Blankslate} from '@primer/react/experimental'
+import {TrophyIcon} from '@primer/octicons-react'
 import {AchievementListItem} from './AchievementListItem'
 import type {SteamOwnedGame} from '../types'
 import {useGetCurrentUser} from '../queries/use-get-current-user'
@@ -15,10 +17,22 @@ export function AchievementsList({game}: {game: SteamOwnedGame}) {
 
   if (isPending) return <Spinner />
 
-  if (error) return <Banner title="Achievements error" variant="critical">{error.message}</Banner>
+  if (error)
+    return (
+      <Banner title="Achievements error" variant="critical">
+        {error.message}
+      </Banner>
+    )
 
   if (totalAchievements < 1) {
-    return <p>{game.name} has no achievements.</p>
+    return (
+      <Blankslate>
+        <Blankslate.Visual>
+          <TrophyIcon size="medium" />
+        </Blankslate.Visual>
+        <Blankslate.Heading>{game.name} has no achievements</Blankslate.Heading>
+      </Blankslate>
+    )
   }
 
   return (

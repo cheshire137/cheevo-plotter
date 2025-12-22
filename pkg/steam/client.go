@@ -18,6 +18,7 @@ const baseApiUrl = "https://api.steampowered.com"
 
 var ErrUnauthorized = errors.New("unauthorized")
 var ErrForbidden = errors.New("forbidden")
+var ErrBadRequest = errors.New("bad request")
 
 type Client struct {
 	apiKey string
@@ -169,12 +170,16 @@ func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamPlayerAc
 		return http.DefaultClient.Do(req)
 	}
 
+	achievements := []*SteamPlayerAchievement{}
 	data, err := c.makeJsonRequest(makeRequest, "get Steam achievements")
 	if err != nil {
+		// Game does not have achievements
+		if errors.Is(err, ErrBadRequest) {
+			return achievements, nil
+		}
+
 		return nil, err
 	}
-
-	achievements := []*SteamPlayerAchievement{}
 
 	if playerStats, ok := data["playerstats"].(map[string]interface{}); ok {
 		if achievementsData, ok := playerStats["achievements"].([]interface{}); ok {
@@ -577,12 +582,6 @@ func (c *Client) handleJsonResponse(action string, resp *http.Response) (map[str
 
 func handleHttpError(action string, resp *http.Response) error {
 	code := resp.StatusCode
-	if code == 401 {
-		return ErrUnauthorized
-	}
-	if code == 403 {
-		return ErrForbidden
-	}
 
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -591,8 +590,18 @@ func handleHttpError(action string, resp *http.Response) error {
 
 	var jsonResp map[string]interface{}
 	if err := json.Unmarshal(bodyBytes, &jsonResp); err != nil {
-		return fmt.Errorf("failed to %s (%d):\n%s", action, code, string(bodyBytes))
+		return fmt.Errorf("failed to parse JSON error response and %s (%d):\n%s", action, code, string(bodyBytes))
 	}
 
+	util.InspectMap(jsonResp, "")
+	if code == 401 {
+		return ErrUnauthorized
+	}
+	if code == 403 {
+		return ErrForbidden
+	}
+	if code == 400 {
+		return ErrBadRequest
+	}
 	return fmt.Errorf("failed to %s (%d):\n%s", action, code, string(bodyBytes))
 }
