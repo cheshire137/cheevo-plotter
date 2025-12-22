@@ -1,6 +1,5 @@
 import {type PropsWithChildren, useCallback, useMemo, useState} from 'react'
 import {
-  ActionList,
   BaseStyles,
   Button,
   Heading,
@@ -18,6 +17,7 @@ import '@primer/primitives/dist/css/functional/themes/light.css'
 import '@primer/primitives/dist/css/primitives.css'
 import './App.css'
 import {AchievementsList} from './components/AchievementsList'
+import { OwnedGamesList } from './components/OwnedGamesList'
 
 function App() {
   const {data: currentUser, isPending: isCurrentUserPending} = useGetCurrentUser()
@@ -59,22 +59,7 @@ function App() {
             {ownedGames && (
               <Stack.Item>
                 {currentUser && <Heading as="h2">{currentUser.name}&rsquo;s owned games</Heading>}
-                <ActionList selectionVariant="single" role="menu" aria-label="Owned game">
-                  {ownedGames.map(game => {
-                    const isSelected = game.appId === selectedGameId
-                    return (
-                      <ActionList.Item
-                        selected={isSelected}
-                        aria-checked={isSelected}
-                        onSelect={() => selectGame(game.appId)}
-                        key={game.appId}
-                        role="menuitemradio"
-                      >
-                        {game.name}
-                      </ActionList.Item>
-                    )
-                  })}
-                </ActionList>
+                <OwnedGamesList ownedGames={ownedGames} selectedGameId={selectedGameId} selectGame={selectGame} />
               </Stack.Item>
             )}
             {selectedGameId && <Stack.Item>{selectedGame && <AchievementsList game={selectedGame} />}</Stack.Item>}
