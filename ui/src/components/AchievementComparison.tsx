@@ -1,12 +1,11 @@
-import Achievement from '../models/Achievement'
-import type {SteamUser} from '../types'
+import type {SteamAchievement, SteamUser} from '../types'
 
-const AchievementComparison = ({players, achievement}: {players: SteamUser[]; achievement: Achievement}) => {
-  const playersWithAchievement = players.filter(p => p.hasAchievement(achievement.key))
+const AchievementComparison = ({players, achievement}: {players: SteamUser[]; achievement: SteamAchievement}) => {
+  const playersWithAchievement = players.filter(p => p.hasAchievement(achievement.id))
 
   return (
     <li>
-      <img src={achievement.iconUri} alt={achievement.name} width="64" height="64" />
+      <img src={achievement.iconUrl} alt={achievement.name} width="64" height="64" />
       <div>
         <h2>{achievement.name}</h2>
         <ul>

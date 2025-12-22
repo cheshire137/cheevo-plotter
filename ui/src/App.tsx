@@ -12,6 +12,7 @@ import {OwnedGamesList} from './components/OwnedGamesList'
 import {useGetFriends} from './queries/use-get-friends'
 import {AppHeader} from './components/AppHeader'
 import {FriendsList, friendSeparator, maxSelectedFriends} from './components/FriendsList'
+import {SelectedFriendsList} from './components/SelectedFriendsList'
 
 function App() {
   const {data: ownedGames, isPending: isOwnedGamesPending} = useGetGames()
@@ -29,8 +30,12 @@ function App() {
     return []
   }, [searchParams])
   const selectedGame = useMemo(
-    () => (ownedGames && selectedGameId ? ownedGames?.find(g => g.appId === selectedGameId) : undefined),
+    () => (ownedGames && selectedGameId ? ownedGames.find(g => g.appId === selectedGameId) : undefined),
     [ownedGames, selectedGameId]
+  )
+  const selectedFriends = useMemo(
+    () => (friends ? friends.filter(f => selectedFriendIds.includes(f.steamId)) : []),
+    [selectedFriendIds, friends]
   )
   const selectGame = useCallback(
     (appId: string) => {
@@ -60,13 +65,15 @@ function App() {
         <PageLayout.Content>
           {selectedGame ? (
             <>
-              {selectedFriendIds.length < 1 && (
+              {selectedFriendIds.length < 1 ? (
                 <Blankslate border>
                   <Blankslate.Visual>
                     <TrophyIcon size="medium" />
                   </Blankslate.Visual>
                   <Blankslate.Heading>Select a friend to compare achievements</Blankslate.Heading>
                 </Blankslate>
+              ) : (
+                <SelectedFriendsList appId={selectedGame.appId} friends={selectedFriends} />
               )}
               <AchievementsList game={selectedGame} />
             </>

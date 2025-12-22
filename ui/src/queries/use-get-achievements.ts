@@ -13,17 +13,10 @@ export function useGetAchievements({appId, steamId}: {appId?: string | null; ste
       if (hasAppId) params += `&appid=${encodeURIComponent(appId.trim())}`
       if (hasSteamId) params += `&steamid=${encodeURIComponent(steamId.trim())}`
       const url = `${import.meta.env.VITE_BACKEND_URL}/api/steam-achievements${params}`
-      try {
-        const response = await axios.get<{achievements: SteamAchievement[]}>(url, {
-          withCredentials: true, // Send cookies with request
-        })
-        return response.data.achievements
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          throw new Error(error.response?.data.error)
-        }
-        throw new Error(error instanceof Error ? error.message : String(error))
-      }
+      const response = await axios.get<{achievements: SteamAchievement[]}>(url, {
+        withCredentials: true, // Send cookies with request
+      })
+      return response.data.achievements
     },
     enabled: hasAppId,
     retry: false, // Don't retry if not authenticated

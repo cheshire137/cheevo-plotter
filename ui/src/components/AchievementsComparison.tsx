@@ -2,29 +2,28 @@ import {useState} from 'react'
 import AchievementComparison from './AchievementComparison'
 import UnlockedBarChart from './UnlockedBarChart'
 import Filters from './Filters'
-import Achievement from '../models/Achievement'
-import type {SteamUser} from '../types'
+import type {SteamAchievement, SteamUser} from '../types'
 
 enum AchievementFilter {
   AllUnlocked = 'allUnlocked',
   NoneUnlocked = 'noneUnlocked',
 }
 
-const AchievementsComparison = ({players, achievements}: {players: SteamUser[]; achievements: Achievement[]}) => {
+const AchievementsComparison = ({players, achievements}: {players: SteamUser[]; achievements: SteamAchievement[]}) => {
   const [filters, setFilters] = useState<AchievementFilter[]>([])
 
   const onFilterChange = (activeFilters: AchievementFilter[]) => {
     setFilters(activeFilters)
   }
 
-  const includeAchievement = (achievement: Achievement) => {
+  const includeAchievement = (achievement: SteamAchievement) => {
     if (filters.length < 1) {
       return true
     }
     let allUnlocked = true,
       noneUnlocked = true
     for (const player of players) {
-      if (player.hasAchievement(achievement.key)) {
+      if (player.hasAchievement(achievement.id)) {
         noneUnlocked = false
       } else {
         allUnlocked = false
@@ -56,7 +55,7 @@ const AchievementsComparison = ({players, achievements}: {players: SteamUser[]; 
       )}
       <ul>
         {filteredAchievements.map(achievement => (
-          <AchievementComparison players={players} achievement={achievement} key={achievement.key} />
+          <AchievementComparison players={players} achievement={achievement} key={achievement.id} />
         ))}
       </ul>
     </div>
