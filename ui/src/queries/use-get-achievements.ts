@@ -1,5 +1,5 @@
 import {useQuery} from '@tanstack/react-query'
-import axios from 'axios'
+import axios, {AxiosError} from 'axios'
 import type {SteamAchievement} from '../types'
 
 export function useGetAchievements({appId, steamId}: {appId?: string | null; steamId?: string | null}) {
@@ -13,10 +13,17 @@ export function useGetAchievements({appId, steamId}: {appId?: string | null; ste
       if (hasAppId) params += `&appid=${encodeURIComponent(appId.trim())}`
       if (hasSteamId) params += `&steamid=${encodeURIComponent(steamId.trim())}`
       const url = `${import.meta.env.VITE_BACKEND_URL}/api/steam-achievements${params}`
-      const response = await axios.get<{achievements: SteamAchievement[]}>(url, {
-        withCredentials: true, // Send cookies with request
-      })
-      return response.data.achievements
+      try {
+        const response = await axios.get<{achievements: SteamAchievement[]}>(url, {
+          withCredentials: true, // Send cookies with request
+        })
+        return response.data.achievements
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          throw new Error(error.response?.data.error)
+        }
+        throw new Error(error instanceof Error ? error.message : String(error))
+      }
     },
     enabled: hasAppId,
     retry: false, // Don't retry if not authenticated

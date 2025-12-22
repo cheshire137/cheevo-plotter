@@ -1,5 +1,5 @@
 import {useQuery} from '@tanstack/react-query'
-import axios from 'axios'
+import axios, {AxiosError} from 'axios'
 import type {SteamUser} from '../types'
 
 function useGetPlayerSummaries(steamIds: string[]) {
@@ -8,10 +8,17 @@ function useGetPlayerSummaries(steamIds: string[]) {
     queryKey,
     queryFn: async () => {
       const steamIdsStr = encodeURIComponent(steamIds.join(','))
-      const response = await axios.get<{players: SteamUser[]}>(
-        `${import.meta.env.VITE_BACKEND_URL}/api/steam-player-summaries?steamids=${steamIdsStr}`
-      )
-      return response.data.players
+      try {
+        const response = await axios.get<{players: SteamUser[]}>(
+          `${import.meta.env.VITE_BACKEND_URL}/api/steam-player-summaries?steamids=${steamIdsStr}`
+        )
+        return response.data.players
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          throw new Error(error.response?.data.error)
+        }
+        throw new Error(error instanceof Error ? error.message : String(error))
+      }
     },
     enabled: steamIds.length > 0,
   })
