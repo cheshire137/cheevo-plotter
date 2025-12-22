@@ -1,6 +1,6 @@
 import {type PropsWithChildren, useCallback, useMemo, useState} from 'react'
 import {Blankslate} from '@primer/react/experimental'
-import {BaseStyles, Heading, PageLayout, Spinner, ThemeProvider} from '@primer/react'
+import {BaseStyles, CounterLabel, Heading, PageLayout, Spinner, ThemeProvider} from '@primer/react'
 import {TrophyIcon} from '@primer/octicons-react'
 import {useSearchParams} from 'react-router-dom'
 import {useGetGames} from './queries/use-get-games'
@@ -21,7 +21,10 @@ function App() {
   const selectedFriendIds = useMemo<string[]>(() => {
     const friendParam = searchParams.get('friends')
     if (friendParam && friendParam.length > 0) {
-      return friendParam.split(friendSeparator).map(id => id.trim()).slice(0, maxSelectedFriends)
+      return friendParam
+        .split(friendSeparator)
+        .map(id => id.trim())
+        .slice(0, maxSelectedFriends)
     }
     return []
   }, [searchParams])
@@ -47,7 +50,9 @@ function App() {
           {isOwnedGamesPending && <Spinner />}
           {ownedGames && (
             <>
-              <Heading as="h2">Owned games</Heading>
+              <Heading as="h2">
+                Owned games <CounterLabel>{ownedGames.length.toLocaleString()}</CounterLabel>
+              </Heading>
               <OwnedGamesList ownedGames={ownedGames} selectedGameId={selectedGameId} selectGame={selectGame} />
             </>
           )}
