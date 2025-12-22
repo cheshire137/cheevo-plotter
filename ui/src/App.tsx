@@ -59,7 +59,17 @@ function App() {
         </PageLayout.Pane>
         <PageLayout.Content>
           {selectedGame ? (
-            <AchievementsList game={selectedGame} />
+            <>
+              {selectedFriendIds.length < 1 && (
+                <Blankslate border>
+                  <Blankslate.Visual>
+                    <TrophyIcon size="medium" />
+                  </Blankslate.Visual>
+                  <Blankslate.Heading>Select a friend to compare achievements</Blankslate.Heading>
+                </Blankslate>
+              )}
+              <AchievementsList game={selectedGame} />
+            </>
           ) : (
             <Blankslate>
               <Blankslate.Visual>
@@ -70,7 +80,7 @@ function App() {
           )}
         </PageLayout.Content>
         {(isFriendsPending || friends) && selectedGame && (
-          <PageLayout.Pane aria-label="Friends" position="end">
+          <PageLayout.Pane aria-label="Friends" position="end" divider="line">
             {isFriendsPending && <Spinner />}
             {friends && (
               <>

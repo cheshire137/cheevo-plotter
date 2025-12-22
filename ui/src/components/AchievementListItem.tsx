@@ -26,10 +26,10 @@ export function AchievementListItem({achievement}: {achievement: SteamAchievemen
                   <Button as="summary" variant="link" className="show-hidden-achievement">
                     Show hidden achievement
                   </Button>
-                  {achievement.name}
+                  <strong>{achievement.name}</strong>
                 </Details>
               ) : (
-                <span>{achievement.name}</span>
+                <strong>{achievement.name}</strong>
               )}
             </Stack.Item>
             <Stack.Item className="achievement-unlock-info">
