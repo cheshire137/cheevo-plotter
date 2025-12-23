@@ -11,20 +11,22 @@ import (
 )
 
 type SteamUser struct {
-	Id         string   `json:"steamId"`
-	Name       string   `json:"name"`
-	AvatarUrl  string   `json:"avatarUrl"`
-	ProfileUrl string   `json:"profileUrl"`
-	FriendIds  []string `json:"friendIds"`
+	Id             string   `json:"steamId"`
+	Name           string   `json:"name"`
+	AvatarUrl      string   `json:"avatarUrl"`
+	ProfileUrl     string   `json:"profileUrl"`
+	FriendIds      []string `json:"friendIds"`
+	PrivateProfile bool     `json:"privateProfile"`
 }
 
 func NewSteamUser(data *steam.SteamPlayerSummary) *SteamUser {
 	return &SteamUser{
-		Id:         data.Id,
-		Name:       data.Name,
-		AvatarUrl:  data.AvatarUrl,
-		ProfileUrl: data.ProfileUrl,
-		FriendIds:  []string{},
+		Id:             data.Id,
+		Name:           data.Name,
+		AvatarUrl:      data.AvatarUrl,
+		ProfileUrl:     data.ProfileUrl,
+		FriendIds:      []string{},
+		PrivateProfile: false,
 	}
 }
 
@@ -39,8 +41,8 @@ func (ds *DataStore) GetSteamUsers(ids []string) ([]*SteamUser, error) {
 	placeholders := strings.Repeat("?,", len(ids))
 	placeholders = placeholders[:len(placeholders)-1] // drop trailing comma
 
-	query := `SELECT id, name, avatar_url, profile_url, friend_ids FROM steam_users WHERE id IN (` + placeholders +
-		`) ORDER BY name ASC`
+	query := `SELECT id, name, avatar_url, profile_url, friend_ids, private_profile
+		FROM steam_users WHERE id IN (` + placeholders + `) ORDER BY name ASC`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
 		return users, fmt.Errorf("failed to prepare query for listing Steam users: %v", err)
@@ -61,7 +63,7 @@ func (ds *DataStore) GetSteamUsers(ids []string) ([]*SteamUser, error) {
 	for rows.Next() {
 		user := &SteamUser{}
 		var name, avatarUrl, profileUrl, friendIds sql.NullString
-		err := rows.Scan(&user.Id, &name, &avatarUrl, &profileUrl, &friendIds)
+		err := rows.Scan(&user.Id, &name, &avatarUrl, &profileUrl, &friendIds, &user.PrivateProfile)
 		if err != nil {
 			return users, fmt.Errorf("failed to scan Steam user row: %v", err)
 		}
@@ -87,7 +89,7 @@ func (ds *DataStore) GetSteamUsers(ids []string) ([]*SteamUser, error) {
 
 func (ds *DataStore) GetSteamUser(id string) (*SteamUser, error) {
 	user := &SteamUser{}
-	query := `SELECT id, name, avatar_url, profile_url, friend_ids FROM steam_users WHERE id = ?`
+	query := `SELECT id, name, avatar_url, profile_url, friend_ids, private_profile FROM steam_users WHERE id = ?`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to prepare query for getting Steam user: %v", err)
@@ -95,7 +97,7 @@ func (ds *DataStore) GetSteamUser(id string) (*SteamUser, error) {
 	defer stmt.Close()
 
 	var name, avatarUrl, profileUrl, friendIds sql.NullString
-	err = stmt.QueryRow(id).Scan(&user.Id, &name, &avatarUrl, &profileUrl, &friendIds)
+	err = stmt.QueryRow(id).Scan(&user.Id, &name, &avatarUrl, &profileUrl, &friendIds, &user.PrivateProfile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get Steam user: %v", err)
 	}
@@ -116,6 +118,27 @@ func (ds *DataStore) GetSteamUser(id string) (*SteamUser, error) {
 	return user, nil
 }
 
+func (ds *DataStore) SetPrivateProfile(steamId string, privateProfile bool) error {
+	steamId = strings.TrimSpace(steamId)
+	if len(steamId) < 1 {
+		return errors.New("user Steam ID is required")
+	}
+
+	query := `UPDATE steam_users SET private_profile = ? WHERE id = ?`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		return fmt.Errorf("failed to prepare query for updating Steam user private profile status: %v", err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(privateProfile, steamId)
+	if err != nil {
+		return fmt.Errorf("failed to update Steam user private profile status: %v", err)
+	}
+
+	return nil
+}
+
 func (ds *DataStore) UpsertSteamUser(user *SteamUser) error {
 	if user == nil {
 		return errors.New("user is required")
@@ -127,9 +150,10 @@ func (ds *DataStore) UpsertSteamUser(user *SteamUser) error {
 	}
 
 	util.LogInfo("Saving Steam user " + user.Name)
-	query := `INSERT INTO steam_users (id, name, avatar_url, profile_url, friend_ids) VALUES (?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET name=excluded.name, avatar_url=excluded.avatar_url,
-			profile_url=excluded.profile_url, friend_ids=excluded.friend_ids`
+	query := `INSERT INTO steam_users (id, name, avatar_url, profile_url, friend_ids, private_profile)
+		VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET
+		name=excluded.name, avatar_url=excluded.avatar_url, profile_url=excluded.profile_url,
+		friend_ids=excluded.friend_ids, private_profile=excluded.private_profile`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
 		return fmt.Errorf("failed to prepare query for inserting Steam user %v", err)
@@ -137,7 +161,7 @@ func (ds *DataStore) UpsertSteamUser(user *SteamUser) error {
 	defer stmt.Close()
 
 	_, err = stmt.Exec(user.Id, user.Name, user.AvatarUrl, user.ProfileUrl,
-		strings.Join(user.FriendIds, friendIdSeparator))
+		strings.Join(user.FriendIds, friendIdSeparator), user.PrivateProfile)
 	if err != nil {
 		return fmt.Errorf("failed to insert Steam user: %v", err)
 	}
@@ -151,7 +175,8 @@ func (ds *DataStore) createSteamUsersTable() error {
 		name TEXT,
 		avatar_url TEXT,
 		profile_url TEXT,
-		friend_ids TEXT
+		friend_ids TEXT,
+		private_profile INTEGER NOT NULL DEFAULT 0
 	);`
 
 	stmt, err := ds.db.Prepare(query)

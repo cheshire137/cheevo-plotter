@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -115,6 +116,13 @@ func (e *Env) syncSteamPlayerAchievementsIfNecessary(steamId string, appId strin
 
 		achievements, err := client.GetAchievements(steamId, appId)
 		if err != nil {
+			if errors.Is(err, steam.ErrForbidden) {
+				util.LogInfo("Flagging Steam user " + steamId + " as having a private profile")
+				privateProfileErr := e.ds.SetPrivateProfile(steamId, true)
+				if privateProfileErr != nil {
+					util.LogError("Failed to set private profile for Steam user " + steamId + ": " + err.Error())
+				}
+			}
 			return fmt.Errorf("failed to load all Steam player achievements for user %s for game %s: %w", steamId, appId, err)
 		}
 
