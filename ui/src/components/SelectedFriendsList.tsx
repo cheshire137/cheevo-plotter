@@ -55,7 +55,7 @@ function SelectedFriendListItem({appId, user}: {appId: string; user: SteamUser})
       ) : (
         error && <span className="friend-achievements-error">{error.message}</span>
       )}
-      {gameAchievements && playerAchievementsById && (
+      {gameAchievements && playerAchievementsById && totalAchievements > 0 && (
         <>
           <span>
             {totalUnlocked} unlocked of {totalAchievements}
