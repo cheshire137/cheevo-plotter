@@ -1,34 +1,86 @@
-import {useEffect} from 'react'
+import {useCallback, useEffect, useMemo, useState} from 'react'
 import {AxiosError} from 'axios'
+import {Banner, Spinner} from '@primer/react'
 import {EyeClosedIcon} from '@primer/octicons-react'
 import {useQueryClient} from '@tanstack/react-query'
-import type {SteamUser} from '../types'
+import type {SteamPlayerAchievement, SteamUser} from '../types'
 import {useGetAchievements} from '../queries/use-get-achievements'
 import {useGetCurrentUser} from '../queries/use-get-current-user'
 import {useGetFriends} from '../queries/use-get-friends'
 import {SteamUserLink} from './SteamUserLink'
+import {UnlockedBarChart} from './UnlockedBarChart'
 import './SelectedFriendsList.css'
 
 export function SelectedFriendsList({appId, friends}: {appId: string; friends: SteamUser[]}) {
   const {data: currentUser} = useGetCurrentUser()
+  const {data, error, isPending} = useGetAchievements({appId})
+  const [allPlayerAchievements, setAllPlayerAchievements] = useState<SteamPlayerAchievement[]>([])
+  const gameAchievements = data?.gameAchievements
+  const playerNamesBySteamId = useMemo(() => {
+    const result: Record<string, string> = {}
+    for (const friend of friends) {
+      result[friend.steamId] = friend.name
+    }
+    return result
+  }, [friends])
+
+  const onPlayerAchievementsLoaded = useCallback(
+    (playerAchievements: SteamPlayerAchievement[]) => {
+      const uniquePlayerAchievements = new Set([...allPlayerAchievements, ...playerAchievements])
+      const newValue = Array.from(uniquePlayerAchievements)
+      if (newValue.length !== allPlayerAchievements.length) setAllPlayerAchievements(newValue)
+    },
+    [allPlayerAchievements]
+  )
+
   if (!currentUser) return null
+  if (isPending) return <Spinner />
+  if (gameAchievements && gameAchievements.length < 1) return null
+
+  if (error) {
+    return (
+      <Banner variant="critical" title="Error loading achievements">
+        {error.message}
+      </Banner>
+    )
+  }
 
   return (
-    <div className="selected-friends-list">
-      <SelectedFriendListItem appId={appId} user={currentUser} key={currentUser.steamId} />
-      {friends.map(friend => (
-        <SelectedFriendListItem appId={appId} user={friend} key={friend.steamId} />
-      ))}
-    </div>
+    <>
+      <div className="selected-friends-list">
+        <SelectedFriendListItem
+          onPlayerAchievementsLoaded={onPlayerAchievementsLoaded}
+          appId={appId}
+          user={currentUser}
+          key={currentUser.steamId}
+        />
+        {friends.map(friend => (
+          <SelectedFriendListItem
+            onPlayerAchievementsLoaded={onPlayerAchievementsLoaded}
+            appId={appId}
+            user={friend}
+            key={friend.steamId}
+          />
+        ))}
+      </div>
+      <UnlockedBarChart playerAchievements={allPlayerAchievements} playerNamesBySteamId={playerNamesBySteamId} />
+    </>
   )
 }
 
-function SelectedFriendListItem({appId, user}: {appId: string; user: SteamUser}) {
+function SelectedFriendListItem({
+  appId,
+  onPlayerAchievementsLoaded,
+  user,
+}: {
+  appId: string
+  onPlayerAchievementsLoaded: (playerAchievements: SteamPlayerAchievement[]) => void
+  user: SteamUser
+}) {
   const {data, error} = useGetAchievements({appId, steamId: user.steamId})
-  const gameAchievements = data?.gameAchievements
-  const playerAchievementsById = data?.playerAchievementsById
-  const totalUnlocked = playerAchievementsById ? Object.values(playerAchievementsById).filter(a => a.unlocked).length : 0
-  const totalAchievements = gameAchievements ? gameAchievements.length : 0
+  const playerAchievements = useMemo(() => data ? Object.values(data.playerAchievementsById) : [], [data])
+  const totalUnlocked = playerAchievements.filter(a => a.unlocked).length
+  const totalAchievements = data?.gameAchievements ? data.gameAchievements.length : 0
   const privateProfile = error !== null && error instanceof AxiosError && error.status === 403
   const queryClient = useQueryClient()
   const {queryKey: friendsQueryKey, data: friends} = useGetFriends()
@@ -45,6 +97,10 @@ function SelectedFriendListItem({appId, user}: {appId: string; user: SteamUser})
     }
   }, [friends, privateProfile, queryClient])
 
+  useEffect(() => {
+    if (playerAchievements.length > 0) onPlayerAchievementsLoaded(playerAchievements)
+  }, [onPlayerAchievementsLoaded, playerAchievements])
+
   return (
     <div>
       <SteamUserLink user={user} />
@@ -55,7 +111,7 @@ function SelectedFriendListItem({appId, user}: {appId: string; user: SteamUser})
       ) : (
         error && <span className="friend-achievements-error">{error.message}</span>
       )}
-      {gameAchievements && playerAchievementsById && totalAchievements > 0 && (
+      {totalAchievements > 0 && (
         <>
           <span>
             {totalUnlocked} unlocked of {totalAchievements}
