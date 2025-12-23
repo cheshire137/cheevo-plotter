@@ -5,12 +5,14 @@ export interface SteamOwnedGame {
   steamId: string
 }
 
+// Keep in sync with `SteamUser` in pkg/server/get_steam_player_summaries_handler.go
 export interface SteamUser {
   steamId: string
   name: string
   profileUrl: string
   avatarUrl: string
   friendIds?: string[]
+  privateProfile: boolean
 }
 
 export interface SteamAchievement {

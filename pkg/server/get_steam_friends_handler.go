@@ -11,15 +11,8 @@ import (
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
-type SteamFriend struct {
-	Id         string `json:"steamId"`
-	Name       string `json:"name"`
-	AvatarUrl  string `json:"avatarUrl"`
-	ProfileUrl string `json:"profileUrl"`
-}
-
 type SteamFriendsResponse struct {
-	Friends []*SteamFriend `json:"friends"`
+	Friends []*SteamUser `json:"friends"`
 }
 
 func (e *Env) GetSteamFriendsHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +31,7 @@ func (e *Env) GetSteamFriendsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	friends := []*SteamFriend{}
+	friends := []*SteamUser{}
 	cachedFriends, err := e.ds.GetSteamUsers(user.FriendIds)
 	if err != nil {
 		ErrorJson(w, err)
@@ -48,11 +41,13 @@ func (e *Env) GetSteamFriendsHandler(w http.ResponseWriter, r *http.Request) {
 	existingFriendIds := map[string]bool{}
 	for _, cachedFriend := range cachedFriends {
 		existingFriendIds[cachedFriend.Id] = true
-		friend := &SteamFriend{
-			Id:         cachedFriend.Id,
-			Name:       cachedFriend.Name,
-			AvatarUrl:  cachedFriend.AvatarUrl,
-			ProfileUrl: cachedFriend.ProfileUrl,
+		friend := &SteamUser{
+			SteamId:        cachedFriend.Id,
+			Name:           cachedFriend.Name,
+			AvatarUrl:      cachedFriend.AvatarUrl,
+			ProfileUrl:     cachedFriend.ProfileUrl,
+			FriendIds:      cachedFriend.FriendIds,
+			PrivateProfile: cachedFriend.PrivateProfile,
 		}
 		friends = append(friends, friend)
 	}
@@ -67,13 +62,21 @@ func (e *Env) GetSteamFriendsHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		friends, err := client.GetPlayerSummaries(missingFriendIds)
+		newFriends, err := client.GetPlayerSummaries(missingFriendIds)
 		if err != nil {
 			ErrorJson(w, err)
 			return
 		}
 
-		for _, friend := range friends {
+		for _, friend := range newFriends {
+			friends = append(friends, &SteamUser{
+				SteamId:        friend.Id,
+				AvatarUrl:      friend.AvatarUrl,
+				ProfileUrl:     friend.ProfileUrl,
+				Name:           friend.Name,
+				FriendIds:      []string{steamId},
+				PrivateProfile: false,
+			})
 			err = e.ds.UpsertSteamUser(data_store.NewSteamUser(friend))
 			if err != nil {
 				ErrorJson(w, err)

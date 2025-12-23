@@ -9,8 +9,18 @@ import (
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
+// Keep in sync with `SteamUser` in ui/src/types.ts
+type SteamUser struct {
+	SteamId        string   `json:"steamId"`
+	Name           string   `json:"name"`
+	AvatarUrl      string   `json:"avatarUrl"`
+	ProfileUrl     string   `json:"profileUrl"`
+	FriendIds      []string `json:"friendIds"`
+	PrivateProfile bool     `json:"privateProfile"`
+}
+
 type SteamPlayerSummariesResponse struct {
-	Players []*steam.SteamPlayerSummary `json:"players"`
+	Players []*SteamUser `json:"players"`
 }
 
 func (e *Env) GetSteamPlayerSummariesHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +40,19 @@ func (e *Env) GetSteamPlayerSummariesHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	players := []*SteamUser{}
+	for _, playerSummary := range playerSummaries {
+		players = append(players, &SteamUser{
+			SteamId:        playerSummary.Id,
+			AvatarUrl:      playerSummary.AvatarUrl,
+			Name:           playerSummary.Name,
+			ProfileUrl:     playerSummary.ProfileUrl,
+			FriendIds:      []string{},
+			PrivateProfile: false,
+		})
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	response := SteamPlayerSummariesResponse{Players: playerSummaries}
+	response := SteamPlayerSummariesResponse{Players: players}
 	json.NewEncoder(w).Encode(response)
 }

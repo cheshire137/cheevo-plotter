@@ -1,5 +1,5 @@
 import {useCallback, useMemo, useState} from 'react'
-import { SearchIcon } from '@primer/octicons-react'
+import {EyeClosedIcon, SearchIcon} from '@primer/octicons-react'
 import {useSearchParams} from 'react-router-dom'
 import {ActionList, Avatar, FormControl, TextInput} from '@primer/react'
 import type {SteamUser} from '../types'
@@ -94,6 +94,11 @@ function FriendsListItem({
         </ActionList.LeadingVisual>
       )}
       {friend.name}
+      {friend.privateProfile && (
+        <ActionList.TrailingVisual>
+          <EyeClosedIcon />
+        </ActionList.TrailingVisual>
+      )}
     </ActionList.Item>
   )
 }
