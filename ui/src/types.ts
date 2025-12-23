@@ -11,19 +11,26 @@ export interface SteamUser {
   name: string
   profileUrl: string
   avatarUrl: string
-  friendIds?: string[]
+  friendIds: string[]
   privateProfile: boolean
 }
 
-export interface SteamAchievement {
+// Keep in sync with `SteamGameAchievement` in pkg/server/get_steam_achievements_handler.go
+export interface SteamGameAchievement {
   id: string
-  unlocked: boolean
-  unlockTime: string
   appId: string
-  steamId: string
   name: string
   iconUrl: string
   grayIconUrl: string
   description: string
   hidden: boolean
+}
+
+// Keep in sync with `SteamPlayerAchievement` in pkg/server/get_steam_achievements_handler.go
+export interface SteamPlayerAchievement {
+  id: string
+  unlocked: boolean
+  unlockTime: string
+  appId: string
+  steamId: string
 }

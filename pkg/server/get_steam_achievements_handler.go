@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/cheshire137/cheevo-plotter/pkg/data_store"
@@ -12,12 +13,19 @@ import (
 	"github.com/cheshire137/cheevo-plotter/pkg/util"
 )
 
-type SteamAchievement struct {
-	Unlocked    bool   `json:"unlocked"`
-	UnlockTime  string `json:"unlockTime"`
+// Keep in sync with `SteamPlayerAchievement` in ui/src/types.ts
+type SteamPlayerAchievement struct {
+	Unlocked   bool   `json:"unlocked"`
+	UnlockTime string `json:"unlockTime"`
+	Id         string `json:"id"`
+	AppId      string `json:"appId"`
+	SteamId    string `json:"steamId"`
+}
+
+// Keep in sync with `SteamGameAchievement` in ui/src/types.ts
+type SteamGameAchievement struct {
 	Id          string `json:"id"`
 	AppId       string `json:"appId"`
-	SteamId     string `json:"steamId"`
 	Name        string `json:"name"`
 	IconUrl     string `json:"iconUrl"`
 	GrayIconUrl string `json:"grayIconUrl"`
@@ -26,7 +34,8 @@ type SteamAchievement struct {
 }
 
 type SteamAchievementsResponse struct {
-	Achievements []*SteamAchievement `json:"achievements"`
+	PlayerAchievementsById map[string]*SteamPlayerAchievement `json:"playerAchievementsById"`
+	GameAchievements       []*SteamGameAchievement            `json:"gameAchievements"`
 }
 
 func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request) {
@@ -65,18 +74,40 @@ func (e *Env) GetSteamAchievementsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	achievements := []*SteamAchievement{}
-	for _, gameAchievement := range gameAchievements {
-		achievement := newSteamAchievement(playerAchievementsById[gameAchievement.Id], gameAchievement)
-		achievements = append(achievements, achievement)
-	}
+	sort.Slice(gameAchievements, func(i, j int) bool {
+		gameAchievementA := gameAchievements[i]
+		gameAchievementB := gameAchievements[j]
+		playerAchievementA, playerHasAchievementA := playerAchievementsById[gameAchievementA.Id]
+		playerAchievementB, playerHasAchievementB := playerAchievementsById[gameAchievementB.Id]
+		if playerHasAchievementA && playerHasAchievementB {
+			if playerAchievementA.Unlocked && playerAchievementB.Unlocked {
+				return playerAchievementA.UnlockTime < playerAchievementB.UnlockTime
+			}
+			if playerAchievementA.Unlocked && !playerAchievementB.Unlocked {
+				return true
+			}
+			if !playerAchievementA.Unlocked && playerAchievementB.Unlocked {
+				return false
+			}
+		}
+		if playerHasAchievementA && !playerHasAchievementB {
+			return true
+		}
+		if !playerHasAchievementA && playerHasAchievementB {
+			return false
+		}
+		return gameAchievementA.Name < gameAchievementB.Name
+	})
 
-	response := SteamAchievementsResponse{Achievements: achievements}
+	response := SteamAchievementsResponse{
+		GameAchievements:       gameAchievements,
+		PlayerAchievementsById: playerAchievementsById,
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
-func (e *Env) getCachedSteamPlayerAchievementsById(steamId, appId string) (map[string]*data_store.SteamPlayerAchievement, error) {
+func (e *Env) getCachedSteamPlayerAchievementsById(steamId, appId string) (map[string]*SteamPlayerAchievement, error) {
 	err := e.syncSteamPlayerAchievementsIfNecessary(steamId, appId)
 	if err != nil {
 		return nil, err
@@ -87,21 +118,49 @@ func (e *Env) getCachedSteamPlayerAchievementsById(steamId, appId string) (map[s
 		return nil, err
 	}
 
-	result := map[string]*data_store.SteamPlayerAchievement{}
+	result := make(map[string]*SteamPlayerAchievement)
 	for _, achievement := range achievements {
-		result[achievement.Id] = achievement
+		unlockTime, err := achievement.UnlockTime()
+		var unlockTimeStr string
+		if unlockTime != nil && err == nil {
+			unlockTimeStr = unlockTime.Format(time.RFC3339)
+		}
+		result[achievement.Id] = &SteamPlayerAchievement{
+			Unlocked:   achievement.Unlocked,
+			UnlockTime: unlockTimeStr,
+			Id:         achievement.Id,
+			AppId:      achievement.AppId,
+			SteamId:    achievement.SteamId,
+		}
 	}
-
 	return result, nil
 }
 
-func (e *Env) getCachedSteamGameAchievements(appId string) ([]*data_store.SteamGameAchievement, error) {
+func (e *Env) getCachedSteamGameAchievements(appId string) ([]*SteamGameAchievement, error) {
 	err := e.syncSteamGameAchievementsIfNecessary(appId)
 	if err != nil {
 		return nil, err
 	}
 
-	return e.ds.GetSteamGameAchievements(appId)
+	achievements, err := e.ds.GetSteamGameAchievements(appId)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]*SteamGameAchievement, len(achievements))
+	for i, achievement := range achievements {
+		result[i] = &SteamGameAchievement{
+			Id:          achievement.Id,
+			AppId:       achievement.AppId,
+			Name:        achievement.Name,
+			IconUrl:     achievement.IconUrl,
+			GrayIconUrl: achievement.GrayIconUrl,
+			Description: achievement.Description,
+			Hidden:      achievement.Hidden,
+		}
+	}
+
+	return result, nil
 }
 
 func (e *Env) syncSteamPlayerAchievementsIfNecessary(steamId string, appId string) error {
@@ -189,25 +248,4 @@ func (e *Env) syncSteamGameAchievementsIfNecessary(appId string) error {
 	}
 
 	return nil
-}
-
-func newSteamAchievement(playerAchievement *data_store.SteamPlayerAchievement, gameAchievement *data_store.SteamGameAchievement) *SteamAchievement {
-	achievement := &SteamAchievement{
-		Id:          gameAchievement.Id,
-		AppId:       gameAchievement.AppId,
-		Name:        gameAchievement.Name,
-		IconUrl:     gameAchievement.IconUrl,
-		GrayIconUrl: gameAchievement.GrayIconUrl,
-		Description: gameAchievement.Description,
-		Hidden:      gameAchievement.Hidden,
-		Unlocked:    false,
-		UnlockTime:  "",
-		SteamId:     "",
-	}
-	if playerAchievement != nil {
-		achievement.Unlocked = playerAchievement.Unlocked
-		achievement.UnlockTime = playerAchievement.UnlockTimeStr
-		achievement.SteamId = playerAchievement.SteamId
-	}
-	return achievement
 }

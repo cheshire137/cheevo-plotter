@@ -7,8 +7,10 @@ import {useGetAchievements} from '../queries/use-get-achievements'
 import './AchievementsList.css'
 
 export function AchievementsList({game}: {game: SteamOwnedGame}) {
-  const {data: achievements, error, isPending} = useGetAchievements({appId: game.appId})
-  const totalAchievements = achievements?.length ?? 0
+  const {data, error, isPending} = useGetAchievements({appId: game.appId})
+  const gameAchievements = data?.gameAchievements
+  const playerAchievementsById = data?.playerAchievementsById
+  const totalAchievements = gameAchievements ? gameAchievements.length : 0
 
   if (isPending) return <Spinner />
 
@@ -33,11 +35,15 @@ export function AchievementsList({game}: {game: SteamOwnedGame}) {
   return (
     <>
       <Heading as="h2" className="achievements-heading">
-        Achievements <CounterLabel>{achievements.length}</CounterLabel>
+        Achievements <CounterLabel>{totalAchievements}</CounterLabel>
       </Heading>
       <ul className="achievements-list">
-        {achievements.map(achievement => (
-          <AchievementListItem key={achievement.id} achievement={achievement} />
+        {gameAchievements?.map(gameAchievement => (
+          <AchievementListItem
+            key={gameAchievement.id}
+            playerAchievement={playerAchievementsById ? playerAchievementsById[gameAchievement.id] : null}
+            gameAchievement={gameAchievement}
+          />
         ))}
       </ul>
     </>

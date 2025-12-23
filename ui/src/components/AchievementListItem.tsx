@@ -1,16 +1,22 @@
 import {Avatar, Button, Details, Stack, useDetails} from '@primer/react'
 import {LockIcon, UnlockIcon} from '@primer/octicons-react'
-import type {SteamAchievement} from '../types'
+import type {SteamGameAchievement, SteamPlayerAchievement} from '../types'
 import './AchievementListItem.css'
 
-export function AchievementListItem({achievement}: {achievement: SteamAchievement}) {
-  const unlockTime = achievement.unlockTime.length > 0 ? new Date(achievement.unlockTime) : undefined
+export function AchievementListItem({
+  gameAchievement,
+  playerAchievement,
+}: {
+  gameAchievement: SteamGameAchievement
+  playerAchievement?: SteamPlayerAchievement | null
+}) {
+  const unlockTime = playerAchievement && playerAchievement.unlockTime.length > 0 ? new Date(playerAchievement.unlockTime) : undefined
   const {getDetailsProps} = useDetails({})
   const iconUrl =
-    achievement.unlocked && achievement.iconUrl.length > 0
-      ? achievement.iconUrl
-      : !achievement.unlocked && achievement.grayIconUrl.length > 0
-      ? achievement.grayIconUrl
+    playerAchievement?.unlocked && gameAchievement.iconUrl.length > 0
+      ? gameAchievement.iconUrl
+      : (!playerAchievement || !playerAchievement.unlocked) && gameAchievement.grayIconUrl.length > 0
+      ? gameAchievement.grayIconUrl
       : null
   return (
     <li className="achievement-list-item">
@@ -21,19 +27,19 @@ export function AchievementListItem({achievement}: {achievement: SteamAchievemen
         <Stack.Item>
           <Stack direction="horizontal" align="center">
             <Stack.Item>
-              {achievement.hidden && !achievement.unlocked ? (
+              {gameAchievement.hidden && (!playerAchievement || !playerAchievement.unlocked) ? (
                 <Details {...getDetailsProps()} className="hidden-achievement-details">
                   <Button as="summary" variant="link" className="show-hidden-achievement">
                     Show hidden achievement
                   </Button>
-                  <strong>{achievement.name}</strong>
+                  <strong>{gameAchievement.name}</strong>
                 </Details>
               ) : (
-                <strong>{achievement.name}</strong>
+                <strong>{gameAchievement.name}</strong>
               )}
             </Stack.Item>
             <Stack.Item className="achievement-unlock-info">
-              {achievement.unlocked ? (
+              {playerAchievement?.unlocked ? (
                 <UnlockIcon size={16} className="unlocked-icon" />
               ) : (
                 <LockIcon size={16} className="locked-icon" />
@@ -41,7 +47,7 @@ export function AchievementListItem({achievement}: {achievement: SteamAchievemen
               {unlockTime && <span>{unlockTime.toLocaleDateString()}</span>}
             </Stack.Item>
           </Stack>
-          <div>{achievement.description}</div>
+          <div>{gameAchievement.description}</div>
         </Stack.Item>
       </Stack>
     </li>
