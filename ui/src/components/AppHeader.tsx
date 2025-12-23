@@ -1,5 +1,6 @@
 import {Avatar, Link, PageHeader, Spinner, UnderlineNav} from '@primer/react'
 import {useGetCurrentUser} from '../queries/use-get-current-user'
+import {SteamUserLink} from './SteamUserLink'
 import './AppHeader.css'
 
 export function AppHeader() {
@@ -16,10 +17,7 @@ export function AppHeader() {
             <>
               <form method="POST" id="logout-form" action={`${import.meta.env.VITE_BACKEND_URL}/user/logout`}></form>
               <span className="signed-in-as">
-                Signed in as{' '}
-                <Link href={currentUser.profileUrl}>
-                  {currentUser.avatarUrl.length > 0 && <Avatar src={currentUser.avatarUrl} />} {currentUser.name}
-                </Link>
+                Signed in as <SteamUserLink user={currentUser} />
               </span>
             </>
           )}

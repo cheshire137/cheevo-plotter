@@ -1,5 +1,4 @@
 import {useEffect} from 'react'
-import {Avatar, Link} from '@primer/react'
 import {AxiosError} from 'axios'
 import {EyeClosedIcon} from '@primer/octicons-react'
 import {useQueryClient} from '@tanstack/react-query'
@@ -7,6 +6,7 @@ import type {SteamUser} from '../types'
 import {useGetAchievements} from '../queries/use-get-achievements'
 import {useGetCurrentUser} from '../queries/use-get-current-user'
 import {useGetFriends} from '../queries/use-get-friends'
+import {SteamUserLink} from './SteamUserLink'
 import './SelectedFriendsList.css'
 
 export function SelectedFriendsList({appId, friends}: {appId: string; friends: SteamUser[]}) {
@@ -44,10 +44,7 @@ function SelectedFriendListItem({appId, user}: {appId: string; user: SteamUser})
 
   return (
     <div>
-      <Link href={user.profileUrl}>
-        {user.avatarUrl.length > 0 && <Avatar className="selected-friend-avatar" src={user.avatarUrl} />}
-        <span className="selected-friend-name">{user.name}</span>
-      </Link>
+      <SteamUserLink user={user} />
       {privateProfile ? (
         <span className="friend-achievements-error">
           <EyeClosedIcon /> profile is private

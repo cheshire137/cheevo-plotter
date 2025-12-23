@@ -1,0 +1,5 @@
+.steam-user-avatar,
+.steam-user-name {
+  display: inline-block;
+  margin-right: var(--base-size-4);
+}
