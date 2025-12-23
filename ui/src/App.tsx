@@ -40,9 +40,11 @@ function App() {
   const selectGame = useCallback(
     (appId: string) => {
       setSelectedGameId(appId)
-      setSearchParams({appid: appId})
+      const newSearchParams = new URLSearchParams(searchParams)
+      newSearchParams.set('appid', appId)
+      setSearchParams(newSearchParams)
     },
-    [setSearchParams]
+    [searchParams, setSearchParams]
   )
 
   return (
