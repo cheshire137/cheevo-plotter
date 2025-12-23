@@ -148,10 +148,12 @@ func (c *Client) GetGameSchema(appId string) (*SteamGameSchema, error) {
 }
 
 func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamPlayerAchievement, error) {
+	achievements := []*SteamPlayerAchievement{}
+
 	// https://partner.steamgames.com/doc/webapi/ISteamUserStats#GetPlayerAchievements
 	u, err := url.Parse(baseApiUrl + "/ISteamUserStats/GetPlayerAchievements/v1/")
 	if err != nil {
-		return nil, err
+		return achievements, err
 	}
 
 	params := u.Query()
@@ -170,15 +172,9 @@ func (c *Client) GetAchievements(steamId string, appId string) ([]*SteamPlayerAc
 		return http.DefaultClient.Do(req)
 	}
 
-	achievements := []*SteamPlayerAchievement{}
 	data, err := c.makeJsonRequest(makeRequest, "get Steam achievements")
 	if err != nil {
-		// Game does not have achievements
-		if errors.Is(err, ErrBadRequest) {
-			return achievements, nil
-		}
-
-		return nil, err
+		return achievements, err
 	}
 
 	if playerStats, ok := data["playerstats"].(map[string]interface{}); ok {

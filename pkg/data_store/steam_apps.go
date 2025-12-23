@@ -11,12 +11,13 @@ import (
 )
 
 type SteamApp struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
+	Id              string `json:"id"`
+	Name            string `json:"name"`
+	HasAchievements bool   `json:"hasAchievements"`
 }
 
 func NewSteamApp(data *steam.SteamApp) *SteamApp {
-	return &SteamApp{Id: data.Id, Name: data.Name}
+	return &SteamApp{Id: data.Id, Name: data.Name, HasAchievements: true}
 }
 
 func (ds *DataStore) GetLastAppId() (int32, error) {
@@ -40,9 +41,26 @@ func (ds *DataStore) GetLastAppId() (int32, error) {
 	return int32(appId64), nil
 }
 
+func (ds *DataStore) GetSteamApp(id string) (*SteamApp, error) {
+	app := &SteamApp{}
+	query := `SELECT id, name, has_achievements FROM steam_apps WHERE id = ?`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to prepare query for getting Steam app: %v", err)
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(id).Scan(&app.Id, &app.Name, &app.HasAchievements)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get Steam app: %v", err)
+	}
+
+	return app, nil
+}
+
 func (ds *DataStore) ListSteamApps(lastAppId string, limit int32) ([]*SteamApp, error) {
 	apps := []*SteamApp{}
-	query := `SELECT id, name FROM steam_apps `
+	query := `SELECT id, name, has_achievements FROM steam_apps `
 	if len(lastAppId) > 0 {
 		query += `WHERE id > ? `
 	}
@@ -66,7 +84,7 @@ func (ds *DataStore) ListSteamApps(lastAppId string, limit int32) ([]*SteamApp, 
 
 	for rows.Next() {
 		app := &SteamApp{}
-		err := rows.Scan(&app.Id, &app.Name)
+		err := rows.Scan(&app.Id, &app.Name, &app.HasAchievements)
 		if err != nil {
 			return apps, fmt.Errorf("failed to scan Steam app row: %w", err)
 		}
@@ -85,7 +103,8 @@ func (ds *DataStore) GetSteamApps(appIds []string) ([]*SteamApp, error) {
 	placeholders := strings.Repeat("?,", len(appIds))
 	placeholders = placeholders[:len(placeholders)-1] // drop trailing comma
 
-	query := `SELECT id, name FROM steam_apps WHERE id IN (` + placeholders + `) ORDER BY name ASC, id ASC`
+	query := `SELECT id, name, has_achievements FROM steam_apps WHERE id IN (` + placeholders +
+		`) ORDER BY name ASC, id ASC`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
 		return apps, fmt.Errorf("failed to prepare query for getting Steam apps: %w", err)
@@ -105,7 +124,7 @@ func (ds *DataStore) GetSteamApps(appIds []string) ([]*SteamApp, error) {
 
 	for rows.Next() {
 		app := &SteamApp{}
-		err := rows.Scan(&app.Id, &app.Name)
+		err := rows.Scan(&app.Id, &app.Name, &app.HasAchievements)
 		if err != nil {
 			return apps, fmt.Errorf("failed to scan Steam app row: %w", err)
 		}
@@ -113,6 +132,27 @@ func (ds *DataStore) GetSteamApps(appIds []string) ([]*SteamApp, error) {
 	}
 
 	return apps, nil
+}
+
+func (ds *DataStore) SetHasAchievements(appId string, hasAchievements bool) error {
+	appId = strings.TrimSpace(appId)
+	if len(appId) < 1 {
+		return errors.New("app ID is required")
+	}
+
+	query := `UPDATE steam_apps SET has_achievements = ? WHERE id = ?`
+	stmt, err := ds.db.Prepare(query)
+	if err != nil {
+		return fmt.Errorf("failed to prepare query for updating Steam app achievement status: %v", err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(hasAchievements, appId)
+	if err != nil {
+		return fmt.Errorf("failed to update Steam app achievement status: %v", err)
+	}
+
+	return nil
 }
 
 func (ds *DataStore) AddSteamApp(app *SteamApp) error {
@@ -130,15 +170,15 @@ func (ds *DataStore) AddSteamApp(app *SteamApp) error {
 		return errors.New("app ID is required")
 	}
 
-	query := `INSERT INTO steam_apps (id, name) VALUES (?, ?)
-		ON CONFLICT (id) DO UPDATE SET name = excluded.name`
+	query := `INSERT INTO steam_apps (id, name, has_achievements) VALUES (?, ?, ?)
+		ON CONFLICT (id) DO UPDATE SET name = excluded.name, has_achievements = excluded.has_achievements`
 	stmt, err := ds.db.Prepare(query)
 	if err != nil {
 		return fmt.Errorf("failed to prepare query for inserting Steam app %w", err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(app.Id, app.Name)
+	_, err = stmt.Exec(app.Id, app.Name, app.HasAchievements)
 	if err != nil {
 		return fmt.Errorf("failed to insert Steam app: %w", err)
 	}
@@ -149,7 +189,8 @@ func (ds *DataStore) AddSteamApp(app *SteamApp) error {
 func (ds *DataStore) createSteamAppsTable() error {
 	query := `CREATE TABLE IF NOT EXISTS steam_apps (
 		id TEXT PRIMARY KEY,
-		name TEXT NOT NULL
+		name TEXT NOT NULL,
+		has_achievements INTEGER NOT NULL DEFAULT 1
 	);`
 
 	stmt, err := ds.db.Prepare(query)

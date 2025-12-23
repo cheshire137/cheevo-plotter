@@ -179,13 +179,22 @@ func (e *Env) syncSteamPlayerAchievementsIfNecessary(steamId string, appId strin
 				util.LogInfo("Flagging Steam user " + steamId + " as having a private profile")
 				privateProfileErr := e.ds.SetPrivateProfile(steamId, true)
 				if privateProfileErr != nil {
-					util.LogError("Failed to set private profile for Steam user " + steamId + ": " + err.Error())
+					util.LogError("Failed to set private profile for Steam user " + steamId + ": " + privateProfileErr.Error())
 				}
+			} else if errors.Is(err, steam.ErrBadRequest) {
+				// Game does not have achievements
+				util.LogInfo("Flagging Steam app " + appId + " as having no achievements")
+				hasAchievementsErr := e.ds.SetHasAchievements(appId, false)
+				if hasAchievementsErr != nil {
+					util.LogError("Failed to set Steam app " + appId + " as having no achievements: " +
+						hasAchievementsErr.Error())
+				}
+			} else {
+				return fmt.Errorf("failed to load all Steam player achievements for user %s for game %s: %w", steamId, appId, err)
 			}
-			return fmt.Errorf("failed to load all Steam player achievements for user %s for game %s: %w", steamId, appId, err)
 		}
 
-		allItemsSaved := len(achievements) > 0
+		allItemsSaved := true
 		for _, achievementData := range achievements {
 			achievement := data_store.NewSteamPlayerAchievement(steamId, appId, achievementData)
 			err := e.ds.UpsertSteamPlayerAchievement(achievement)
@@ -226,7 +235,7 @@ func (e *Env) syncSteamGameAchievementsIfNecessary(appId string) error {
 			return fmt.Errorf("failed to load all Steam game achievements for game %s: %w", appId, err)
 		}
 
-		allItemsSaved := len(gameSchema.Achievements) > 0
+		allItemsSaved := true
 		for _, achievementData := range gameSchema.Achievements {
 			achievement := data_store.NewSteamGameAchievement(appId, achievementData)
 			err := e.ds.UpsertSteamGameAchievement(achievement)
