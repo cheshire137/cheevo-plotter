@@ -108,7 +108,7 @@ func (ds *DataStore) UpsertSteamPlayerAchievement(achievement *SteamPlayerAchiev
 func (ds *DataStore) createSteamPlayerAchievementsTable() error {
 	query := `CREATE TABLE IF NOT EXISTS steam_player_achievements (
 		id TEXT NOT NULL,
-		unlocked BOOLEAN NOT NULL,
+		unlocked INTEGER NOT NULL DEFAULT 0,
 		unlock_time TEXT,
 		steam_id TEXT NOT NULL,
 		app_id TEXT NOT NULL,

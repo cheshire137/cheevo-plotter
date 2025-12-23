@@ -119,7 +119,7 @@ func (ds *DataStore) createSteamGameAchievementsTable() error {
 		description TEXT,
 		icon_url TEXT,
 		gray_icon_url TEXT,
-		hidden BOOLEAN NOT NULL,
+		hidden INTEGER NOT NULL DEFAULT 0,
 		PRIMARY KEY (id, app_id)
 	);`
 
