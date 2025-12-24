@@ -1,7 +1,16 @@
 import {useMemo} from 'react'
 import {Avatar} from '@primer/react'
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts'
+import {BarChart, Bar, XAxis, YAxis, Tooltip} from 'recharts'
 import type {SteamPlayerAchievement, SteamUser} from '../types'
+import {useSelectedFriends} from '../contexts/selected-friends-context'
+import {useGetCurrentUser} from '../queries/use-get-current-user'
+
+interface ChartData {
+  steamId: string;
+  'Total unlocked': number;
+  playerName: string;
+  avatarUrl: string;
+}
 
 export function AchievementsChart({
   playerAchievements,
@@ -10,16 +19,23 @@ export function AchievementsChart({
   playerAchievements: SteamPlayerAchievement[]
   playersBySteamId: Record<string, SteamUser>
 }) {
-  const data = useMemo(() => {
+  const {data: currentUser} = useGetCurrentUser()
+  const {selectedFriendIds} = useSelectedFriends()
+  const currentUserId = currentUser?.steamId
+  const data = useMemo<ChartData[]>(() => {
     const countsByPlayerId: Record<string, number> = {}
     for (const steamId of Object.keys(playersBySteamId)) {
-      countsByPlayerId[steamId] = 0
+      if (steamId === currentUserId || selectedFriendIds.has(steamId)) {
+        countsByPlayerId[steamId] = 0
+      }
     }
     for (const playerAchievement of playerAchievements) {
-      const key = playerAchievement.steamId
-      countsByPlayerId[key] = (countsByPlayerId[key] || 0) + (playerAchievement.unlocked ? 1 : 0)
+      const steamId = playerAchievement.steamId
+      if (steamId === currentUserId || selectedFriendIds.has(steamId)) {
+        countsByPlayerId[steamId] = (countsByPlayerId[steamId] || 0) + (playerAchievement.unlocked ? 1 : 0)
+      }
     }
-    const data = Object.entries(countsByPlayerId).map(([steamId, unlockCount]) => {
+    return Object.entries(countsByPlayerId).map(([steamId, unlockCount]) => {
       const player = playersBySteamId[steamId]
       return {
         steamId,
@@ -27,9 +43,8 @@ export function AchievementsChart({
         playerName: player?.name || steamId,
         avatarUrl: player?.avatarUrl,
       }
-    })
-    return data
-  }, [playerAchievements, playersBySteamId])
+    }).filter(d => d)
+  }, [currentUserId, playerAchievements, playersBySteamId, selectedFriendIds])
 
   return (
     <BarChart
