@@ -1,5 +1,5 @@
 import {useMemo} from 'react'
-import { Avatar } from '@primer/react'
+import {Avatar} from '@primer/react'
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts'
 import type {SteamPlayerAchievement, SteamUser} from '../types'
 
@@ -23,7 +23,7 @@ export function AchievementsChart({
       const player = playersBySteamId[steamId]
       return {
         steamId,
-        unlockCount,
+        'Total unlocked': unlockCount,
         playerName: player?.name || steamId,
         avatarUrl: player?.avatarUrl,
       }
@@ -34,21 +34,24 @@ export function AchievementsChart({
   return (
     <BarChart
       style={{width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618}}
-      margin={{top: 5, right: 0, left: 0, bottom: 5}}
+      margin={{top: 5, right: 0, left: 0, bottom: 15}}
       data={data}
       responsive
     >
-      <CartesianGrid strokeDasharray="3 3" />
       <XAxis
         dataKey="playerName"
         tick={({x, y, payload: {value}}) => {
           const avatarUrl = value ? data.find(item => item.playerName === value)?.avatarUrl : ''
           return (
             <g transform={`translate(${x},${y})`}>
-              {avatarUrl && (
+              {avatarUrl ? (
                 <foreignObject x={-15} y={0} width={30} height={30}>
                   <Avatar src={avatarUrl} alt={value} />
                 </foreignObject>
+              ) : (
+                <text x={0} y={35} textAnchor="middle" fill="#666" fontSize={12}>
+                  {value}
+                </text>
               )}
             </g>
           )
@@ -57,8 +60,7 @@ export function AchievementsChart({
       />
       <YAxis width="auto" />
       <Tooltip />
-      <Legend />
-      <Bar dataKey="unlockCount" fill="#8884d8" radius={[10, 10, 0, 0]} />
+      <Bar dataKey="Total unlocked" fill="#8884d8" radius={[10, 10, 0, 0]} />
     </BarChart>
   )
 }
