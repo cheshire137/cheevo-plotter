@@ -1,3 +1,9 @@
+.search-friends {
+  margin-bottom: var(--base-size-8);
+  margin-right: var(--base-size-8);
+  margin-top: var(--base-size-6);
+}
+
 .selected-friends-count {
   font-size: var(--text-body-size-small);
   display: inline-block;

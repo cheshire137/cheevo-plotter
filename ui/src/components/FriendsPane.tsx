@@ -1,27 +1,35 @@
-import {PageLayout, Button, Heading, Spinner} from '@primer/react'
-import {useSelectedFriends} from '../contexts/selected-friends-context'
+import {useMemo, useState} from 'react'
+import {ActionList, Avatar, FormControl, TextInput, PageLayout, Button, Heading, Spinner} from '@primer/react'
+import {EyeClosedIcon, SearchIcon} from '@primer/octicons-react'
+import {maxSelectedFriends, useSelectedFriends} from '../contexts/selected-friends-context'
 import {useSelectedGame} from '../contexts/selected-game-context'
-import {FriendsList} from './FriendsList'
 import {useGetFriends} from '../queries/use-get-friends'
+import type {SteamUser} from '../types'
 import './FriendsPane.css'
 
 export function FriendsPane() {
-  const {selectedFriendIds, setSelectedFriendIds} = useSelectedFriends()
+  const {selectedFriendIds, setSelectedFriendIds, toggleFriendSelection} = useSelectedFriends()
   const {selectedGame} = useSelectedGame()
-  const {data: friends, isPending: isFriendsPending} = useGetFriends()
+  const {data: allFriends, isPending: isFriendsPending} = useGetFriends()
+  const [searchFilter, setSearchFilter] = useState('')
+  const filteredFriends = useMemo(() => {
+    if (!allFriends) return []
+    if (searchFilter.trim().length < 1) return allFriends
+    return allFriends.filter(friend => friend.name.toLowerCase().includes(searchFilter.toLowerCase()))
+  }, [allFriends, searchFilter])
 
   if (!selectedGame) return null
-  if (!isFriendsPending && !friends) return null
+  if (!isFriendsPending && !allFriends) return null
 
   return (
     <PageLayout.Pane aria-label="Friends" position="end" divider="line">
       {isFriendsPending && <Spinner />}
-      {friends && (
+      {allFriends && (
         <>
           <Heading as="h2">
             Friends
             <span className="selected-friends-count">
-              {selectedFriendIds.size} of {friends.length} selected
+              {selectedFriendIds.size} of {allFriends.length} selected
             </span>
             {selectedFriendIds.size > 0 && (
               <Button
@@ -34,9 +42,67 @@ export function FriendsPane() {
               </Button>
             )}
           </Heading>
-          <FriendsList />
+          <FormControl className="search-friends">
+            <FormControl.Label visuallyHidden>Search friends</FormControl.Label>
+            <TextInput
+              block
+              leadingVisual={SearchIcon}
+              value={searchFilter}
+              onChange={e => setSearchFilter(e.currentTarget.value)}
+              type="search"
+              placeholder="Filter friends"
+            />
+          </FormControl>
+          <ActionList role="menu" aria-label="Friend" selectionVariant="multiple">
+            {filteredFriends.map(friend => {
+              const selected = selectedFriendIds.has(friend.steamId)
+              return (
+                <FriendsListItem
+                  selected={selected}
+                  disabled={!selected && selectedFriendIds.size >= maxSelectedFriends}
+                  onSelect={() => toggleFriendSelection(friend.steamId)}
+                  key={friend.steamId}
+                  friend={friend}
+                />
+              )
+            })}
+          </ActionList>
         </>
       )}
     </PageLayout.Pane>
+  )
+}
+
+function FriendsListItem({
+  disabled,
+  friend,
+  onSelect,
+  selected,
+}: {
+  disabled?: boolean
+  friend: SteamUser
+  onSelect: (friendId: string) => void
+  selected: boolean
+}) {
+  return (
+    <ActionList.Item
+      disabled={disabled}
+      selected={selected}
+      onSelect={() => onSelect(friend.steamId)}
+      aria-checked={selected}
+      role="menuitemcheckbox"
+    >
+      {friend.avatarUrl.length > 0 && (
+        <ActionList.LeadingVisual>
+          <Avatar src={friend.avatarUrl} />
+        </ActionList.LeadingVisual>
+      )}
+      {friend.name}
+      {friend.privateProfile && (
+        <ActionList.TrailingVisual>
+          <EyeClosedIcon />
+        </ActionList.TrailingVisual>
+      )}
+    </ActionList.Item>
   )
 }
