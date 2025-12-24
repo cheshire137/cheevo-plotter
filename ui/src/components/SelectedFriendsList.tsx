@@ -97,7 +97,7 @@ function SelectedFriendListItem({
   const playerAchievements = useMemo(() => (data ? Object.values(data.playerAchievementsById) : []), [data])
   const totalUnlocked = playerAchievements.filter(a => a.unlocked).length
   const totalAchievements = data?.gameAchievements ? data.gameAchievements.length : 0
-  const privateProfile = error !== null && error instanceof AxiosError && error.status === 403
+  const privateProfile = user.privateProfile || error !== null && error instanceof AxiosError && error.status === 403
   const queryClient = useQueryClient()
   const {queryKey: friendsQueryKey, data: friends} = useGetFriends()
 

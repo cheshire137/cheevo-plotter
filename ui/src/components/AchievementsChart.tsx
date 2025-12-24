@@ -1,4 +1,4 @@
-import {useMemo} from 'react'
+import {useCallback, useMemo} from 'react'
 import {Avatar} from '@primer/react'
 import {BarChart, Bar, XAxis, YAxis, Tooltip} from 'recharts'
 import type {SteamPlayerAchievement, SteamUser} from '../types'
@@ -6,10 +6,10 @@ import {useSelectedFriends} from '../contexts/selected-friends-context'
 import {useGetCurrentUser} from '../queries/use-get-current-user'
 
 interface ChartData {
-  steamId: string;
-  'Total unlocked': number;
-  playerName: string;
-  avatarUrl: string;
+  steamId: string
+  'Total unlocked': number
+  playerName: string
+  avatarUrl: string
 }
 
 export function AchievementsChart({
@@ -22,29 +22,37 @@ export function AchievementsChart({
   const {data: currentUser} = useGetCurrentUser()
   const {selectedFriendIds} = useSelectedFriends()
   const currentUserId = currentUser?.steamId
+  const shouldIncludeSteamId = useCallback(
+    (steamId: string) => steamId === currentUserId || selectedFriendIds.has(steamId),
+    [currentUserId, selectedFriendIds]
+  )
   const data = useMemo<ChartData[]>(() => {
     const countsByPlayerId: Record<string, number> = {}
-    for (const steamId of Object.keys(playersBySteamId)) {
-      if (steamId === currentUserId || selectedFriendIds.has(steamId)) {
-        countsByPlayerId[steamId] = 0
-      }
+
+    // Make sure every player shows up in the chart even if they have no achievements:
+    if (currentUserId) countsByPlayerId[currentUserId] = 0
+    for (const steamId of Object.keys(playersBySteamId).filter(shouldIncludeSteamId)) {
+      countsByPlayerId[steamId] = 0
     }
+
     for (const playerAchievement of playerAchievements) {
       const steamId = playerAchievement.steamId
-      if (steamId === currentUserId || selectedFriendIds.has(steamId)) {
+      if (shouldIncludeSteamId(steamId)) {
         countsByPlayerId[steamId] = (countsByPlayerId[steamId] || 0) + (playerAchievement.unlocked ? 1 : 0)
       }
     }
-    return Object.entries(countsByPlayerId).map(([steamId, unlockCount]) => {
-      const player = playersBySteamId[steamId]
-      return {
-        steamId,
-        'Total unlocked': unlockCount,
-        playerName: player?.name || steamId,
-        avatarUrl: player?.avatarUrl,
-      }
-    }).filter(d => d)
-  }, [currentUserId, playerAchievements, playersBySteamId, selectedFriendIds])
+    return Object.entries(countsByPlayerId)
+      .map(([steamId, unlockCount]) => {
+        const player = playersBySteamId[steamId]
+        return {
+          steamId,
+          'Total unlocked': unlockCount,
+          playerName: player?.name || steamId,
+          avatarUrl: player?.avatarUrl,
+        }
+      })
+      .filter(d => d)
+  }, [playerAchievements, playersBySteamId, shouldIncludeSteamId])
 
   return (
     <BarChart
