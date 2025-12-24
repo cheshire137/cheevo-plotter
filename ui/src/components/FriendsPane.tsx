@@ -8,9 +8,9 @@ import type {SteamUser} from '../types'
 import './FriendsPane.css'
 
 export function FriendsPane() {
-  const {selectedFriendIds, setSelectedFriendIds, toggleFriendSelection} = useSelectedFriends()
-  const {selectedGame} = useSelectedGame()
   const {data: allFriends, isPending: isFriendsPending} = useGetFriends()
+  const {selectedFriendIds, toggleFriendSelection} = useSelectedFriends()
+  const {selectedGame} = useSelectedGame()
   const [searchFilter, setSearchFilter] = useState('')
   const filteredFriends = useMemo(() => {
     if (!allFriends) return []
@@ -26,33 +26,8 @@ export function FriendsPane() {
       {isFriendsPending && <Spinner />}
       {allFriends && (
         <>
-          <Heading as="h2">
-            Friends
-            <span className="selected-friends-count">
-              {selectedFriendIds.size} of {allFriends.length} selected
-            </span>
-            {selectedFriendIds.size > 0 && (
-              <Button
-                size="small"
-                className="clear-selected-friends"
-                variant="invisible"
-                onClick={() => setSelectedFriendIds([])}
-              >
-                Clear
-              </Button>
-            )}
-          </Heading>
-          <FormControl className="search-friends">
-            <FormControl.Label visuallyHidden>Search friends</FormControl.Label>
-            <TextInput
-              block
-              leadingVisual={SearchIcon}
-              value={searchFilter}
-              onChange={e => setSearchFilter(e.currentTarget.value)}
-              type="search"
-              placeholder="Filter friends"
-            />
-          </FormControl>
+          <FriendsHeader totalSelected={selectedFriendIds.size} totalFriends={allFriends.length} />
+          <SearchFriends searchFilter={searchFilter} setSearchFilter={setSearchFilter} />
           <ActionList role="menu" aria-label="Friend" selectionVariant="multiple">
             {filteredFriends.map(friend => {
               const selected = selectedFriendIds.has(friend.steamId)
@@ -70,6 +45,40 @@ export function FriendsPane() {
         </>
       )}
     </PageLayout.Pane>
+  )
+}
+
+function FriendsHeader({totalSelected, totalFriends}: {totalSelected: number; totalFriends: number}) {
+  return (
+    <Heading as="h2">
+      Friends
+      <span className="selected-friends-count">
+        {totalSelected} of {totalFriends} selected
+      </span>
+      {totalSelected > 0 && <ClearFriendSelectionButton />}
+    </Heading>
+  )
+}
+
+function SearchFriends({
+  searchFilter,
+  setSearchFilter,
+}: {
+  searchFilter: string
+  setSearchFilter: (val: string) => void
+}) {
+  return (
+    <FormControl className="search-friends">
+      <FormControl.Label visuallyHidden>Search friends</FormControl.Label>
+      <TextInput
+        block
+        leadingVisual={SearchIcon}
+        value={searchFilter}
+        onChange={e => setSearchFilter(e.currentTarget.value)}
+        type="search"
+        placeholder="Filter friends"
+      />
+    </FormControl>
   )
 }
 
@@ -104,5 +113,19 @@ function FriendsListItem({
         </ActionList.TrailingVisual>
       )}
     </ActionList.Item>
+  )
+}
+
+function ClearFriendSelectionButton() {
+  const {setSelectedFriendIds} = useSelectedFriends()
+  return (
+    <Button
+      size="small"
+      className="clear-selected-friends"
+      variant="invisible"
+      onClick={() => setSelectedFriendIds([])}
+    >
+      Clear
+    </Button>
   )
 }
