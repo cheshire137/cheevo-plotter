@@ -75,7 +75,10 @@ function App() {
                   <Blankslate.Heading>Select a friend to compare achievements</Blankslate.Heading>
                 </Blankslate>
               ) : (
-                <SelectedFriendsList appId={selectedGame.appId} friends={selectedFriends} />
+                <>
+                  <Heading as="h2" className="selected-game-name-heading">{selectedGame.name}</Heading>
+                  <SelectedFriendsList appId={selectedGame.appId} friends={selectedFriends} />
+                </>
               )}
               <AchievementsList game={selectedGame} />
             </>

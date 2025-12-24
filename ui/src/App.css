@@ -8,3 +8,7 @@
   margin-left: var(--base-size-6);
   font-weight: normal;
 }
+
+.selected-game-name-heading {
+  margin-bottom: var(--base-size-12);
+}
