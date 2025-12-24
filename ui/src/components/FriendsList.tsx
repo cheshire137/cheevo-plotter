@@ -1,49 +1,27 @@
-import {useCallback, useMemo, useState} from 'react'
+import {useMemo, useState} from 'react'
 import {EyeClosedIcon, SearchIcon} from '@primer/octicons-react'
-import {useSearchParams} from 'react-router-dom'
 import {ActionList, Avatar, FormControl, TextInput} from '@primer/react'
 import type {SteamUser} from '../types'
+import {maxSelectedFriends, useSelectedFriends} from '../contexts/selected-friends-context'
+import {useGetFriends} from '../queries/use-get-friends'
 import './FriendsList.css'
 
-export const friendSeparator = ','
-export const maxSelectedFriends = 5
-
-export function FriendsList({
-  friends: allFriends,
-  selectedFriendIds: initialSelectedFriendIds,
-}: {
-  friends: SteamUser[]
-  selectedFriendIds: string[]
-}) {
+export function FriendsList() {
+  const {data: allFriends} = useGetFriends()
   const [searchFilter, setSearchFilter] = useState('')
   const filteredFriends = useMemo(() => {
+    if (!allFriends) return []
     if (searchFilter.trim().length < 1) return allFriends
     return allFriends.filter(friend => friend.name.toLowerCase().includes(searchFilter.toLowerCase()))
   }, [allFriends, searchFilter])
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>(initialSelectedFriendIds)
-  const onSelectFriend = useCallback(
-    (friendId: string) => {
-      let newValue: string[] = []
-      if (selectedFriendIds.includes(friendId)) {
-        newValue = selectedFriendIds.filter(id => id !== friendId)
-      } else if (selectedFriendIds.length < maxSelectedFriends) {
-        newValue = [...selectedFriendIds, friendId]
-      } else {
-        newValue = [...selectedFriendIds]
-      }
-      const newParams = new URLSearchParams(searchParams)
-      newParams.set('friends', newValue.join(friendSeparator))
-      setSearchParams(newParams)
-      setSelectedFriendIds(newValue)
-    },
-    [searchParams, selectedFriendIds]
-  )
+  const {selectedFriendIds, toggleFriendSelection} = useSelectedFriends()
+
   return (
     <>
-      <FormControl>
+      <FormControl className="search-friends">
         <FormControl.Label visuallyHidden>Search friends</FormControl.Label>
         <TextInput
+          block
           leadingVisual={SearchIcon}
           value={searchFilter}
           onChange={e => setSearchFilter(e.currentTarget.value)}
@@ -53,12 +31,12 @@ export function FriendsList({
       </FormControl>
       <ActionList role="menu" aria-label="Friend" selectionVariant="multiple">
         {filteredFriends.map(friend => {
-          const selected = selectedFriendIds.includes(friend.steamId)
+          const selected = selectedFriendIds.has(friend.steamId)
           return (
             <FriendsListItem
               selected={selected}
-              disabled={!selected && selectedFriendIds.length >= maxSelectedFriends}
-              onSelect={onSelectFriend}
+              disabled={!selected && selectedFriendIds.size >= maxSelectedFriends}
+              onSelect={() => toggleFriendSelection(friend.steamId)}
               key={friend.steamId}
               friend={friend}
             />

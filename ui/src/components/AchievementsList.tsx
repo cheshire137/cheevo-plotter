@@ -2,16 +2,18 @@ import {Banner, CounterLabel, Heading, Spinner} from '@primer/react'
 import {Blankslate} from '@primer/react/experimental'
 import {TrophyIcon} from '@primer/octicons-react'
 import {AchievementListItem} from './AchievementListItem'
-import type {SteamOwnedGame} from '../types'
+import {useSelectedGame} from '../contexts/selected-game-context'
 import {useGetAchievements} from '../queries/use-get-achievements'
 import './AchievementsList.css'
 
-export function AchievementsList({game}: {game: SteamOwnedGame}) {
-  const {data, error, isPending} = useGetAchievements({appId: game.appId})
+export function AchievementsList() {
+  const {selectedGame} = useSelectedGame()
+  const {data, error, isPending} = useGetAchievements({appId: selectedGame?.appId})
   const gameAchievements = data?.gameAchievements
   const playerAchievementsById = data?.playerAchievementsById
   const totalAchievements = gameAchievements ? gameAchievements.length : 0
 
+  if (!selectedGame) return null
   if (isPending) return <Spinner />
 
   if (error)
@@ -27,7 +29,7 @@ export function AchievementsList({game}: {game: SteamOwnedGame}) {
         <Blankslate.Visual>
           <TrophyIcon size="medium" />
         </Blankslate.Visual>
-        <Blankslate.Heading>{game.name} has no achievements</Blankslate.Heading>
+        <Blankslate.Heading>{selectedGame.name} has no achievements</Blankslate.Heading>
       </Blankslate>
     )
   }

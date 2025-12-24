@@ -1,7 +1,8 @@
 import {useCallback, useEffect, useMemo, useState} from 'react'
+import {Blankslate} from '@primer/react/experimental'
 import {AxiosError} from 'axios'
 import {Banner, Spinner} from '@primer/react'
-import {EyeClosedIcon} from '@primer/octicons-react'
+import {EyeClosedIcon, TrophyIcon} from '@primer/octicons-react'
 import {useQueryClient} from '@tanstack/react-query'
 import type {SteamPlayerAchievement, SteamUser} from '../types'
 import {useGetAchievements} from '../queries/use-get-achievements'
@@ -9,11 +10,15 @@ import {useGetCurrentUser} from '../queries/use-get-current-user'
 import {useGetFriends} from '../queries/use-get-friends'
 import {SteamUserLink} from './SteamUserLink'
 import {AchievementsChart} from './AchievementsChart'
+import {useSelectedFriends} from '../contexts/selected-friends-context'
+import {useSelectedGame} from '../contexts/selected-game-context'
 import './SelectedFriendsList.css'
 
-export function SelectedFriendsList({appId, friends}: {appId: string; friends: SteamUser[]}) {
+export function SelectedFriendsList() {
+  const {selectedFriends} = useSelectedFriends()
   const {data: currentUser} = useGetCurrentUser()
-  const {data, error, isPending} = useGetAchievements({appId})
+  const {selectedGame} = useSelectedGame()
+  const {data, error, isPending} = useGetAchievements({appId: selectedGame?.appId})
   const [allPlayerAchievements, setAllPlayerAchievements] = useState<SteamPlayerAchievement[]>([])
   const gameAchievements = data?.gameAchievements
   const playersBySteamId = useMemo(() => {
@@ -21,11 +26,11 @@ export function SelectedFriendsList({appId, friends}: {appId: string; friends: S
     if (currentUser) {
       result[currentUser.steamId] = currentUser
     }
-    for (const friend of friends) {
+    for (const friend of selectedFriends) {
       result[friend.steamId] = friend
     }
     return result
-  }, [currentUser, friends])
+  }, [currentUser, selectedFriends])
 
   const onPlayerAchievementsLoaded = useCallback(
     (playerAchievements: SteamPlayerAchievement[]) => {
@@ -40,6 +45,17 @@ export function SelectedFriendsList({appId, friends}: {appId: string; friends: S
   if (isPending) return <Spinner />
   if (gameAchievements && gameAchievements.length < 1) return null
 
+  if (selectedFriends.length < 1) {
+    return (
+      <Blankslate border>
+        <Blankslate.Visual>
+          <TrophyIcon size="medium" />
+        </Blankslate.Visual>
+        <Blankslate.Heading>Select a friend to compare achievements</Blankslate.Heading>
+      </Blankslate>
+    )
+  }
+
   if (error) {
     return (
       <Banner variant="critical" title="Error loading achievements">
@@ -53,14 +69,12 @@ export function SelectedFriendsList({appId, friends}: {appId: string; friends: S
       <div className="selected-friends-list">
         <SelectedFriendListItem
           onPlayerAchievementsLoaded={onPlayerAchievementsLoaded}
-          appId={appId}
           user={currentUser}
           key={currentUser.steamId}
         />
-        {friends.map(friend => (
+        {selectedFriends.map(friend => (
           <SelectedFriendListItem
             onPlayerAchievementsLoaded={onPlayerAchievementsLoaded}
-            appId={appId}
             user={friend}
             key={friend.steamId}
           />
@@ -72,15 +86,14 @@ export function SelectedFriendsList({appId, friends}: {appId: string; friends: S
 }
 
 function SelectedFriendListItem({
-  appId,
   onPlayerAchievementsLoaded,
   user,
 }: {
-  appId: string
   onPlayerAchievementsLoaded: (playerAchievements: SteamPlayerAchievement[]) => void
   user: SteamUser
 }) {
-  const {data, error} = useGetAchievements({appId, steamId: user.steamId})
+  const {selectedGame} = useSelectedGame()
+  const {data, error} = useGetAchievements({appId: selectedGame?.appId, steamId: user.steamId})
   const playerAchievements = useMemo(() => (data ? Object.values(data.playerAchievementsById) : []), [data])
   const totalUnlocked = playerAchievements.filter(a => a.unlocked).length
   const totalAchievements = data?.gameAchievements ? data.gameAchievements.length : 0
@@ -104,9 +117,12 @@ function SelectedFriendListItem({
     if (playerAchievements.length > 0) onPlayerAchievementsLoaded(playerAchievements)
   }, [onPlayerAchievementsLoaded, playerAchievements])
 
+  if (!selectedGame) return null
+
   return (
     <div>
       <SteamUserLink user={user} />
+      <span>&middot; </span>
       {privateProfile ? (
         <span className="friend-achievements-error">
           <EyeClosedIcon /> profile is private
@@ -117,9 +133,9 @@ function SelectedFriendListItem({
       {totalAchievements > 0 && (
         <>
           <span>
-            {totalUnlocked} unlocked of {totalAchievements}
+            {totalUnlocked} unlocked of {totalAchievements} &middot;
           </span>
-          <strong> ({Math.round((totalUnlocked / totalAchievements) * 100)}%)</strong>
+          <strong> {Math.round((totalUnlocked / totalAchievements) * 100)}%</strong>
         </>
       )}
     </div>

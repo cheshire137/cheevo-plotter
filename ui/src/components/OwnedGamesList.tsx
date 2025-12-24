@@ -2,26 +2,24 @@ import {useMemo, useState} from 'react'
 import {ActionList, FormControl, TextInput} from '@primer/react'
 import {SearchIcon} from '@primer/octicons-react'
 import type {SteamOwnedGame} from '../types'
+import './OwnedGamesList.css'
+import {useSelectedGame} from '../contexts/selected-game-context'
 
-export function OwnedGamesList({
-  ownedGames: allOwnedGames,
-  selectedGameId,
-  selectGame,
-}: {
-  ownedGames: SteamOwnedGame[]
-  selectedGameId: string | null
-  selectGame: (appId: string) => void
-}) {
+export function OwnedGamesList({ownedGames: allOwnedGames}: {ownedGames: SteamOwnedGame[]}) {
+  const {selectedGame, selectGame} = useSelectedGame()
+  const selectedGameId = selectedGame?.appId
   const [searchFilter, setSearchFilter] = useState('')
   const filteredOwnedGames = useMemo(() => {
     if (searchFilter.trim().length < 1) return allOwnedGames
     return allOwnedGames.filter(game => game.name.toLowerCase().includes(searchFilter.toLowerCase()))
   }, [allOwnedGames, searchFilter])
+
   return (
     <>
-      <FormControl>
+      <FormControl className="search-owned-games">
         <FormControl.Label visuallyHidden>Search owned games</FormControl.Label>
         <TextInput
+          block
           leadingVisual={SearchIcon}
           value={searchFilter}
           onChange={e => setSearchFilter(e.currentTarget.value)}

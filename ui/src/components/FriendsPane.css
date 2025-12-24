@@ -1,0 +1,11 @@
+.selected-friends-count {
+  font-size: var(--text-body-size-small);
+  display: inline-block;
+  margin-left: var(--base-size-12);
+  font-weight: normal;
+}
+
+.clear-selected-friends {
+  display: inline-block;
+  margin-left: var(--base-size-6);
+}
