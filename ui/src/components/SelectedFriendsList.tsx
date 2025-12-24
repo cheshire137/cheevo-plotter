@@ -93,7 +93,7 @@ function SelectedFriendListItem({
   user: SteamUser
 }) {
   const {selectedGame} = useSelectedGame()
-  const {data, error} = useGetAchievements({appId: selectedGame?.appId, steamId: user.steamId})
+  const {data, error, isPending} = useGetAchievements({appId: selectedGame?.appId, steamId: user.steamId})
   const playerAchievements = useMemo(() => (data ? Object.values(data.playerAchievementsById) : []), [data])
   const totalUnlocked = playerAchievements.filter(a => a.unlocked).length
   const totalAchievements = data?.gameAchievements ? data.gameAchievements.length : 0
@@ -123,6 +123,7 @@ function SelectedFriendListItem({
     <div>
       <SteamUserLink user={user} />
       <span>&middot; </span>
+      {isPending && <Spinner size="small" />}
       {privateProfile ? (
         <span className="friend-achievements-error">
           <EyeClosedIcon /> profile is private
