@@ -8,7 +8,7 @@ import {useGetAchievements} from '../queries/use-get-achievements'
 import {useGetCurrentUser} from '../queries/use-get-current-user'
 import {useGetFriends} from '../queries/use-get-friends'
 import {SteamUserLink} from './SteamUserLink'
-import {UnlockedBarChart} from './UnlockedBarChart'
+import {AchievementsChart} from './AchievementsChart'
 import './SelectedFriendsList.css'
 
 export function SelectedFriendsList({appId, friends}: {appId: string; friends: SteamUser[]}) {
@@ -16,13 +16,16 @@ export function SelectedFriendsList({appId, friends}: {appId: string; friends: S
   const {data, error, isPending} = useGetAchievements({appId})
   const [allPlayerAchievements, setAllPlayerAchievements] = useState<SteamPlayerAchievement[]>([])
   const gameAchievements = data?.gameAchievements
-  const playerNamesBySteamId = useMemo(() => {
-    const result: Record<string, string> = {}
+  const playersBySteamId = useMemo(() => {
+    const result: Record<string, SteamUser> = {}
+    if (currentUser) {
+      result[currentUser.steamId] = currentUser
+    }
     for (const friend of friends) {
-      result[friend.steamId] = friend.name
+      result[friend.steamId] = friend
     }
     return result
-  }, [friends])
+  }, [currentUser, friends])
 
   const onPlayerAchievementsLoaded = useCallback(
     (playerAchievements: SteamPlayerAchievement[]) => {
@@ -63,7 +66,7 @@ export function SelectedFriendsList({appId, friends}: {appId: string; friends: S
           />
         ))}
       </div>
-      <UnlockedBarChart playerAchievements={allPlayerAchievements} playerNamesBySteamId={playerNamesBySteamId} />
+      <AchievementsChart playerAchievements={allPlayerAchievements} playersBySteamId={playersBySteamId} />
     </>
   )
 }
@@ -78,7 +81,7 @@ function SelectedFriendListItem({
   user: SteamUser
 }) {
   const {data, error} = useGetAchievements({appId, steamId: user.steamId})
-  const playerAchievements = useMemo(() => data ? Object.values(data.playerAchievementsById) : [], [data])
+  const playerAchievements = useMemo(() => (data ? Object.values(data.playerAchievementsById) : []), [data])
   const totalUnlocked = playerAchievements.filter(a => a.unlocked).length
   const totalAchievements = data?.gameAchievements ? data.gameAchievements.length : 0
   const privateProfile = error !== null && error instanceof AxiosError && error.status === 403
